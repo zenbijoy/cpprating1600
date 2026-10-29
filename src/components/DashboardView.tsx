@@ -23,12 +23,16 @@ import {
   DailyPlan,
   DailyTask,
   MissionMode,
+  MistakeRecord,
   ProblemAttempt,
   UserGoal,
   UserProfile,
 } from '../types';
 import { getPhaseForDay, getTopicForDay } from '../utils/roadmap';
 import { compute30DayStreak } from '../utils/streak';
+import { calculateTodayMinutesProgress } from '../utils/timeTracking';
+import { Achievements } from './Achievements';
+import { CircularProgressRing } from './CircularProgressRing';
 
 interface DashboardViewProps {
   goal: UserGoal;
@@ -41,6 +45,7 @@ interface DashboardViewProps {
   recentAttempts: ProblemAttempt[];
   upcomingContestTitle?: string;
   upcomingContestTime?: string;
+  mistakes?: MistakeRecord[];
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -54,6 +59,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   recentAttempts,
   upcomingContestTitle,
   upcomingContestTime,
+  mistakes = [],
 }) => {
   const currentPhase = getPhaseForDay(goal.currentDay);
   const currentTopic = getTopicForDay(goal.currentDay);
@@ -67,6 +73,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const streakAnalysis = useMemo(() => {
     return compute30DayStreak(recentAttempts, [dailyPlan]);
   }, [recentAttempts, dailyPlan]);
+
+  // Daily Minutes Goal Progress based on problem attempts logged today
+  const todayMinutesProgress = useMemo(() => {
+    return calculateTodayMinutesProgress(recentAttempts, goal.dailyMinutes);
+  }, [recentAttempts, goal.dailyMinutes]);
+
+  const [showMinutesDetails, setShowMinutesDetails] = useState<boolean>(false);
 
   const inspectedDay = selectedDayIndex !== null
     ? streakAnalysis.days[selectedDayIndex]
@@ -201,8 +214,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-12">
-      {/* Top Banner: Three Core Questions & Stats */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Top Banner: Five Core Vitals & Goals */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {/* Day & Phase Card */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
           <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
@@ -220,6 +233,60 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </p>
         </div>
 
+        {/* Daily Minutes Goal Card with Circular Progress Ring */}
+        <div
+          onClick={() => setShowMinutesDetails(true)}
+          className="rounded-2xl border border-slate-800 bg-slate-900/60 p-3.5 sm:p-4 flex items-center justify-between gap-2 relative overflow-hidden group hover:border-indigo-500/50 hover:bg-slate-900/80 transition-all cursor-pointer shadow-lg"
+          title="Click to view today's problem attempts breakdown"
+        >
+          <div className="space-y-1 flex-1 min-w-0">
+            <div className="flex items-center justify-between text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                DAILY MINUTES
+              </span>
+              <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span
+                className={`text-2xl sm:text-3xl font-black ${
+                  todayMinutesProgress.isGoalMet ? 'text-emerald-400' : 'text-white'
+                }`}
+              >
+                {todayMinutesProgress.totalMinutes}m
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                / {todayMinutesProgress.goalMinutes}m
+              </span>
+            </div>
+            <p className="text-[11px] truncate">
+              {todayMinutesProgress.isGoalMet ? (
+                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 shrink-0" />
+                  <span>
+                    Goal Met! {todayMinutesProgress.excessMinutes > 0 ? `(+${todayMinutesProgress.excessMinutes}m)` : ''}
+                  </span>
+                </span>
+              ) : (
+                <span className="text-slate-400">
+                  {todayMinutesProgress.remainingMinutes}m left today
+                </span>
+              )}
+            </p>
+          </div>
+
+          {/* Circular Progress Ring */}
+          <div className="shrink-0 flex items-center justify-center">
+            <CircularProgressRing
+              currentMinutes={todayMinutesProgress.totalMinutes}
+              goalMinutes={todayMinutesProgress.goalMinutes}
+              percent={todayMinutesProgress.percent}
+              clampedPercent={todayMinutesProgress.clampedPercent}
+              size={56}
+              strokeWidth={5.5}
+            />
+          </div>
+        </div>
+
         {/* Rating Gauge Card */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 space-y-2">
           <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
@@ -232,7 +299,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </span>
             <span className="text-xs text-slate-400">&rarr; Target 1600</span>
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-slate-400 truncate">
             {profile.cfHandle ? `Handle: ${profile.cfHandle}` : 'Link Codeforces in Settings'}
           </p>
         </div>
@@ -264,7 +331,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="text-sm font-bold text-white truncate">
             {upcomingContestTitle || 'Div.2 / Div.3 Round'}
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-slate-400 truncate">
             {upcomingContestTime || 'Check official calendar in Contests tab'}
           </p>
         </div>
@@ -588,6 +655,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </section>
 
+      {/* Milestone Badges & Achievements Section */}
+      <section>
+        <Achievements
+          attempts={recentAttempts}
+          streakAnalysis={streakAnalysis}
+          profile={profile}
+          mistakes={mistakes}
+        />
+      </section>
+
       {/* Secondary Cards: Recommended Problems, Weak Topic & Recent Attempts */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Next Recommended Problems */}
@@ -686,6 +763,160 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* Today's Daily Minutes Breakdown Modal */}
+      {showMinutesDetails && (
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setShowMinutesDetails(false)}
+        >
+          <div
+            className="w-full max-w-lg bg-[#0f172a] border border-slate-700 rounded-2xl p-6 space-y-5 shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Daily Minutes Goal Progress</h3>
+                  <p className="text-xs text-slate-400">
+                    Tracked from live problem sessions logged on {todayMinutesProgress.todayDateStr}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMinutesDetails(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Circular Progress Display & Key Metrics */}
+            <div className="flex flex-col sm:flex-row items-center justify-around gap-4 p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+              <div className="shrink-0">
+                <CircularProgressRing
+                  currentMinutes={todayMinutesProgress.totalMinutes}
+                  goalMinutes={todayMinutesProgress.goalMinutes}
+                  percent={todayMinutesProgress.percent}
+                  clampedPercent={todayMinutesProgress.clampedPercent}
+                  size={96}
+                  strokeWidth={8}
+                />
+              </div>
+
+              <div className="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
+                <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Goal Completion: <span className="font-mono text-white font-bold">{todayMinutesProgress.percent}%</span>
+                </div>
+                <div className="text-sm font-bold text-white">
+                  {todayMinutesProgress.isGoalMet ? (
+                    <span className="text-emerald-400 flex items-center justify-center sm:justify-start gap-1">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Daily Target Achieved!</span>
+                    </span>
+                  ) : (
+                    <span className="text-amber-400">
+                      {todayMinutesProgress.remainingMinutes} minutes remaining
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Target is <span className="text-slate-200 font-semibold">{todayMinutesProgress.goalMinutes} minutes</span> daily focus.
+                  {todayMinutesProgress.excessMinutes > 0 && (
+                    <span className="text-emerald-400 ml-1">
+                      You've accumulated {todayMinutesProgress.excessMinutes}m of bonus deep work!
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+
+            {/* Today's Problem Attempts List */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
+                <span>TODAY'S PROBLEM SESSIONS ({todayMinutesProgress.todayAttemptsCount})</span>
+                <span className="font-mono text-slate-300">{todayMinutesProgress.totalMinutes} min total</span>
+              </div>
+
+              {todayMinutesProgress.todayAttempts.length === 0 ? (
+                <div className="text-xs text-slate-400 p-4 text-center rounded-xl border border-slate-800 bg-slate-950/40">
+                  No problem attempts logged yet today. Click Launch Problem Workspace to begin your session and log focus time!
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+                  {todayMinutesProgress.todayAttempts.map((attempt) => (
+                    <div
+                      key={attempt.id}
+                      className="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/50 text-xs"
+                    >
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white">{attempt.name}</span>
+                          <span className="font-mono text-indigo-400 text-[11px] font-semibold">
+                            {attempt.problemId}
+                          </span>
+                          {attempt.rating && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded font-semibold text-cyan-300 bg-cyan-950/60 border border-cyan-800/40">
+                              {attempt.rating}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-slate-400">
+                          {attempt.outcome === 'solved_independently'
+                            ? 'Solved Independently'
+                            : attempt.outcome === 'solved_with_hints'
+                            ? 'Solved with Hints'
+                            : 'Attempted'}
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="font-mono font-bold text-white">
+                          {Math.round(attempt.timeSpentSeconds / 60)} min
+                        </div>
+                        <span
+                          className={`font-mono text-[10px] font-bold ${
+                            attempt.officialVerdict === 'OK' ? 'text-emerald-400' : 'text-amber-400'
+                          }`}
+                        >
+                          {attempt.officialVerdict || 'SUBMITTED'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="pt-2 border-t border-slate-800 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowMinutesDetails(false)}
+                className="px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMinutesDetails(false);
+                  onSelectProblem(nextRecommendedProblem);
+                }}
+                className="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer transition-colors flex items-center gap-1.5"
+              >
+                <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                <span>Launch Problem Workspace</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

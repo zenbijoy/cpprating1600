@@ -102,7 +102,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ goal, profile }) => {
         <div>
           <div className="flex items-center gap-2">
             <Bot className="w-5 h-5 text-indigo-400" />
-            <h1 className="text-2xl font-bold text-white">Gemini AI Coach Studio</h1>
+            <h1 className="text-2xl font-bold text-white">AI Coach Studio</h1>
           </div>
           <p className="text-xs text-slate-400 mt-1">
             Personalized competitive programming tutor. Teaches intuition, provides graduated Socratic hints, and audits code for hidden edge cases.
@@ -111,7 +111,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ goal, profile }) => {
 
         <div className="flex items-center gap-2 self-start text-xs font-semibold px-3 py-1.5 rounded-xl border border-indigo-900/60 bg-indigo-950/30 text-indigo-300">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Gemini 3.8 Flash Engine</span>
+          <span>Socratic AI Engine</span>
         </div>
       </div>
 

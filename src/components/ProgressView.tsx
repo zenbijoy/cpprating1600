@@ -44,6 +44,8 @@ import {
   SimulatedSolve,
   getTierColor,
 } from '../utils/ratingEstimator';
+import { DifficultyHeatmap } from './DifficultyHeatmap';
+import { CommunityBenchmarks } from './CommunityBenchmarks';
 
 interface ProgressViewProps {
   goal: UserGoal;
@@ -711,6 +713,12 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
           </p>
         </div>
       </div>
+
+      {/* Community Cohort Benchmarks Section */}
+      <CommunityBenchmarks attempts={attempts} goal={goal} profile={profile} />
+
+      {/* Visual Difficulty Distribution Heatmap & Plateau Diagnostic */}
+      <DifficultyHeatmap attempts={attempts} />
 
       {/* Visual Charts: Solved by Difficulty & Hint Dependence */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

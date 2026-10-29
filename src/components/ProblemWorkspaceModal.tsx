@@ -17,23 +17,46 @@ import {
   Save,
   Maximize2,
   Minimize2,
+  RefreshCw,
+  BookOpen,
+  ListChecks,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
-import { CFProblem, ProblemAttempt, ProgrammingLanguage } from '../types';
+import { CFProblem, MistakeCategory, MistakeRecord, ProblemAttempt, ProgrammingLanguage } from '../types';
 import { storageService } from '../services/storage';
 import { aiCoachService } from '../services/aiCoach';
+import { codeforcesService } from '../services/codeforces';
 
 interface ProblemWorkspaceModalProps {
   problem: CFProblem;
   onClose: () => void;
   onAttemptLogged: (attempt: ProblemAttempt) => void;
   preferredLanguage?: ProgrammingLanguage;
+  cfHandle?: string;
+  onSaveMistake?: (mistake: MistakeRecord) => void;
 }
+
+const SOLVING_STEPS = [
+  { step: 1, label: 'Read Statement Carefully', desc: 'Identify exact input/output rules and what is asked.' },
+  { step: 2, label: 'Check Constraints & Types', desc: 'Note N, M limits; watch for int overflow if product > 2*10^9.' },
+  { step: 3, label: 'Trace Small Examples', desc: 'Work through sample testcases by hand on paper.' },
+  { step: 4, label: 'Find Invariant / Monotonicity', desc: 'Does sorting help? Is the property monotonic (Binary Search)?' },
+  { step: 5, label: 'Time Complexity Gate', desc: 'Usually 10^8 ops/sec. N<=10^5 requires O(N log N) or O(N).' },
+  { step: 6, label: 'Structure Algorithm Outline', desc: 'Break down subroutines, edge condition checks, and loops.' },
+  { step: 7, label: 'Edge Cases Checklist', desc: 'N=1, 0, duplicates, all negatives, maximum constraints.' },
+  { step: 8, label: 'Clean Implementation', desc: 'Write fast I/O, clean variable names, correct indexing.' },
+  { step: 9, label: 'Verify & Submit', desc: 'Run dry tests on boundary cases, then submit on Codeforces.' },
+  { step: 10, label: 'Debrief & Log', desc: 'Catalog lessons learned or record mistake if WA/TLE.' },
+];
 
 export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
   problem,
   onClose,
   onAttemptLogged,
   preferredLanguage = 'cpp20',
+  cfHandle,
+  onSaveMistake,
 }) => {
   const problemId = `${problem.contestId || ''}${problem.index}`;
   const cfUrl = problem.contestId
@@ -55,16 +78,33 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
   const [hintLoading, setHintLoading] = useState<boolean>(false);
   const [hintHistory, setHintHistory] = useState<{ level: number; text: string }[]>([]);
 
+  // 10-Step Solving Method Checklist
+  const [showMethodChecklist, setShowMethodChecklist] = useState<boolean>(false);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set([1, 2]));
+
   // Local test runner simulation
   const [sampleInput, setSampleInput] = useState<string>('4\n1 2 3 4');
   const [sampleOutput, setSampleOutput] = useState<string | null>(null);
 
-  // Outcome recording
+  // Live Codeforces Verification
+  const [activeHandle, setActiveHandle] = useState<string>(cfHandle || '');
+  const [verifyingCf, setVerifyingCf] = useState<boolean>(false);
+  const [cfVerificationMsg, setCfVerificationMsg] = useState<string | null>(null);
+  const [verifiedSubmissionId, setVerifiedSubmissionId] = useState<number | null>(null);
+
+  // Outcome & Verdict
   const [outcome, setOutcome] = useState<ProblemAttempt['outcome']>('solved_independently');
   const [verdict, setVerdict] = useState<ProblemAttempt['officialVerdict']>('UNSUBMITTED');
   const [isSavedToast, setIsSavedToast] = useState<boolean>(false);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  // Inline Mistake Cataloging Form
+  const [showMistakeForm, setShowMistakeForm] = useState<boolean>(false);
+  const [mistakeCategory, setMistakeCategory] = useState<MistakeCategory>('boundary_case');
+  const [mistakeWhyFailed, setMistakeWhyFailed] = useState<string>('');
+  const [mistakeLesson, setMistakeLesson] = useState<string>('');
+  const [mistakeSavedNotice, setMistakeSavedNotice] = useState<boolean>(false);
 
   // Load draft from storage on mount
   useEffect(() => {
@@ -118,6 +158,15 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const toggleStep = (stepNumber: number) => {
+    setCompletedSteps((prev) => {
+      const next = new Set(prev);
+      if (next.has(stepNumber)) next.delete(stepNumber);
+      else next.add(stepNumber);
+      return next;
+    });
+  };
+
   // Request next Socratic hint
   const handleRequestNextHint = async () => {
     const nextLevel = Math.min(6, hintLevel + 1);
@@ -142,8 +191,93 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
   };
 
   const handleRunSample = () => {
-    // Client-side simulation & sanity guidance
-    setSampleOutput(`[Local Simulation Engine]\nInputs parsed: ${sampleInput.trim().split('\n').length} lines.\nCode drafted in ${language.toUpperCase()}.\nTo verify official acceptance against hidden tests, submit on Codeforces via the external link.`);
+    setSampleOutput(
+      `[Local Dry-Run Engine]\nInputs parsed: ${sampleInput.trim().split('\n').length} lines.\nCode drafted in ${language.toUpperCase()}.\nTo verify official acceptance against hidden tests, submit on Codeforces via the external link.`
+    );
+  };
+
+  // Live verification against official Codeforces API
+  const handleVerifyFromCodeforces = async () => {
+    if (!activeHandle.trim()) {
+      setCfVerificationMsg('Please provide your Codeforces handle first.');
+      return;
+    }
+
+    setVerifyingCf(true);
+    setCfVerificationMsg(null);
+
+    try {
+      const submissions = await codeforcesService.getUserSubmissions(activeHandle.trim(), 15);
+      // Find submission matching this problem
+      const match = submissions.find((sub) => {
+        const cMatch = !problem.contestId || sub.contestId === problem.contestId || sub.problem.contestId === problem.contestId;
+        const iMatch = sub.problem.index.toUpperCase() === problem.index.toUpperCase();
+        return cMatch && iMatch;
+      });
+
+      if (!match) {
+        setCfVerificationMsg(`No recent submission found on Codeforces for ${problemId} under handle "${activeHandle}". Make sure you submitted!`);
+      } else {
+        setVerifiedSubmissionId(match.id);
+        const cfVerdict = match.verdict;
+
+        if (cfVerdict === 'OK') {
+          setVerdict('OK');
+          setOutcome(hintLevel === 0 ? 'solved_independently' : 'solved_with_hints');
+          setCfVerificationMsg(`✓ Verified! Codeforces submission #${match.id}: Accepted (OK). All ${match.passedTestCount || 0} tests passed (${match.timeConsumedMillis || 0}ms)!`);
+        } else if (cfVerdict === 'WRONG_ANSWER') {
+          setVerdict('WRONG_ANSWER');
+          setOutcome('attempted_gave_up');
+          setCfVerificationMsg(`✗ Codeforces submission #${match.id}: Wrong Answer on test ${(match.passedTestCount || 0) + 1}.`);
+          setShowMistakeForm(true);
+        } else if (cfVerdict === 'TIME_LIMIT_EXCEEDED') {
+          setVerdict('TIME_LIMIT_EXCEEDED');
+          setOutcome('attempted_gave_up');
+          setCfVerificationMsg(`⏱ Codeforces submission #${match.id}: Time Limit Exceeded on test ${(match.passedTestCount || 0) + 1}.`);
+          setShowMistakeForm(true);
+        } else if (cfVerdict === 'COMPILATION_ERROR') {
+          setVerdict('COMPILATION_ERROR');
+          setCfVerificationMsg(`⚠ Codeforces submission #${match.id}: Compilation Error.`);
+        } else {
+          setVerdict('UNSUBMITTED');
+          setCfVerificationMsg(`Codeforces submission #${match.id}: ${cfVerdict || 'Pending verdict'}.`);
+        }
+      }
+    } catch (err: any) {
+      setCfVerificationMsg(err.message || 'Failed to query Codeforces API. Please self-report verdict below.');
+    } finally {
+      setVerifyingCf(false);
+    }
+  };
+
+  // Save mistake to notebook
+  const handleSaveMistakeToNotebook = () => {
+    if (!onSaveMistake) return;
+
+    const newMistake: MistakeRecord = {
+      id: `m_${Date.now()}`,
+      problemId: problemId.toUpperCase(),
+      problemName: problem.name,
+      problemUrl: cfUrl,
+      rating: problem.rating,
+      tags: problem.tags,
+      category: mistakeCategory,
+      originalApproach: approachNotes || 'Drafted in workspace',
+      whyItFailed: mistakeWhyFailed || 'Failed official testcase',
+      correctObservation: '',
+      correctApproach: '',
+      personalLesson: mistakeLesson || 'Be vigilant regarding constraints and edge cases.',
+      codeSnippet: code.slice(0, 1000),
+      createdAt: new Date().toISOString(),
+      nextReviewDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], // 1 day
+      intervalDays: 1,
+      reviewCount: 0,
+      status: 'scheduled',
+    };
+
+    onSaveMistake(newMistake);
+    setMistakeSavedNotice(true);
+    setTimeout(() => setMistakeSavedNotice(false), 2500);
   };
 
   const handleLogAttempt = () => {
@@ -163,7 +297,7 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
       highestHintLevel: hintLevel,
       outcome,
       officialVerdict: verdict,
-      selfReported: verdict !== 'OK',
+      selfReported: verifiedSubmissionId === null,
       userCode: code,
       codeLanguage: language,
       approachNotes,
@@ -177,7 +311,7 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
   };
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-2 md:p-4 overflow-hidden`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-2 md:p-4 overflow-hidden">
       <div
         className={`w-full flex flex-col rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl transition-all duration-200 overflow-hidden ${
           isFullscreen ? 'h-full w-full max-w-none' : 'max-w-6xl h-[92vh]'
@@ -208,7 +342,7 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
             </a>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {/* Timer */}
             <div className="flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1 text-xs font-mono">
               <span className="font-bold text-slate-200">{formatTimer(secondsElapsed)}</span>
@@ -221,6 +355,20 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
                 {isTimerRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
               </button>
             </div>
+
+            {/* 10-Step Solving Method Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowMethodChecklist(!showMethodChecklist)}
+              className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg border cursor-pointer transition-all ${
+                showMethodChecklist
+                  ? 'bg-indigo-600/30 border-indigo-500/50 text-indigo-300 font-semibold'
+                  : 'bg-slate-950 border-slate-800 text-slate-300 hover:text-white'
+              }`}
+            >
+              <ListChecks className="w-3.5 h-3.5 text-indigo-400" />
+              <span className="hidden sm:inline">10-Step Method ({completedSteps.size}/10)</span>
+            </button>
 
             {/* Save Draft */}
             <button
@@ -254,21 +402,55 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
           </div>
         </header>
 
+        {/* 10-Step Method Collapsible Banner */}
+        {showMethodChecklist && (
+          <div className="bg-[#0b0f19] border-b border-indigo-900/40 p-4 shrink-0 transition-all">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                <ListChecks className="w-4 h-4" />
+                <span>The 10-Step Problem Solving Routine</span>
+              </h4>
+              <button
+                type="button"
+                onClick={() => setShowMethodChecklist(false)}
+                className="text-xs text-slate-400 hover:text-white cursor-pointer"
+              >
+                Close Checklist
+              </button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              {SOLVING_STEPS.map((s) => {
+                const done = completedSteps.has(s.step);
+                return (
+                  <div
+                    key={s.step}
+                    onClick={() => toggleStep(s.step)}
+                    className={`p-2 rounded-lg border text-xs cursor-pointer transition-all ${
+                      done
+                        ? 'border-emerald-600/50 bg-emerald-950/30 text-emerald-300'
+                        : 'border-slate-800 bg-slate-900/50 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 font-bold mb-0.5">
+                      <span className={`w-4 h-4 rounded flex items-center justify-center text-[10px] ${
+                        done ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-400'
+                      }`}>
+                        {done ? '✓' : s.step}
+                      </span>
+                      <span className="truncate">{s.label}</span>
+                    </div>
+                    <p className="text-[10px] opacity-75 line-clamp-1">{s.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Workspace Body (2 Columns on Desktop) */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
           {/* Left Panel: Problem Information, Approach & Socratic Ladder */}
           <div className="lg:col-span-5 border-r border-slate-800 p-4 space-y-4 overflow-y-auto">
-            {/* Step Solving Flow indicator */}
-            <div className="rounded-xl border border-indigo-900/30 bg-indigo-950/20 p-3 space-y-1 text-xs text-slate-300">
-              <div className="font-bold text-indigo-300 flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5" />
-                <span>The 10-Step Solving Method</span>
-              </div>
-              <p className="text-[11px] text-slate-400">
-                1. Read statement &bull; 2. Constraints &bull; 3. Invariants &bull; 4. Brute force &bull; 5. Complexity &bull; 6. Optimize &bull; 7. Edge Cases &bull; 8. Implement &bull; 9. Submit &bull; 10. Reflect
-              </p>
-            </div>
-
             {/* Tags */}
             <div className="flex flex-wrap gap-1.5">
               {problem.tags.map((t) => (
@@ -348,55 +530,131 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
                     {hintLoading
                       ? 'Consulting Coach...'
                       : hintLevel === 0
-                      ? 'Request Hint 1 (Core Observation)'
+                      ? 'Request Hint 1 (Key Observation)'
                       : hintLevel === 1
                       ? 'Request Hint 2 (Guiding Question)'
                       : hintLevel === 2
-                      ? 'Request Hint 3 (Candidate Technique)'
+                      ? 'Request Hint 3 (Algorithm Paradigm)'
                       : hintLevel === 3
-                      ? 'Request Hint 4 (Algorithm Outline)'
+                      ? 'Request Hint 4 (Step Breakdown)'
                       : hintLevel === 4
                       ? 'Request Hint 5 (Pseudocode)'
-                      : 'Show Full Editorial Explanation'}
+                      : 'Unlock Full Editorial (Hint 6)'}
                   </span>
                 </button>
               )}
             </div>
+
+            {/* Inline Mistake Notebook Cataloger (if WA/TLE or requested) */}
+            {showMistakeForm && (
+              <div className="rounded-xl border border-rose-900/40 bg-rose-950/20 p-3.5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-rose-300">
+                    <BookOpen className="w-4 h-4" />
+                    <span>Catalog Mistake in Spaced Repetition Notebook</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowMistakeForm(false)}
+                    className="text-[11px] text-slate-400 hover:text-white"
+                  >
+                    Hide
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                      Mistake Category
+                    </label>
+                    <select
+                      value={mistakeCategory}
+                      onChange={(e) => setMistakeCategory(e.target.value as MistakeCategory)}
+                      className="w-full rounded-lg border border-slate-800 bg-slate-900 p-2 text-xs text-white"
+                    >
+                      <option value="boundary_case">Boundary Case (N=1, 0, extremes)</option>
+                      <option value="integer_overflow">Integer Overflow (int vs long long)</option>
+                      <option value="wrong_complexity">Wrong Complexity / TLE</option>
+                      <option value="indexing_error">Indexing Error (0 vs 1 based)</option>
+                      <option value="wrong_observation">Wrong Observation / Premise</option>
+                      <option value="misread_statement">Misread Problem Statement</option>
+                      <option value="implementation_bug">Implementation Bug</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                      Why It Failed
+                    </label>
+                    <input
+                      type="text"
+                      value={mistakeWhyFailed}
+                      onChange={(e) => setMistakeWhyFailed(e.target.value)}
+                      placeholder="e.g. Multiplied two ints exceeding 2*10^9"
+                      className="w-full rounded-lg border border-slate-800 bg-slate-900 p-2 text-xs text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                      Personal Takeaway / Rule to Remember
+                    </label>
+                    <input
+                      type="text"
+                      value={mistakeLesson}
+                      onChange={(e) => setMistakeLesson(e.target.value)}
+                      placeholder="e.g. Always cast (long long) before multiplying"
+                      className="w-full rounded-lg border border-slate-800 bg-slate-900 p-2 text-xs text-white"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveMistakeToNotebook}
+                    className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2 text-xs transition-all cursor-pointer shadow-sm"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>{mistakeSavedNotice ? '✓ Saved to Mistakes Deck!' : 'Save Mistake Flashcard'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Right Panel: Code Editor & Verdict Submission */}
-          <div className="lg:col-span-7 flex flex-col p-4 space-y-4 overflow-y-auto">
+          {/* Right Panel: Code Editor, Dry Run & Live CF Submission Check */}
+          <div className="lg:col-span-7 flex flex-col p-4 space-y-3 bg-[#0d121f] overflow-y-auto">
             {/* Editor Toolbar */}
-            <div className="flex items-center justify-between shrink-0">
+            <div className="flex items-center justify-between pb-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-400">Language:</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Code Editor</span>
+                </span>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as ProgrammingLanguage)}
-                  className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
+                  className="rounded-lg border border-slate-800 bg-slate-900 px-2 py-1 text-xs text-slate-200 focus:outline-none"
                 >
-                  <option value="cpp20">C++20 (G++ 11.2)</option>
-                  <option value="cpp17">C++17</option>
-                  <option value="python">Python 3 / PyPy3</option>
+                  <option value="cpp20">C++20 (GCC)</option>
+                  <option value="cpp17">C++17 (GCC)</option>
+                  <option value="python">Python 3.10</option>
                 </select>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyCode}
-                  className="flex items-center gap-1 text-xs text-slate-300 hover:text-white px-2.5 py-1 rounded-lg border border-slate-800 bg-slate-950 cursor-pointer"
-                >
-                  {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedCode ? 'Copied!' : 'Copy Code'}</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleCopyCode}
+                className="flex items-center gap-1 text-xs text-slate-300 hover:text-white rounded-lg border border-slate-800 px-2.5 py-1 bg-slate-900 cursor-pointer"
+              >
+                {copiedCode ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-cyan-400" />}
+                <span>{copiedCode ? 'Copied!' : 'Copy Code'}</span>
+              </button>
             </div>
 
             {/* Code Textarea */}
-            <div className="flex-1 min-h-[260px] rounded-xl border border-slate-800 bg-slate-950 overflow-hidden flex flex-col">
-              <div className="bg-slate-900/60 px-3 py-1.5 border-b border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                <span>solution.{language.startsWith('cpp') ? 'cpp' : 'py'}</span>
+            <div className="rounded-xl border border-slate-800 bg-slate-950 flex flex-col min-h-[220px] max-h-[300px]">
+              <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-800 text-[10px] text-slate-500 font-mono">
+                <span>{language === 'python' ? 'solution.py' : 'solution.cpp'}</span>
                 <span>Tab / 4 spaces</span>
               </div>
               <textarea
@@ -404,7 +662,7 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="// Implement your solution here..."
                 spellCheck={false}
-                className="w-full flex-1 p-3 bg-transparent text-slate-100 font-mono-code text-xs leading-relaxed resize-none focus:outline-none focus:ring-0"
+                className="w-full flex-1 p-3 bg-transparent text-slate-100 font-mono text-xs leading-relaxed resize-none focus:outline-none focus:ring-0"
               />
             </div>
 
@@ -434,62 +692,104 @@ export const ProblemWorkspaceModal: React.FC<ProblemWorkspaceModalProps> = ({
               )}
             </div>
 
-            {/* Record Official Codeforces Verdict */}
+            {/* Live Codeforces Verification & Submission Result */}
             <div className="rounded-xl border border-slate-800 bg-slate-950 p-4 space-y-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                    Log Actual Result
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Official Codeforces Verification</span>
                   </h4>
                   <p className="text-[11px] text-slate-400">
-                    Truthful metrics only: Copy your code, submit on Codeforces, then record the actual verdict.
+                    Submit your solution on Codeforces, then verify automatically via the official API.
                   </p>
                 </div>
                 <a
                   href={cfUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 transition-all shadow-sm"
+                  className="flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 transition-all shadow-sm self-start sm:self-auto shrink-0"
                 >
-                  <span>Submit on Codeforces</span>
+                  <span>Open & Submit on Codeforces</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                {[
-                  { id: 'OK' as ProblemAttempt['officialVerdict'], label: 'Accepted (OK)', color: 'text-emerald-400' },
-                  { id: 'WRONG_ANSWER' as ProblemAttempt['officialVerdict'], label: 'Wrong Answer', color: 'text-rose-400' },
-                  { id: 'TIME_LIMIT_EXCEEDED' as ProblemAttempt['officialVerdict'], label: 'TLE', color: 'text-amber-400' },
-                  { id: 'COMPILATION_ERROR' as ProblemAttempt['officialVerdict'], label: 'Compile Error', color: 'text-purple-400' },
-                ].map((v) => (
-                  <button
-                    key={v.id}
-                    type="button"
-                    onClick={() => {
-                      setVerdict(v.id);
-                      if (v.id === 'OK') {
-                        setOutcome(hintLevel === 0 ? 'solved_independently' : 'solved_with_hints');
-                      } else {
-                        setOutcome('attempted_gave_up');
-                      }
-                    }}
-                    className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
-                      verdict === v.id
-                        ? 'border-indigo-500 bg-indigo-950/60 font-bold ring-1 ring-indigo-500 text-white'
-                        : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <span className={v.color}>{v.label}</span>
-                  </button>
-                ))}
+              {/* Handle input & Live API Query */}
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="text"
+                  value={activeHandle}
+                  onChange={(e) => setActiveHandle(e.target.value)}
+                  placeholder="Codeforces Handle"
+                  className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 flex-1"
+                />
+                <button
+                  type="button"
+                  onClick={handleVerifyFromCodeforces}
+                  disabled={verifyingCf}
+                  className="flex items-center gap-1.5 rounded-lg border border-indigo-500/40 bg-indigo-950/40 hover:bg-indigo-900/50 text-indigo-300 px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 shrink-0"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${verifyingCf ? 'animate-spin text-cyan-400' : ''}`} />
+                  <span>{verifyingCf ? 'Querying API...' : 'Verify from CF'}</span>
+                </button>
               </div>
 
-              {/* Log Attempt Button */}
+              {cfVerificationMsg && (
+                <div
+                  className={`p-2.5 rounded-lg border text-xs leading-relaxed ${
+                    verdict === 'OK'
+                      ? 'border-emerald-800/60 bg-emerald-950/30 text-emerald-300'
+                      : verdict === 'UNSUBMITTED'
+                      ? 'border-slate-800 bg-slate-900/60 text-slate-400'
+                      : 'border-rose-900/40 bg-rose-950/30 text-rose-300'
+                  }`}
+                >
+                  {cfVerificationMsg}
+                </div>
+              )}
+
+              {/* Manual Verdict Selector as fallback */}
+              <div className="pt-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1.5">
+                  Or Self-Report Verdict:
+                </span>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                  {[
+                    { id: 'OK' as ProblemAttempt['officialVerdict'], label: 'Accepted (OK)', color: 'text-emerald-400' },
+                    { id: 'WRONG_ANSWER' as ProblemAttempt['officialVerdict'], label: 'Wrong Answer', color: 'text-rose-400' },
+                    { id: 'TIME_LIMIT_EXCEEDED' as ProblemAttempt['officialVerdict'], label: 'TLE', color: 'text-amber-400' },
+                    { id: 'COMPILATION_ERROR' as ProblemAttempt['officialVerdict'], label: 'Compile Error', color: 'text-purple-400' },
+                  ].map((v) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => {
+                        setVerdict(v.id);
+                        if (v.id === 'OK') {
+                          setOutcome(hintLevel === 0 ? 'solved_independently' : 'solved_with_hints');
+                        } else {
+                          setOutcome('attempted_gave_up');
+                          setShowMistakeForm(true);
+                        }
+                      }}
+                      className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
+                        verdict === v.id
+                          ? 'border-indigo-500 bg-indigo-950/60 font-bold ring-1 ring-indigo-500 text-white'
+                          : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <span className={v.color}>{v.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Log Attempt Final Button */}
               <button
                 type="button"
                 onClick={handleLogAttempt}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 hover:opacity-90 text-white font-bold py-2.5 text-xs shadow-lg shadow-emerald-900/30 transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 hover:opacity-90 text-white font-bold py-2.5 text-xs shadow-lg shadow-emerald-900/30 transition-all cursor-pointer mt-2"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Save Attempt & Update Training Analytics</span>

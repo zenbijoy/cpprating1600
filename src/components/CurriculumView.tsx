@@ -12,18 +12,21 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { PHASES, TOPICS, PhaseInfo } from '../utils/roadmap';
-import { CFProblem, TopicCurriculum } from '../types';
+import { CFProblem, ProblemAttempt, TopicCurriculum } from '../types';
+import { TopicCloud } from './TopicCloud';
 
 interface CurriculumViewProps {
   currentDay: number;
   onSelectProblem: (problem: CFProblem) => void;
   selectedTopicId?: string;
+  attempts?: ProblemAttempt[];
 }
 
 export const CurriculumView: React.FC<CurriculumViewProps> = ({
   currentDay,
   onSelectProblem,
   selectedTopicId,
+  attempts = [],
 }) => {
   const [selectedPhase, setSelectedPhase] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -67,6 +70,16 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
           />
         </div>
       </div>
+
+      {/* Algorithmic Topic Cloud & Practice Deficit Frequency Analysis */}
+      <section>
+        <TopicCloud
+          attempts={attempts}
+          currentDay={currentDay}
+          onSelectProblem={onSelectProblem}
+          onFilterCurriculum={(tag) => setSearchQuery(tag)}
+        />
+      </section>
 
       {/* Phase Pills Bar */}
       {!searchQuery && (

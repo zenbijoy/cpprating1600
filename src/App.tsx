@@ -137,6 +137,7 @@ export default function App() {
             onOpenAntiProcrastination={() => setShowAntiProcrastination(true)}
             onOpenCurriculumTopic={handleOpenCurriculumTopic}
             recentAttempts={attempts}
+            mistakes={mistakes}
           />
         )}
 
@@ -145,6 +146,7 @@ export default function App() {
             currentDay={goal.currentDay}
             onSelectProblem={(prob) => setActiveProblem(prob)}
             selectedTopicId={curriculumSelectedTopicId}
+            attempts={attempts}
           />
         )}
 
@@ -221,6 +223,8 @@ export default function App() {
           onClose={() => setActiveProblem(null)}
           onAttemptLogged={handleAttemptLogged}
           preferredLanguage={profile.preferredLanguage}
+          cfHandle={profile.cfHandle}
+          onSaveMistake={handleSaveMistake}
         />
       )}
 
