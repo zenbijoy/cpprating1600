@@ -1,0 +1,7 @@
+{
+  "name": "CLIMB 1600",
+  "description": "AI-Powered Competitive Programming Training Platform: From zero to 1600 Codeforces rating with adaptive roadmap, AI Socratic coach, and real Codeforces integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
