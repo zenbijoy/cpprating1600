@@ -306,8 +306,10 @@ export default function App() {
         setAttempts(liveAttempts);
       }
 
+      const fullName = [userInfo.firstName, userInfo.lastName].filter(Boolean).join(' ');
       const updatedProfile: UserProfile = {
         ...profile,
+        name: (fullName && (!profile.name || profile.name === 'Competitive Programmer')) ? fullName : (profile.name || fullName || userInfo.handle),
         cfHandle: userInfo.handle,
         verifiedCfRating: userInfo.rating,
         maxCfRating: userInfo.maxRating,
