@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" fill="none">
+  <defs>
+    <linearGradient id="compLeftGrad" x1="116" y1="646" x2="526" y2="334" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00C0FF" />
+      <stop offset="50%" stop-color="#007CF0" />
+      <stop offset="100%" stop-color="#0051FF" />
+    </linearGradient>
+    <linearGradient id="compRightGrad" x1="479" y1="418" x2="892" y2="646" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0051FF" />
+      <stop offset="45%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+    <linearGradient id="compTextGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00C0FF" />
+      <stop offset="50%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Scaled Emblem -->
+  <g transform="translate(10, 16) scale(0.18)">
+    <path
+      d="M526 334H334L116 646H444L494 575H268L380 405H479L526 334Z"
+      fill="url(#compLeftGrad)"
+    />
+    <path
+      d="M667 191L817 410H715L667 320L524 570H729L684 492H786L892 646H479L667 191Z"
+      fill="url(#compRightGrad)"
+    />
+  </g>
+
+  <!-- Typography -->
+  <text x="180" y="74" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" letter-spacing="-0.03em" fill="#F8FAFC">CLIMB</text>
+  <text x="360" y="74" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" letter-spacing="-0.02em" fill="url(#compTextGrad)">1600</text>
+</svg>

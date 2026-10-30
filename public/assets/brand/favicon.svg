@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="90 160 830 510" fill="none">
+  <defs>
+    <linearGradient id="favLeftGrad" x1="116" y1="646" x2="526" y2="334" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00C0FF" />
+      <stop offset="50%" stop-color="#007CF0" />
+      <stop offset="100%" stop-color="#0051FF" />
+    </linearGradient>
+    <linearGradient id="favRightGrad" x1="479" y1="418" x2="892" y2="646" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0051FF" />
+      <stop offset="45%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Stylized 'C' Emblem Element -->
+  <path
+    d="M526 334H334L116 646H444L494 575H268L380 405H479L526 334Z"
+    fill="url(#favLeftGrad)"
+  />
+
+  <!-- Right Mountain Peak with Inward Notch -->
+  <path
+    d="M667 191L817 410H715L667 320L524 570H729L684 492H786L892 646H479L667 191Z"
+    fill="url(#favRightGrad)"
+  />
+</svg>

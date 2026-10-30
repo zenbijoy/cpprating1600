@@ -1,0 +1,55 @@
+{
+  "name": "CLIMB 1600 — Competitive Programming",
+  "short_name": "CLIMB 1600",
+  "description": "Progress from rating 0 to 1600 through structured practice, Monaco code editor, AI coaching, and verified Codeforces sync.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "categories": ["education", "developer", "productivity"],
+  "icons": [
+    {
+      "src": "/assets/brand/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/brand/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/brand/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/brand/app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Workspace",
+      "url": "/?tab=workspace",
+      "description": "Open Competitive Coding Workspace"
+    },
+    {
+      "name": "Problem Explorer",
+      "url": "/?tab=problems",
+      "description": "Search Codeforces Problems"
+    },
+    {
+      "name": "Submissions",
+      "url": "/?tab=submissions",
+      "description": "View Submission History & AI Analysis"
+    }
+  ]
+}

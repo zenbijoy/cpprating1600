@@ -1,0 +1,18 @@
+{
+  "target_language": "cpp",
+  "cache_directory": ".importer_cache/repos",
+  "data_directory": "data/codeforces",
+  "max_concurrency": 4,
+  "safe_compilation": true,
+  "repositories": [
+    {
+      "full_name": "DionysiosB/CodeForces",
+      "clone_url": "https://github.com/DionysiosB/CodeForces.git",
+      "default_branch": "master",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "DionysiosB"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="empTrophy" x1="30" y1="20" x2="70" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="60%" stop-color="#f59e0b" /><stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+  <path d="M35 24H65V46C65 56 50 62 50 62C50 62 35 56 35 46V24Z" fill="url(#empTrophy)" />
+  <path d="M35 30H24C20 30 20 42 32 42H35" stroke="#facc15" stroke-width="2.5" fill="none" />
+  <path d="M65 30H76C80 30 80 42 68 42H65" stroke="#facc15" stroke-width="2.5" fill="none" />
+  <rect x="46" y="62" width="8" height="12" fill="#ca8a04" />
+  <rect x="36" y="74" width="28" height="6" rx="2" fill="#854d0e" />
+  <circle cx="50" cy="38" r="4" fill="#fef08a" />
+</svg>

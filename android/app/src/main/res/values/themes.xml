@@ -1,0 +1,13 @@
+<resources>
+    <style name="Theme.Climb1600Companion" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#0B0F19</item>
+        <item name="android:navigationBarColor">#0B0F19</item>
+        <item name="android:windowBackground">#0B0F19</item>
+    </style>
+
+    <style name="Theme.Climb1600Companion.Transparent" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">#E60B0F19</item>
+        <item name="android:statusBarColor">#00000000</item>
+    </style>
+</resources>

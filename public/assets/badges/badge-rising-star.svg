@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="starFacetL" x1="20" y1="20" x2="50" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fffbeb" /><stop offset="50%" stop-color="#fde047" /><stop offset="100%" stop-color="#eab308" />
+    </linearGradient>
+    <linearGradient id="starFacetR" x1="50" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eab308" /><stop offset="50%" stop-color="#ca8a04" /><stop offset="100%" stop-color="#854d0e" />
+    </linearGradient>
+  </defs>
+  <polygon points="50,16 20,70 34,78 50,56" fill="url(#starFacetL)" />
+  <polygon points="50,16 50,56 66,78 80,70" fill="url(#starFacetR)" />
+  <polygon points="50,56 40,84 50,78 60,84" fill="#b45309" />
+  <circle cx="50" cy="18" r="3" fill="#ffffff" />
+</svg>

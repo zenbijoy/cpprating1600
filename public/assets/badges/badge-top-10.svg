@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="wheatGold" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="60%" stop-color="#d97706" /><stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+    <linearGradient id="emeraldLeaf" x1="20" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399" /><stop offset="60%" stop-color="#059669" /><stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+  </defs>
+  <path d="M50 20V80" stroke="#fef08a" stroke-width="3" stroke-linecap="round" />
+  <path d="M50 30C40 25 32 30 36 40C42 42 48 36 50 30Z" fill="url(#emeraldLeaf)" />
+  <path d="M50 44C38 38 30 46 34 56C42 58 48 50 50 44Z" fill="url(#wheatGold)" />
+  <path d="M50 58C38 52 32 60 36 68C42 70 48 64 50 58Z" fill="url(#emeraldLeaf)" />
+  <path d="M50 30C60 25 68 30 64 40C58 42 52 36 50 30Z" fill="url(#emeraldLeaf)" />
+  <path d="M50 44C62 38 70 46 66 56C58 58 52 50 50 44Z" fill="url(#wheatGold)" />
+  <path d="M50 58C62 52 68 60 64 68C58 70 52 64 50 58Z" fill="url(#emeraldLeaf)" />
+  <polygon points="50,14 55,24 45,24" fill="#fef08a" />
+</svg>

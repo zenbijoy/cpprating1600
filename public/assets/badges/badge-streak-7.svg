@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="goldMedal" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#f59e0b" /><stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+    <linearGradient id="fireCore" x1="50" y1="25" x2="50" y2="75" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fde047" /><stop offset="50%" stop-color="#f97316" /><stop offset="100%" stop-color="#ef4444" />
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="42" fill="url(#goldMedal)" stroke="#ca8a04" stroke-width="2" />
+  <circle cx="50" cy="50" r="35" fill="#181512" stroke="#d97706" stroke-width="1" />
+  <path d="M22 45C20 40 22 34 27 34C28 39 26 44 22 45Z" fill="#fbbf24" />
+  <path d="M20 56C18 51 21 46 26 47C26 52 23 56 20 56Z" fill="#fbbf24" />
+  <path d="M78 45C80 40 78 34 73 34C72 39 74 44 78 45Z" fill="#fbbf24" />
+  <path d="M80 56C82 51 79 46 74 47C74 52 77 56 80 56Z" fill="#fbbf24" />
+  <path d="M50 24C46 36 34 44 34 56C34 66 41 72 50 72C59 72 66 66 66 56C66 46 58 38 56 32C54 40 50 44 47 44C49 38 52 32 50 24Z" fill="url(#fireCore)" />
+  <path d="M50 48C46 54 44 58 44 62C44 66 47 69 50 69C53 69 56 66 56 62C56 58 52 54 50 48Z" fill="#fef08a" />
+</svg>

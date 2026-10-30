@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="wingedGold" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#eab308" /><stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+    <linearGradient id="blazeRed" x1="50" y1="20" x2="50" y2="75" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#facc15" /><stop offset="50%" stop-color="#f97316" /><stop offset="100%" stop-color="#dc2626" />
+    </linearGradient>
+  </defs>
+  <path d="M10 38C18 30 30 28 42 36L44 48C32 44 20 48 10 58V38Z" fill="url(#wingedGold)" />
+  <path d="M90 38C82 30 70 28 58 36L56 48C68 44 80 48 90 58V38Z" fill="url(#wingedGold)" />
+  <path d="M50 16L74 28V54C74 72 50 88 50 88C50 88 26 72 26 54V28L50 16Z" fill="url(#wingedGold)" stroke="#b45309" stroke-width="2" />
+  <path d="M50 22L68 32V53C68 67 50 80 50 80C50 80 32 67 32 53V32L50 22Z" fill="#1c1917" />
+  <path d="M50 30C46 40 38 46 38 56C38 64 43 69 50 69C57 69 62 64 62 56C62 48 56 42 54 36C52 42 50 44 47 44C49 39 52 35 50 30Z" fill="url(#blazeRed)" />
+</svg>

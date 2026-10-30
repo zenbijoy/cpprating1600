@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="gearGold" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#f59e0b" /><stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+    <radialGradient id="cyberIris" cx="50" cy="50" r="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" /><stop offset="40%" stop-color="#8b5cf6" /><stop offset="80%" stop-color="#1e1b4b" /><stop offset="100%" stop-color="#0b0f19" />
+    </radialGradient>
+  </defs>
+  <circle cx="50" cy="50" r="42" fill="url(#gearGold)" stroke="#ca8a04" stroke-width="2" />
+  <circle cx="50" cy="50" r="34" fill="#111827" stroke="#fbbf24" stroke-width="1.5" />
+  <circle cx="50" cy="50" r="26" fill="url(#cyberIris)" />
+  <circle cx="50" cy="50" r="16" fill="#06b6d4" stroke="#ffffff" stroke-width="2" opacity="0.9" />
+  <circle cx="50" cy="50" r="7" fill="#ffffff" />
+  <path d="M50 14V22 M50 78V86 M14 50H22 M78 50H86" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
+</svg>

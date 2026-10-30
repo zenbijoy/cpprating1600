@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="conRim" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#eab308" /><stop offset="100%" stop-color="#854d0e" />
+    </linearGradient>
+    <linearGradient id="conCyan" x1="20" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" /><stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="conEmerald" x1="20" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399" /><stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+  <path d="M50 10L84 26V54C84 74 50 90 50 90C50 90 16 74 16 54V26L50 10Z" fill="url(#conRim)" stroke="#b45309" stroke-width="2" />
+  <path d="M50 16L78 30V53C78 69 50 83 50 83C50 83 22 69 22 53V30L50 16Z" fill="#0b0f19" />
+  <path d="M50 28L68 44L58 52L50 44L42 52L32 44L50 28Z" fill="url(#conEmerald)" />
+  <path d="M50 46L66 60L58 66L50 58L42 66L34 60L50 46Z" fill="url(#conCyan)" />
+</svg>

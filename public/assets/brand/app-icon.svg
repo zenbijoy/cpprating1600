@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="appBgGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#070a12" />
+    </linearGradient>
+
+    <!-- Border Glow -->
+    <linearGradient id="appBorderGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3" />
+      <stop offset="50%" stop-color="#6366f1" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.3" />
+    </linearGradient>
+
+    <linearGradient id="aiLeftGrad" x1="116" y1="646" x2="526" y2="334" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00C0FF" />
+      <stop offset="50%" stop-color="#007CF0" />
+      <stop offset="100%" stop-color="#0051FF" />
+    </linearGradient>
+
+    <linearGradient id="aiRightGrad" x1="479" y1="418" x2="892" y2="646" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0051FF" />
+      <stop offset="45%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+
+    <filter id="aiGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="8" y="8" width="496" height="496" rx="108" fill="url(#appBgGrad)" stroke="url(#appBorderGrad)" stroke-width="3" />
+
+  <!-- Centered Emblem (scaled from 1024x1024) -->
+  <g transform="translate(68, 120) scale(0.48)" filter="url(#aiGlow)">
+    <!-- Left Stylized 'C' -->
+    <path
+      d="M526 334H334L116 646H444L494 575H268L380 405H479L526 334Z"
+      fill="url(#aiLeftGrad)"
+    />
+
+    <!-- Right Mountain Peak with Inward Notch -->
+    <path
+      d="M667 191L817 410H715L667 320L524 570H729L684 492H786L892 646H479L667 191Z"
+      fill="url(#aiRightGrad)"
+    />
+  </g>
+</svg>

@@ -1,0 +1,74 @@
+[
+  {
+    "repository": "ShazidMashrafi/Codeforces",
+    "clone_url": "https://github.com/ShazidMashrafi/Codeforces.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "mhdnazrul/Codeforces-Solutions",
+    "clone_url": "https://github.com/mhdnazrul/Codeforces-Solutions.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "yousefkotp/Codeforces-Solutions",
+    "clone_url": "https://github.com/yousefkotp/Codeforces-Solutions.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "ashrafulalamasad/codeforces-solutions",
+    "clone_url": "https://github.com/ashrafulalamasad/codeforces-solutions.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "ryuoraiden/competitive-programming",
+    "clone_url": "https://github.com/ryuoraiden/competitive-programming.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "rajib-mte/codeforces-solutions",
+    "clone_url": "https://github.com/rajib-mte/codeforces-solutions.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "balajirai/Codeforces",
+    "clone_url": "https://github.com/balajirai/Codeforces.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "Adi-Dcpp/CP-Archive",
+    "clone_url": "https://github.com/Adi-Dcpp/CP-Archive.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  },
+  {
+    "repository": "KEROLIS/Codeforces-solutions",
+    "clone_url": "https://github.com/KEROLIS/Codeforces-solutions.git",
+    "license_spdx": "NONE",
+    "exclusion_reason": "No open-source license grant found in repository root.",
+    "status": "excluded_from_public_catalog",
+    "attribution_instructions": "Do not redistribute publicly unless explicit permission is obtained."
+  }
+]

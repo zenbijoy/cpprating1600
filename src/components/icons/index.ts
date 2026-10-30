@@ -1,0 +1,32 @@
+export * from './types';
+export * from './IconBase';
+export * from './navigationIcons';
+export * from './generalActionIcons';
+export * from './competitiveIcons';
+export * from './aiIcons';
+export * from './analyticsIcons';
+export * from './accountIcons';
+export * from './notificationIcons';
+export * from './controlIcons';
+export * from './iconCatalog';
+
+// Drop-in Aliases for standard UI naming
+export { BookmarkActionIcon as BookmarkIcon } from './generalActionIcons';
+export { KeyboardControlIcon as KeyboardIcon } from './controlIcons';
+export { ChatIcon as MessageSquareIcon } from './aiIcons';
+export { CommunityIcon as UsersIcon } from './navigationIcons';
+export { BackIcon as ArrowLeftIcon, ForwardIcon as ArrowRightIcon } from './generalActionIcons';
+export { WarningStatusIcon as AlertTriangleIcon, WarningStatusIcon as AlertCircleIcon } from './notificationIcons';
+export { CheckCircleIcon as CheckCircle2Icon } from './generalActionIcons';
+export { AISparkleIcon as SparklesIcon, AISparkleIcon as Sparkles } from './aiIcons';
+export { TrendUpIcon as TrendingUpIcon, TrendDownIcon as TrendingDownIcon } from './analyticsIcons';
+export { ClockStatusIcon as ClockIcon } from './notificationIcons';
+export { StreakIcon as FlameIcon, StreakIcon as Flame } from './competitiveIcons';
+export { MedalIcon as AwardIcon, TrophyIcon as CrownIcon, TrophyIcon as Crown } from './competitiveIcons';
+export { RetryIcon as RotateCcwIcon, RefreshIcon as RefreshCwIcon } from './generalActionIcons';
+export { SettingsSlidersIcon as SlidersHorizontalIcon, SettingsSlidersIcon as SlidersIcon } from './controlIcons';
+export { ProblemStatementIcon as BookOpenIcon } from './competitiveIcons';
+export { SuggestOptimizationIcon as ZapIcon } from './aiIcons';
+export { OfflineStatusIcon as WifiOffIcon } from './notificationIcons';
+export { ShieldIcon as ShieldCheckIcon, ShieldIcon as ShieldAlertIcon } from './accountIcons';
+export { AskQuestionIcon as AskAQuestionIcon } from './aiIcons';

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" fill="none">
+  <defs>
+    <linearGradient id="learnBg" x1="0" y1="0" x2="400" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.8" /><stop offset="100%" stop-color="#0f172a" stop-opacity="0.9" />
+    </linearGradient>
+    <linearGradient id="lampGrad" x1="320" y1="40" x2="260" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.6" /><stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="240" rx="16" fill="url(#learnBg)" />
+  <path d="M330 30L300 70H340L330 30Z" fill="#f59e0b" />
+  <path d="M330 70V170H340" stroke="#94a3b8" stroke-width="2.5" />
+  <polygon points="300,70 340,70 380,180 240,180" fill="url(#lampGrad)" />
+  <path d="M30 180H370L360 210H40L30 180Z" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
+  <rect x="65" y="162" width="45" height="6" rx="2" fill="#ec4899" />
+  <rect x="62" y="168" width="50" height="6" rx="2" fill="#06b6d4" />
+  <rect x="60" y="174" width="54" height="6" rx="2" fill="#6366f1" />
+  <polygon points="175,178 245,178 250,182 170,182" fill="#94a3b8" />
+  <rect x="180" y="132" width="60" height="42" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="184" y="136" width="52" height="34" rx="2" fill="#0284c7" opacity="0.8" />
+  <line x1="188" y1="144" x2="210" y2="144" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+  <line x1="194" y1="150" x2="226" y2="150" stroke="#fef08a" stroke-width="1.5" stroke-linecap="round" />
+  <g transform="translate(130, 95)">
+    <circle cx="28" cy="22" r="14" fill="#fcd34d" />
+    <path d="M16 16C16 10 24 6 36 10C42 14 40 22 40 22L16 16Z" fill="#1e1b4b" />
+    <path d="M14 18C14 8 42 8 42 18" stroke="#06b6d4" stroke-width="3" fill="none" />
+    <rect x="12" y="16" width="5" height="12" rx="2" fill="#06b6d4" />
+    <rect x="39" y="16" width="5" height="12" rx="2" fill="#06b6d4" />
+    <path d="M10 40C10 32 46 32 46 40L48 85H8L10 40Z" fill="#4f46e5" />
+    <path d="M38 52L58 72H72" stroke="#6366f1" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>

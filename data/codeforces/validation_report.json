@@ -1,0 +1,257 @@
+{
+  "timestamp": "2026-10-29T17:42:17.886Z",
+  "compiler_detected": true,
+  "compiler_binary": "g++ (MinGW.org GCC-6.3.0-1)",
+  "compiler_flags": "-O2 -std=c++17 -fsyntax-only -Wall",
+  "sandbox_isolation": "Isolated temporary directory with OS temp files, 4000ms timeout, non-executable output (-fsyntax-only)",
+  "sample_tests_run": 49,
+  "sample_tests_passed": 49,
+  "status_distribution": {
+    "compiled": 49,
+    "needs_review": 21,
+    "source_checked": 5093,
+    "rejected": 1
+  },
+  "sample_compilation_logs": [
+    {
+      "id": "f2ad5c3973d4d7d4a7726ee884093601",
+      "problem_id": null,
+      "file": "100-AplusB.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "4b8a6cfa78a34ba418004377068ed267",
+      "problem_id": "1000A",
+      "file": "1000A-CodehorsesTshirts.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "880cc8e0fe32b83fcb9d1100cefde8f7",
+      "problem_id": "1000B",
+      "file": "1000B-LightItUp.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "ae437e0a7d96ec8d6a41df3c23d2aea5",
+      "problem_id": "1000C",
+      "file": "1000C-CoveredPointsCount.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "487ac44106ff1d5d2f84e5ec6afbc51c",
+      "problem_id": "1003A",
+      "file": "1003A-PolycarpsPockets.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "239051dbde56d82b25d43d8e33ef0300",
+      "problem_id": "1003B",
+      "file": "1003B-BinaryStringConstructing.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "6d4a1a7dd2ba403db17b380b29ad92ac",
+      "problem_id": "1003C",
+      "file": "1003C-IntenseHeat.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "7d4c5b4c2c110957ea88d0dadf28ba69",
+      "problem_id": "1003D",
+      "file": "1003D-CoinsAndQueries.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "753e79de6c9dece5f72d9a2e909bc33b",
+      "problem_id": "1004A",
+      "file": "1004A-SonyaAndHotels.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "eb9ef466660c9427adda237cb9d889c0",
+      "problem_id": "1004B",
+      "file": "1004B-SonyaAndExhibition.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "e9c27aac448b7aacaced26fc696a12e0",
+      "problem_id": "1004C",
+      "file": "1004C-SonyaAndRobots.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "e96b7965fc0a2764368dd48fe13dfef0",
+      "problem_id": "1005A",
+      "file": "1005A-TanyaAndStairways.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "4f461d6e79991a4d150e1c22245593b2",
+      "problem_id": "1005B",
+      "file": "1005B-DeleteFromTheLeft.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "f33501d155cd4659c0cfaf52a88dd355",
+      "problem_id": "1005C",
+      "file": "1005C-SummarizeToThePowerOfTwo.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "daccdd7718296f60503bdef93440dfd4",
+      "problem_id": "1005D",
+      "file": "1005D-PolycarpAndDiv3.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "938a650c98fa7238c052c2d4056ac2e9",
+      "problem_id": "1006A",
+      "file": "1006A-AdjacentReplacements.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "c6725831e872214d1eae94130c2d8d81",
+      "problem_id": "1006B",
+      "file": "1006B-PolycarpsPractice.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "e581b6dac2f1f4f6573db8f258e4cfcb",
+      "problem_id": "1006C",
+      "file": "1006C-ThreePartsOfTheArray.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "dd5239808ee54a9213ad1ef2824b3134",
+      "problem_id": "1006E",
+      "file": "1006E-MilitaryProblem-OLD.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "a920bb664fe6d2578efa0a202b0907b5",
+      "problem_id": "1006E",
+      "file": "1006E-MilitaryProblem.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "fd732556dd3509855aabc181973c57a5",
+      "problem_id": "1007A",
+      "file": "1007A-ReorderTheArray.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "29cd4dd6a649beb40a7378fc433afd89",
+      "problem_id": "1008A",
+      "file": "1008A-Romaji.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "3e9338ad0a30d856fe036c3c50deaff3",
+      "problem_id": "1008B",
+      "file": "1008B-TurnTheRectangles.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "12b0f7968965a921a29a94ecab74735a",
+      "problem_id": "1009A",
+      "file": "1009A-GameShopping.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "54e90dc9e1ab951b2776c72c170ada6d",
+      "problem_id": "1009B",
+      "file": "1009B-MinimumTernaryString.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "50df5866a34288f9dd28a43cb39f5b1d",
+      "problem_id": "1009D",
+      "file": "1009D-RelativelyPrimeGraph.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "1afba63d86b7cad2d30f3fbecb3c4308",
+      "problem_id": "1010A",
+      "file": "1010A-Fly.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "6649c2087b76e265e0289d70c71c00d2",
+      "problem_id": "1011A",
+      "file": "1011A-Stages.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "d9381a1be07d90d3e1ede8b929ac89ea",
+      "problem_id": "1011B",
+      "file": "1011B-PlanningTheExpedition.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    },
+    {
+      "id": "57c972f159f17abdfa15ec4d65a2b596",
+      "problem_id": "1013A",
+      "file": "1013A-PilesWithStones.cpp",
+      "standard": "c++17",
+      "status": "compiled",
+      "notes": "Successfully compiled with g++ (-fsyntax-only)."
+    }
+  ]
+}

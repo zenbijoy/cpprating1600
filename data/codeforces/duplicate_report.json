@@ -1,0 +1,438 @@
+{
+  "exact_duplicates_count": 27,
+  "normalized_duplicates_count": 0,
+  "duplicate_groups": [
+    {
+      "hash": "d06b41d53ac2cbc66f5aaced0ba6b01bab3de371f7eaba9c9944152ae696eec9",
+      "type": "exact",
+      "canonical_id": "64436e0a45f9f1f55bdaf8264c519183",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1163B1-CatPartyEasyEdition.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1163B2-CatPartyHardEdition.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "6e390feec3f5f28f721e76137ac14364890d49ed946ff96a048a16807d41b7fa",
+      "type": "exact",
+      "canonical_id": "3d1f05db9aef63f97a8307fedd967dfd",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1177A-DigitsSequenceEasyEdition.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1177B-DigitsSequenceHardEdition.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "4df06dbfac9a9653abdc9702e1a5cd3e040422e74603642dee4bfab1a24b6149",
+      "type": "exact",
+      "canonical_id": "8c249837b43cfac77e9d007f9b555e25",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1185C1-ExamInBerSUEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1185C2-ExamInBerSUHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "09fd98999e41c5e95f16545b50dff920b6498820971f8fe58c0b3b4da27135b5",
+      "type": "exact",
+      "canonical_id": "ba2aac89cc7902d0e39af4e5cfd59eea",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1196D1-RGBSubstringEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1196D2-RGBSubstringHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "c89a5c14eb735e33ab4b38bae9f41e6bf417223b7c854a30dad78be1fcb37566",
+      "type": "exact",
+      "canonical_id": "c41aef19661c66c3461863d324743ac7",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1213D1-EqualizingByDivisionEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1213D2-EqualizingByDivisionHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "675cc9864961cf2eb71e48d2d9b63a23c87b5dfcbd9ff34c937a8a4439ba6983",
+      "type": "exact",
+      "canonical_id": "738c79b19224d2150342f6c7a6498c43",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1225B1-TVSubscriptionsEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1225B2-TVSubscriptionsHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "0370a09c87fa395fae4e75136ce92e29d038bcbae6c8153cdfd59bc53ad9b76b",
+      "type": "exact",
+      "canonical_id": "8d90c39e0382dbdf3c83cfcf897e0e68",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1249B1-BooksExchangeEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1249B2-BooksExchangeHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "e728472e3405a2475b50eb80442f18d4d12d1c3750d79fda49f6a52a1c57d051",
+      "type": "exact",
+      "canonical_id": "2fc6443dcbcfbf1ae88df8a6a3d78c87",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1249C1-GoodNumbersEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1249C2-GoodNumbersHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "0acfbfdb068991bcceb374f4e678940916dc92de320b54a1fc2d440e2bf92eb4",
+      "type": "exact",
+      "canonical_id": "fafd3303f523082fe2e460393333d320",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1249D1-TooManySegmentsEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1249D2-TooManySegmentsHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "5bda2d018ce4cbc5ad4c7cc34df7cf14d6171602df30c4e6ce3d82055f37696d",
+      "type": "exact",
+      "canonical_id": "3f48a6555a16daf31f0d27f530a52422",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1497C1-kLCMEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1497C2-kLCMHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "d6220c97be68d1c1d9d54f21c2d6a48e1d2901456455fe0d059ecc63b26768d8",
+      "type": "exact",
+      "canonical_id": "016b06203eb088b69f261ee7b5cbc3df",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1526C1-PotionsEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1526C2-PotionsHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "30130053876979b05b0d0282418591ff676f0bbf24870a4f2a3a1f1fc6f76545",
+      "type": "exact",
+      "canonical_id": "e18330d4e850b039378e6a91eeca4d51",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1775A1-GardenerAndTheCapybarasEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1775A2-GardenerAndTheCapybarasHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "ba25b13def409027310c650ec2df4f81c3a00e8556cf53142919f75fc3780871",
+      "type": "exact",
+      "canonical_id": "e562687db4806e6eea9ac783712c3c76",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "178A1-EducationalGame.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "178A2-EducationalGame.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "ac18a3c814b7ba5eb2ccbb6a44d87b52957e675ca884e55437255326f32e3618",
+      "type": "exact",
+      "canonical_id": "0e5a08ef637d202563f322bf681f172c",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1800C1-PoweringTheHeroEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1800C2-PoweringTheHeroHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "5abe6fafc253fb63bd792d5dc7b950edf5d4764341c629e9d29bccdcb43b452d",
+      "type": "exact",
+      "canonical_id": "1a92ce3c01cbeafd910033d1d19272b3",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1807G1-SubsequenceAdditionEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1807G2-SubsequenceAdditionHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "adf8e492a0a49d729b2a4860b8ff5719d1f03d0927960c6a34d400c6e0141c50",
+      "type": "exact",
+      "canonical_id": "e8670ac5c2b36c46545ceedbe5ae2e0e",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1914E1-GameWithMarblesEasyVersion.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "1914E2-GameWithMarblesHardVersion.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "096d029db769eb8e28e6efc18b9699d3c1fc4b84027aa54e71f7eb9065010fee",
+      "type": "exact",
+      "canonical_id": "d33e57ecf49aea451ea8b3896265172f",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "271D-GoodSubstrings-OLD.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "271D-GoodSubstrings.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "d37c42d1c292f23a42e10ab919fa44ec77148cbf8a02e22fc700ebc95a907df7",
+      "type": "exact",
+      "canonical_id": "2e9ee407637f6e74c3d2793e82edd039",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "275A-LightsOut 2.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "275A-LightsOut.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "af121681dce4188bd0f9be5e39cf6a1ecda97553cf7ffd23e159af266b4073a8",
+      "type": "exact",
+      "canonical_id": "fcfb42cf9da469f726cd26d148b61c06",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "327C-MagicFive-old.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "327C-MagicFive.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "2047fd1f31d265c57714e582ffbd41dfd207e792884a36fccaf27f7fad1d1f81",
+      "type": "exact",
+      "canonical_id": "9a52175eae2011b77ca49ad1437fbb35",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "331A1-OhSweetBeaverette.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "331A2-OhSweetBeaverette.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "b5e813c1066225fb01aa0c2c036d033d422d4e9c6ccfeecea4a6ebd743b04804",
+      "type": "exact",
+      "canonical_id": "4317888443e2594af2602a31dfc48688",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "445B-DZYLovesChemistry-long.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "445B-DZYLovesChemistry.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "08238e12a956b575531ce1423704eea2a99f5f8514d7d10873aa8bad2a263aec",
+      "type": "exact",
+      "canonical_id": "0376180098e41dbdb32e6482e39312a0",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "513B1-Permutations.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "513B2-Permutations.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "5621360835e76ef2b6cc04a70db924f5354acc6e0b7803e512a69c232bf6818b",
+      "type": "exact",
+      "canonical_id": "3a2ec427ff98517c609972ca59dbd2b4",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "749D-LeavingAuction-OLD.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "749D-LeavingAuction.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "5ab81c3e9b07191769e6523bf10298425bfd860da7100b9c9c0f912f8e392fc5",
+      "type": "exact",
+      "canonical_id": "779e26c6574d8d90022fe019662cdde2",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "771A-BearAndFriendshipCondition.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "791B-BearAndFriendshipCondition.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "9f7d2add33a5cd88be14a166bb5ca271a14e1cdb7be434deca240e23f926b95e",
+      "type": "exact",
+      "canonical_id": "80d795b5b7e0f0a42f4e6d72f3b7caf3",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "802A-HeidiAndLibrary-Easy.cpp"
+        },
+        {
+          "repo": "DionysiosB/CodeForces",
+          "file_path": "802B-HeidiAndLibrary-Medium.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "a581852eb2ec7a6408cd87608d1877f5d55daf57ce318f11fd2a6824dad6d294",
+      "type": "exact",
+      "canonical_id": "4ac0693e67870c12eb98316f44bb24af",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "Shah-Shishir/Codeforces-Solutions",
+          "file_path": "1130A. Be Positive.cpp"
+        },
+        {
+          "repo": "Shah-Shishir/Codeforces-Solutions",
+          "file_path": "1141B. Maximal Continuous Rest.cpp"
+        }
+      ]
+    },
+    {
+      "hash": "9b3e389b42a4b49b44f0a1c0c5a4388422c21c56449f68b6d7ee2ed08a3616c0",
+      "type": "exact",
+      "canonical_id": "4ebeb57b072ab2dcd95fbe7e1556e173",
+      "total_occurrences": 2,
+      "locations": [
+        {
+          "repo": "Shah-Shishir/Codeforces-Solutions",
+          "file_path": "1234B1. Social Network (easy version).cpp"
+        },
+        {
+          "repo": "Shah-Shishir/Codeforces-Solutions",
+          "file_path": "1234B2. Social Network (hard version).cpp"
+        }
+      ]
+    }
+  ]
+}

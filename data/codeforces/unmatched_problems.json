@@ -1,0 +1,882 @@
+[
+  {
+    "id": "f2ad5c3973d4d7d4a7726ee884093601",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "100-AplusB.cpp",
+    "raw_filename": "100-AplusB.cpp",
+    "validation_status": "compiled",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "055c48bf88151dc8c1ed4f418264b07a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "102694A-CircumferenceOfATree.cpp",
+    "raw_filename": "102694A-CircumferenceOfATree.cpp",
+    "validation_status": "compiled",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "9266de76ffe79a93cef6fee998921282",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104441_1-LongTraining.cpp",
+    "raw_filename": "104441_1-LongTraining.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "5609c4e8dc0158d5854be3b30a81288a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104441_3-TreasureHunter.cpp",
+    "raw_filename": "104441_3-TreasureHunter.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "2bdbe177a346d9db0872611891117cf9",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104921A-Rook.cpp",
+    "raw_filename": "104921A-Rook.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "dd902dc64c532f2d46fc68f6b0b5e806",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104921B-GoodKid.cpp",
+    "raw_filename": "104921B-GoodKid.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "9977a6bf4583c5ccffa070b34ca9dacd",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104921C-WordOnThePaper.cpp",
+    "raw_filename": "104921C-WordOnThePaper.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "278fbc48cba022bd4e2ce234b2019e26",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104921D-GiftCarpet.cpp",
+    "raw_filename": "104921D-GiftCarpet.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "dea60584565160a4c7675446a95cb088",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104921E-GameWithIntegers.cpp",
+    "raw_filename": "104921E-GameWithIntegers.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "028f976eadc36b74ff6b71151be53fb3",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "104921F-Morning.cpp",
+    "raw_filename": "104921F-Morning.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "3db19bc50af294445132b34997994c2d",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "105494A-ProblemStatement.cpp",
+    "raw_filename": "105494A-ProblemStatement.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "1026cf0a3920e37495abc9954a4ebf8d",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "105494B-AntHill.cpp",
+    "raw_filename": "105494B-AntHill.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "f75e59a861ac4dd9104ee107ce31a3b1",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "123-TheSum.cpp",
+    "raw_filename": "123-TheSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "fd662da98f05d6515aa1310d59840a71",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "1680AMinimumsAndMaximums.cpp",
+    "raw_filename": "1680AMinimumsAndMaximums.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "c09064dcf46ad34a44abfad9da327ee7",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "2195-SieveOfErato67henes.cpp",
+    "raw_filename": "2195-SieveOfErato67henes.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "d24bab2e67679e3a7f3db9c4177a7804",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "230-KthSmallestElementInABST.cpp",
+    "raw_filename": "230-KthSmallestElementInABST.cpp",
+    "validation_status": "rejected",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "e1fceb5643fd682abe8c87a908b9defd",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "403-ScientificProblem.cpp",
+    "raw_filename": "403-ScientificProblem.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "ce5eb364e4a02d62797bc068ea32578a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch1A-BinarySearch.cpp",
+    "raw_filename": "BinarySearch1A-BinarySearch.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "c9cf1714ba267048b54f5366b6527e14",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch1B-ClosestToTheLeft.cpp",
+    "raw_filename": "BinarySearch1B-ClosestToTheLeft.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "f1fe1c8fdc22aaec87d5e8ecafb9e4cc",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch1C-ClosestToTheRight.cpp",
+    "raw_filename": "BinarySearch1C-ClosestToTheRight.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "760100307cf385f9cc1b8b6fc2570f15",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch1D-FastSearch.cpp",
+    "raw_filename": "BinarySearch1D-FastSearch.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "11d1c05c5d3f956fa41958ae0910961b",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2A-PackingRectangles.cpp",
+    "raw_filename": "BinarySearch2A-PackingRectangles.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "fe69c676f575e8b496cc457ac676746d",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2B-Ropes.cpp",
+    "raw_filename": "BinarySearch2B-Ropes.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b7aa18b9827a66468bb565f9665abd1a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2C-VeryEasyTask.cpp",
+    "raw_filename": "BinarySearch2C-VeryEasyTask.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "adc1f62fd0f87f04bac25580455d5d33",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2D-ChildrenHoliday.cpp",
+    "raw_filename": "BinarySearch2D-ChildrenHoliday.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "a03bac7cdb34aec1bcfdd154f09110da",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2E-Equation.cpp",
+    "raw_filename": "BinarySearch2E-Equation.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "5507322f2133887bd0f2af15fb7b2b62",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2F-StringGame-OLD.cpp",
+    "raw_filename": "BinarySearch2F-StringGame-OLD.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "03453e45f7856e30ebcb605587f1236f",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2F-StringGame.cpp",
+    "raw_filename": "BinarySearch2F-StringGame.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "bfab58f13fb265dd0a78fd0ad93e3c45",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2G-StudentCouncils.cpp",
+    "raw_filename": "BinarySearch2G-StudentCouncils.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7b2ce55d5dc23a1aec760054551cc8d6",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch2H-Hamburgers.cpp",
+    "raw_filename": "BinarySearch2H-Hamburgers.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "e7a8f7323933202bd08275ead59ad928",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch3A-GetTogether.cpp",
+    "raw_filename": "BinarySearch3A-GetTogether.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "3694d3da9055df80cfd7eedd38197c14",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch3B-SplittingAnArray.cpp",
+    "raw_filename": "BinarySearch3B-SplittingAnArray.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "8778dcc8b6993fab886fe55fee28f05c",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch3C-CowsInStalls.cpp",
+    "raw_filename": "BinarySearch3C-CowsInStalls.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "41e36d5f6ce3aca534af07e606777251",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch3D-MinimumMaximumOnThePath-OLD.cpp",
+    "raw_filename": "BinarySearch3D-MinimumMaximumOnThePath-OLD.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "fd10b6b7012516c9d127513f5b099507",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch3D-MinimumMaximumOnThePath.cpp",
+    "raw_filename": "BinarySearch3D-MinimumMaximumOnThePath.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "00d1934c3ae721ed2306ab668395b979",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch4C-PairSelection.cpp",
+    "raw_filename": "BinarySearch4C-PairSelection.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "4d33ad50dc5b5700e1c16e2eefd76873",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch5A-KthNumberInTheUnionOfSegments.cpp",
+    "raw_filename": "BinarySearch5A-KthNumberInTheUnionOfSegments.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "9cea2ea21d00eed9e988f48b206805aa",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch5B-MultiplicationTable.cpp",
+    "raw_filename": "BinarySearch5B-MultiplicationTable.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "05542fd04e931983dbd7949e7b0ab84c",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "BinarySearch5C-KthSum.cpp",
+    "raw_filename": "BinarySearch5C-KthSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "287a85192701da845e6472bdf0d8b0bf",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion1A-DisjointSetsUnion.cpp",
+    "raw_filename": "DisjointSetsUnion1A-DisjointSetsUnion.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b3c51cfabd4ac639612a971162737e8e",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion1B-DisjointSetsUnion2.cpp",
+    "raw_filename": "DisjointSetsUnion1B-DisjointSetsUnion2.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "9e61f1f6e814386467062793dabd0dff",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion1C-Experience.cpp",
+    "raw_filename": "DisjointSetsUnion1C-Experience.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "9084f7cfc78d4ce770b9ee497ab21c1c",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion1D-CuttingAGraph.cpp",
+    "raw_filename": "DisjointSetsUnion1D-CuttingAGraph.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b04c321c72987de787cff391542fc94a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion2A-PeopleAreLeaving.cpp",
+    "raw_filename": "DisjointSetsUnion2A-PeopleAreLeaving.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "344e3ad1c9cf51c735128f2194669aab",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion2B-Parking.cpp",
+    "raw_filename": "DisjointSetsUnion2B-Parking.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "51885b54816b4b2c1c6acbaf4661530a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "DisjointSetsUnion2D-Bosses.cpp",
+    "raw_filename": "DisjointSetsUnion2D-Bosses.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "6096171a2862998913883898f6f541aa",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree1A-SegmentTreeForTheSum.cpp",
+    "raw_filename": "PracticeSegmentTree1A-SegmentTreeForTheSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "87832d7b191a9acf129ee5d34481fc30",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree1B-SegmentTreeForTheMinimum.cpp",
+    "raw_filename": "PracticeSegmentTree1B-SegmentTreeForTheMinimum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "4f50ba80841d83a23cd4c0b39799e9cb",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree1C-NumberOfMinimumsOnASegment.cpp",
+    "raw_filename": "PracticeSegmentTree1C-NumberOfMinimumsOnASegment.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b8b02cb28065aac06fd76e720df9a717",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree2A-SegmentWithTheMaximumSum.cpp",
+    "raw_filename": "PracticeSegmentTree2A-SegmentWithTheMaximumSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "56be4c9fb153239935076c1a0ee0bb62",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree2B-KthOne.cpp",
+    "raw_filename": "PracticeSegmentTree2B-KthOne.cpp",
+    "validation_status": "needs_review",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "f11ced11194c4ef7e6d6f8116274bc0a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree2C-FirstElementAtLeastX.cpp",
+    "raw_filename": "PracticeSegmentTree2C-FirstElementAtLeastX.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b0195d4718e1fc431ed9ad611489f072",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree2D-FirstElementAtLeastX2.cpp",
+    "raw_filename": "PracticeSegmentTree2D-FirstElementAtLeastX2.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "d8eb1099a293176e1e756b42bf02dd8a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree3A-Inversions.cpp",
+    "raw_filename": "PracticeSegmentTree3A-Inversions.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "fb5b74ddc94f9eb2948bf75d05312eab",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree3B-Inversions2.cpp",
+    "raw_filename": "PracticeSegmentTree3B-Inversions2.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "5ad77709504822364dbc1472a489ffe9",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree3D-IntersectingSegments.cpp",
+    "raw_filename": "PracticeSegmentTree3D-IntersectingSegments.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "33d68b9a38c334102bad6424f94434de",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree3E-AdditionToSegment.cpp",
+    "raw_filename": "PracticeSegmentTree3E-AdditionToSegment.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "44a273f540bf489b11ac44807cab74c0",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree4A-SignAlternation.cpp",
+    "raw_filename": "PracticeSegmentTree4A-SignAlternation.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "8e9e140a7943c6f8b6f9b2f05f1e362e",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree4B-Cryptography.cpp",
+    "raw_filename": "PracticeSegmentTree4B-Cryptography.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "ee0a0a21d7ab67440e0cd83cdbb5f0ee",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree4C-NumberOfInversionsOnSegment.cpp",
+    "raw_filename": "PracticeSegmentTree4C-NumberOfInversionsOnSegment.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "cc20ac9b6a4aa49e61be6ebd1924a5e3",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree4D-NumberOfDifferentOnSegment.cpp",
+    "raw_filename": "PracticeSegmentTree4D-NumberOfDifferentOnSegment.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "c46ef673fffa310730b7766c44f88a5a",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeSegmentTree4E-Earthquakes.cpp",
+    "raw_filename": "PracticeSegmentTree4E-Earthquakes.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7901f97bd9e9134466a1dab11b7d6b93",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod1A-MergingArrays.cpp",
+    "raw_filename": "PracticeTwoPointersMethod1A-MergingArrays.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "5b8e7a8119ebb6a279787625c2a4d707",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod1B-NumberOfSmaller.cpp",
+    "raw_filename": "PracticeTwoPointersMethod1B-NumberOfSmaller.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "99f11a6b475ed08403e268595a3ba7c8",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod1C-NumberOfEqual.cpp",
+    "raw_filename": "PracticeTwoPointersMethod1C-NumberOfEqual.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7041155ace7b53b6100e1cd16d3c25d6",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod2A-SegmentWithSmallSum.cpp",
+    "raw_filename": "PracticeTwoPointersMethod2A-SegmentWithSmallSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "d20fc1a5a1449b5d07dbb0711341fc46",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod2B-SegmentWithBigSum.cpp",
+    "raw_filename": "PracticeTwoPointersMethod2B-SegmentWithBigSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "e8e215b053b509aa3b7eb3f29c13ee54",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod2C-NumberOfSegmentsWithSmallSum.cpp",
+    "raw_filename": "PracticeTwoPointersMethod2C-NumberOfSegmentsWithSmallSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "034a4c79f8378f10d23b8bcc3b224ebe",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod2D-NumberOfSegmentsWithBigSum.cpp",
+    "raw_filename": "PracticeTwoPointersMethod2D-NumberOfSegmentsWithBigSum.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "71d84cb7393fe5220cf52b4e86887b35",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod2E-SegmentsWithSmallSet.cpp",
+    "raw_filename": "PracticeTwoPointersMethod2E-SegmentsWithSmallSet.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "55407c38e3107a815d3baf320cf6555f",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod2F-SegmentsWithSmallSpread.cpp",
+    "raw_filename": "PracticeTwoPointersMethod2F-SegmentsWithSmallSpread.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "bab87de83d97868d962914469930cb60",
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "PracticeTwoPointersMethod3A-LoopedPlaylist.cpp",
+    "raw_filename": "PracticeTwoPointersMethod3A-LoopedPlaylist.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "6283cc7f9d77ce476cf1b1f85f57c8b4",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "100989A - LCS (A).cpp",
+    "raw_filename": "100989A - LCS (A).cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b6eb52c7173a3a613baf5895b122bd5e",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "133A - HQ9+.cpp",
+    "raw_filename": "133A - HQ9+.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "aa763d83200c95d5e552a02dc98b69b4",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "151A - Soft Drinking.cpp",
+    "raw_filename": "151A - Soft Drinking.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "c0c47fe2c347cd78bc6847fe7c442529",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "158A - Next Round.cpp",
+    "raw_filename": "158A - Next Round.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7d2f5ec7adaa85392dc68cb5c2ccf705",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "282A - Bit++.cpp",
+    "raw_filename": "282A - Bit++.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "99fd048fd64f0232b23af1e10a7cbe37",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "344A - Magnets.cpp",
+    "raw_filename": "344A - Magnets.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "d231820148a94a5b5270e45dccfb5bed",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "41A - Translation.cpp",
+    "raw_filename": "41A - Translation.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "20d42709c73bbfdfdd23f0395980fb6a",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "486A - Calculating Function.cpp",
+    "raw_filename": "486A - Calculating Function.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7a4b1114531742c8163f5bc773265859",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "4A - Watermelon.cpp",
+    "raw_filename": "4A - Watermelon.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "c597d2243a3944ecc087118102c14da6",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "6A - Triangle.cpp",
+    "raw_filename": "6A - Triangle.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "cef73dbbd07d9fee9813d7de09fd509c",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "71A - Way Too Long Words.cpp",
+    "raw_filename": "71A - Way Too Long Words.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "4f9f65201c3181144e8b50aecda6150c",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "723A - The New Year Meeting Friends.cpp",
+    "raw_filename": "723A - The New Year Meeting Friends.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "622bdde4bb0af67e6dcdeded91e71189",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "734A - Anton and Danik.cpp",
+    "raw_filename": "734A - Anton and Danik.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b3f2422d2bacfe1f4ef19e872355c8b8",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "735A - Ostap and Grasshopper.cpp",
+    "raw_filename": "735A - Ostap and Grasshopper.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "4b65e2fdac5b45703ca2ecfb847e9a31",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "742A - Arpa’s hard exam and Mehrdad’s naive cheat.cpp",
+    "raw_filename": "742A - Arpa’s hard exam and Mehrdad’s naive cheat.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7191dcdc1281f200d68cbb70fa475850",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "746A - Compote.cpp",
+    "raw_filename": "746A - Compote.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "bfb6934a2c4584ed46194527346c2e0a",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "747A - Display Size.cpp",
+    "raw_filename": "747A - Display Size.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "e907d8c7886d9aa33facf89dba1b8e7a",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "750A - New Year and Hurry.cpp",
+    "raw_filename": "750A - New Year and Hurry.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "e2cccc25523d23febcb2dee624bded7b",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "755A - PolandBall and Hypothesis.cpp",
+    "raw_filename": "755A - PolandBall and Hypothesis.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "b7cc6e64c101e05d904566f7f915a09d",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "757A - Gotta Catch Em' All!.cpp",
+    "raw_filename": "757A - Gotta Catch Em' All!.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "7d9eb276c68e5bd1d6b9045d2ae672e3",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "758A - Holiday Of Equality.cpp",
+    "raw_filename": "758A - Holiday Of Equality.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "042f3c8a7243c9e503787e422f1c2ad8",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "760A - Petr and a calendar.cpp",
+    "raw_filename": "760A - Petr and a calendar.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "13048098d91dff29ad54a31f5e63318b",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "761A - Dasha and Stairs.cpp",
+    "raw_filename": "761A - Dasha and Stairs.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "16e7ac0fa818d3fb8b26230222cda942",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "764A - Taymyr is calling you.cpp",
+    "raw_filename": "764A - Taymyr is calling you.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "3d7e22003fcef61d371d0656ab8162e7",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "766B - Mahmoud and a Triangle.cpp",
+    "raw_filename": "766B - Mahmoud and a Triangle.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "087b64931aa91b6c985e4a1862b98090",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "785A - Anton and Polyhedrons.cpp",
+    "raw_filename": "785A - Anton and Polyhedrons.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "055a41b120168c82aa372d82a5f2045e",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "791A - Bear and Big Brother.cpp",
+    "raw_filename": "791A - Bear and Big Brother.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "030335f6f60a2fdf44411647b93cbdbe",
+    "source_repository": "Shah-Shishir/Codeforces-Solutions",
+    "source_file_path": "954A - Diagonal Walking.cpp",
+    "raw_filename": "954A - Diagonal Walking.cpp",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "45c956e84e09e9c47f58d2ffa86bbc17",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "accepted/10892.cc",
+    "raw_filename": "10892.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "9f6e549162e04d559c6b63faea0c380e",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "other/bfs.cc",
+    "raw_filename": "bfs.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "d823782f015b15299786234f6f88e14c",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "other/dfs.cc",
+    "raw_filename": "dfs.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "acfd5abffb6f2c51e0b737bdfaf0d448",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "other/dijkstra_sssp.cc",
+    "raw_filename": "dijkstra_sssp.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "f1fe183f5e7787be93d8de1e6ed71bb6",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "other/gcd_lcm.cc",
+    "raw_filename": "gcd_lcm.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "852cda24762ba2d6df37562e41be4cc2",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "other/modexp.cc",
+    "raw_filename": "modexp.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "51ec5a1b7f863e29960e113888b3ffc0",
+    "source_repository": "cbarnson/codeforces-cpp",
+    "source_file_path": "other/union-find.cc",
+    "raw_filename": "union-find.cc",
+    "validation_status": "source_checked",
+    "confidence": "unmatched"
+  },
+  {
+    "id": "80a2ae3af445ca2dd5278f91c5d424e6",
+    "source_repository": "Alif-Riasat/Codeforces-Solutions-Cpp",
+    "source_file_path": "F_Divisible_Perfection.cpp",
+    "raw_filename": "F_Divisible_Perfection.cpp",
+    "validation_status": "source_checked",
+    "confidence": "medium"
+  },
+  {
+    "id": "293d60a548218a8b8af99726b61ea8d5",
+    "source_repository": "Alif-Riasat/Codeforces-Solutions-Cpp",
+    "source_file_path": "Y_Range_sum_query.cpp",
+    "raw_filename": "Y_Range_sum_query.cpp",
+    "validation_status": "source_checked",
+    "confidence": "medium"
+  },
+  {
+    "id": "8d848a34a8c2cf9c8820347ad0096c8a",
+    "source_repository": "Alif-Riasat/Codeforces-Solutions-Cpp",
+    "source_file_path": "Z_Binary_Search.cpp",
+    "raw_filename": "Z_Binary_Search.cpp",
+    "validation_status": "source_checked",
+    "confidence": "medium"
+  }
+]

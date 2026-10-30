@@ -1,0 +1,172 @@
+{
+  "target_language": "cpp",
+  "cache_directory": ".importer_cache/repos",
+  "data_directory": "data/codeforces",
+  "max_concurrency": 4,
+  "safe_compilation": true,
+  "repositories": [
+    {
+      "full_name": "DionysiosB/CodeForces",
+      "clone_url": "https://github.com/DionysiosB/CodeForces.git",
+      "default_branch": "master",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "DionysiosB"
+    },
+    {
+      "full_name": "Shah-Shishir/Codeforces-Solutions",
+      "clone_url": "https://github.com/Shah-Shishir/Codeforces-Solutions.git",
+      "default_branch": "master",
+      "license_spdx": "Apache-2.0",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "Shah Shishir"
+    },
+    {
+      "full_name": "cbarnson/codeforces-cpp",
+      "clone_url": "https://github.com/cbarnson/codeforces-cpp.git",
+      "default_branch": "master",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "C. Barnson"
+    },
+    {
+      "full_name": "Alif-Riasat/Codeforces-Solutions-Cpp",
+      "clone_url": "https://github.com/Alif-Riasat/Codeforces-Solutions-Cpp.git",
+      "default_branch": "main",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "Alif Riasat"
+    },
+    {
+      "full_name": "almuzahidseyam/Codeforces",
+      "clone_url": "https://github.com/almuzahidseyam/Codeforces.git",
+      "default_branch": "main",
+      "license_spdx": "Apache-2.0",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "Al Muzahid Seyam"
+    },
+    {
+      "full_name": "ShazidMashrafi/Codeforces",
+      "clone_url": "https://github.com/ShazidMashrafi/Codeforces.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "ShazidMashrafi",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "mhdnazrul/Codeforces-Solutions",
+      "clone_url": "https://github.com/mhdnazrul/Codeforces-Solutions.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "mhdnazrul",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "yousefkotp/Codeforces-Solutions",
+      "clone_url": "https://github.com/yousefkotp/Codeforces-Solutions.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "yousefkotp",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "ishandutta2007/codeforces",
+      "clone_url": "https://github.com/ishandutta2007/codeforces.git",
+      "default_branch": "main",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "Ishan Dutta & Authors",
+      "notes": "Scraped Codeforces multi-author archive licensed under MIT"
+    },
+    {
+      "full_name": "ashrafulalamasad/codeforces-solutions",
+      "clone_url": "https://github.com/ashrafulalamasad/codeforces-solutions.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "ashrafulalamasad",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "ryuoraiden/competitive-programming",
+      "clone_url": "https://github.com/ryuoraiden/competitive-programming.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "ryuoraiden",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "rajib-mte/codeforces-solutions",
+      "clone_url": "https://github.com/rajib-mte/codeforces-solutions.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "rajib-mte",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "balajirai/Codeforces",
+      "clone_url": "https://github.com/balajirai/Codeforces.git",
+      "default_branch": "master",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "balajirai",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "Adi-Dcpp/CP-Archive",
+      "clone_url": "https://github.com/Adi-Dcpp/CP-Archive.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "Adi-Dcpp",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "KEROLIS/Codeforces-solutions",
+      "clone_url": "https://github.com/KEROLIS/Codeforces-solutions.git",
+      "default_branch": "main",
+      "license_spdx": "NONE",
+      "license_file": null,
+      "redistribution_permitted": false,
+      "author_attribution": "KEROLIS",
+      "exclusion_reason": "No open-source license grant found in repository root."
+    },
+    {
+      "full_name": "VastoLorde95/Competitive-Programming",
+      "clone_url": "https://github.com/VastoLorde95/Competitive-Programming.git",
+      "default_branch": "master",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "VastoLorde95"
+    },
+    {
+      "full_name": "manishbisht/Competitive-Programming",
+      "clone_url": "https://github.com/manishbisht/Competitive-Programming.git",
+      "default_branch": "master",
+      "license_spdx": "MIT",
+      "license_file": "LICENSE",
+      "redistribution_permitted": true,
+      "author_attribution": "Manish Bisht"
+    }
+  ]
+}

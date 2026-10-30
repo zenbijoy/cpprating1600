@@ -1,0 +1,9 @@
+[
+  {
+    "source_repository": "DionysiosB/CodeForces",
+    "source_file_path": "230-KthSmallestElementInABST.cpp",
+    "error_type": "VALIDATION_REJECTED",
+    "error_message": "Does not contain standard C++ header includes or main entrypoint.",
+    "timestamp": "2026-10-29T17:41:53.189Z"
+  }
+]

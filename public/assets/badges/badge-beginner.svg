@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="bgShield" x1="20" y1="20" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#065f46" /><stop offset="50%" stop-color="#047857" /><stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="goldRim" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#eab308" /><stop offset="100%" stop-color="#854d0e" />
+    </linearGradient>
+    <linearGradient id="emeraldChevron" x1="50" y1="35" x2="50" y2="75" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6ee7b7" /><stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <path d="M50 8L82 22V52C82 72 50 92 50 92C50 92 18 72 18 52V22L50 8Z" fill="url(#goldRim)" stroke="#ca8a04" stroke-width="1.5" />
+  <path d="M50 14L76 26V51C76 68 50 85 50 85C50 85 24 68 24 51V26L50 14Z" fill="url(#bgShield)" />
+  <path d="M50 30L68 46L62 52L50 42L38 52L32 46L50 30Z" fill="url(#emeraldChevron)" />
+  <path d="M50 48L64 60L59 65L50 58L41 65L36 60L50 48Z" fill="url(#emeraldChevron)" opacity="0.85" />
+  <circle cx="50" cy="22" r="2.5" fill="#fef08a" />
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="magBg" x1="15" y1="15" x2="85" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4c1d95" /><stop offset="50%" stop-color="#831843" /><stop offset="100%" stop-color="#18181b" />
+    </linearGradient>
+    <linearGradient id="rocketGrad" x1="50" y1="20" x2="50" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f472b6" /><stop offset="50%" stop-color="#ec4899" /><stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <linearGradient id="goldWing" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#f59e0b" /><stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+  <path d="M50 8C74 8 88 18 88 44C88 68 62 86 50 94C38 86 12 68 12 44C12 18 26 8 50 8Z" fill="url(#goldWing)" stroke="#ca8a04" stroke-width="1.5" />
+  <path d="M50 14C70 14 82 22 82 44C82 65 59 81 50 88C41 81 18 65 18 44C18 22 30 14 50 14Z" fill="url(#magBg)" />
+  <path d="M50 24C44 34 42 46 42 58L50 54L58 58C58 46 56 34 50 24Z" fill="url(#rocketGrad)" />
+  <path d="M42 50L30 62L40 64L42 54Z" fill="url(#goldWing)" />
+  <path d="M58 50L70 62L60 64L58 54Z" fill="url(#goldWing)" />
+  <path d="M46 58L50 74L54 58Z" fill="#facc15" />
+  <circle cx="50" cy="40" r="4" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5" />
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" fill="none">
+  <defs>
+    <linearGradient id="waveG" x1="0" y1="0" x2="1000" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06b6d4" /><stop offset="50%" stop-color="#6366f1" /><stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+  <path d="M0 120C200 40 400 200 600 100C800 0 900 160 1000 80V300H0V120Z" fill="url(#waveG)" opacity="0.3" />
+</svg>

@@ -1,0 +1,37 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Importer cache & third-party repositories
+.importer_cache/
+tools/codeforces_importer/downloads/
+data/codeforces/clones/
+data/codeforces/manifests/
+*.tmp
+
+# AI Studio & Agent artifacts
+.aistudio/
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Android build & local artifacts
+android/.gradle/
+android/.kotlin/
+android/app/build/
+android/build/
+android/local.properties
+android/captures/
+.externalNativeBuild/
+.cxx/
+
+

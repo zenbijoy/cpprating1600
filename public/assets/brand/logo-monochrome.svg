@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" fill="none">
+  <!-- Scaled Monochrome Emblem -->
+  <g transform="translate(10, 16) scale(0.18)">
+    <path
+      d="M526 334H334L116 646H444L494 575H268L380 405H479L526 334Z"
+      fill="currentColor"
+    />
+    <path
+      d="M667 191L817 410H715L667 320L524 570H729L684 492H786L892 646H479L667 191Z"
+      fill="currentColor"
+      opacity="0.9"
+    />
+  </g>
+
+  <!-- Typography -->
+  <text x="180" y="74" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" letter-spacing="-0.03em" fill="currentColor">CLIMB</text>
+  <text x="360" y="74" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" letter-spacing="-0.02em" fill="currentColor" opacity="0.85">1600</text>
+</svg>
