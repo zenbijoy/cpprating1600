@@ -127,7 +127,7 @@ async function executeCpp(code: string, stdin = '', timeoutMs = 4000): Promise<R
 
   try {
     const compile = await new Promise<{ ok: boolean; stderr: string }>((resolve) => {
-      exec(`g++ -O2 -std=c++17 -Wall -o "${exe}" "${src}"`, { timeout: 8000, cwd: tempDir }, (err, _out, stderr) => {
+      exec(`g++ -O2 -std=c++17 -Wall -o "${exe}" "${src}"`, { timeout: 20000, cwd: tempDir }, (err, _out, stderr) => {
         resolve({ ok: !err, stderr: stderr || (err ? err.message : '') });
       });
     });

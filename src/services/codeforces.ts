@@ -1,4 +1,4 @@
-import { CFProblem, CFRatingChange, CFSubmission, CFSubmissionRecord, CFUserInfo } from '../types';
+import { CFProblem, CFRatingChange, CFSubmission, CFSubmissionRecord, CFUserInfo, ProblemAttempt } from '../types';
 
 export type { CFUserInfo };
 export type RatingChange = CFRatingChange;
@@ -259,3 +259,54 @@ export const codeforcesService = {
     return (data.result?.problems as CFProblem[]) ?? [];
   },
 };
+
+/**
+ * Converts official Codeforces submission telemetry into standardized ProblemAttempt objects.
+ * Populates real user practice sessions, activity heatmaps, solve rates, and problem statuses.
+ */
+export function convertCfSubmissionsToAttempts(submissions: (CFSubmission | CFSubmissionRecord)[]): ProblemAttempt[] {
+  const attempts: ProblemAttempt[] = [];
+  const seenIds = new Set<string>();
+
+  for (const sub of submissions) {
+    if (!sub) continue;
+    const subId = String(sub.id || `${sub.contestId || ''}_${sub.problem.index}_${sub.creationTimeSeconds}`);
+    if (seenIds.has(subId)) continue;
+    seenIds.add(subId);
+
+    const contestId = sub.problem?.contestId ?? sub.contestId;
+    const index = (sub.problem?.index || 'A').toUpperCase();
+    const problemId = `${contestId ?? ''}${index}`;
+    const isOk = sub.verdict === 'OK';
+    const creationSec = sub.creationTimeSeconds || Math.floor(Date.now() / 1000);
+    const startedAt = new Date(creationSec * 1000).toISOString();
+    const durationSeconds = Math.max(60, Math.round((sub.timeConsumedMillis || 60000) / 1000));
+    const endedAt = new Date(creationSec * 1000 + durationSeconds * 1000).toISOString();
+
+    attempts.push({
+      id: `cf_${subId}`,
+      problemId,
+      contestId,
+      index,
+      name: sub.problem?.name || `Problem ${problemId}`,
+      rating: sub.problem?.rating,
+      tags: sub.problem?.tags && sub.problem?.tags.length > 0 ? sub.problem?.tags : ['implementation'],
+      url: `https://codeforces.com/problemset/problem/${contestId}/${index}`,
+      startedAt,
+      endedAt,
+      timeSpentSeconds: durationSeconds,
+      hintsUsedCount: 0,
+      highestHintLevel: 0,
+      outcome: isOk ? 'solved_independently' : 'attempted_gave_up',
+      officialVerdict: (sub.verdict as any) || (isOk ? 'OK' : 'UNSUBMITTED'),
+      selfReported: false,
+      codeLanguage: (sub.programmingLanguage as any) || 'cpp20',
+      approachNotes: isOk
+        ? `Accepted on Codeforces in ${sub.programmingLanguage || 'C++'}. Runtime: ${sub.timeConsumedMillis || 0}ms.`
+        : `Verdict: ${sub.verdict || 'WA'}. Passed tests: ${sub.passedTestCount ?? 0}.`,
+    });
+  }
+
+  // Sort chronologically descending (newest submissions first)
+  return attempts.sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
+}

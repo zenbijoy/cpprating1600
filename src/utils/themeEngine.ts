@@ -565,6 +565,26 @@ export function applyThemeToDom(config: ThemeConfig): void {
   root.setAttribute('data-motion', config.animationIntensity);
   root.setAttribute('data-transparency', config.transparency);
 
+  // Sync Tailwind dark class on root document element
+  if (effectiveMode === 'light') {
+    root.classList.remove('dark');
+  } else {
+    root.classList.add('dark');
+  }
+
+  // Sync browser theme-color meta tag
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) {
+    themeMeta.setAttribute('content', colors.bgApp);
+  }
+
+  // Notify listeners of theme update
+  window.dispatchEvent(
+    new CustomEvent('climb1600:theme-changed', {
+      detail: { mode: effectiveMode, colors, config },
+    })
+  );
+
   // Apply CSS custom properties
   root.style.setProperty('--climb-bg-app', colors.bgApp);
   root.style.setProperty('--climb-bg-surface', colors.bgSurface);

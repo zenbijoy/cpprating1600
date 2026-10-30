@@ -143,11 +143,59 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const todayAttempts = recentAttempts.filter(
       (a) => (a.endedAt || a.startedAt || '').split('T')[0] === todayStr
     );
+    if (todayAttempts.length === 0) return 0;
     const uniqueTags = new Set(
       todayAttempts.flatMap((a) => (a.tags && a.tags.length > 0 ? a.tags : ['Practice']))
     );
-    return Math.max(todayAttempts.length > 0 ? uniqueTags.size : 1, 1);
+    return uniqueTags.size;
   }, [recentAttempts]);
+
+  // Dynamic diagnostic growth area based on authentic attempts & mistakes telemetry
+  const diagnosticWeakness = useMemo(() => {
+    if (mistakes && mistakes.length > 0) {
+      const latest = mistakes[0];
+      return {
+        title: `Spaced Review: ${latest.problemName || 'Logged Mistake'}`,
+        description: latest.whyItFailed || latest.personalLesson || `Category: ${latest.category.replace(/_/g, ' ')}. Review logic and boundary edge cases before re-attempting.`,
+        category: latest.category.replace(/_/g, ' '),
+      };
+    }
+
+    const failedAttempts = recentAttempts.filter(
+      (a) => a.officialVerdict && a.officialVerdict !== 'OK' && a.officialVerdict !== 'UNSUBMITTED'
+    );
+    if (failedAttempts.length > 0) {
+      const latestFail = failedAttempts[0];
+      const verdict = latestFail.officialVerdict;
+      let advice = 'Review edge cases and test inputs where constraints reach extreme upper or lower bounds.';
+      if (verdict === 'TIME_LIMIT_EXCEEDED') {
+        advice = 'Look for algorithmic efficiency bottlenecks. Avoid nested loops when N > 10^5; aim for O(N log N) or O(N).';
+      } else if (verdict === 'MEMORY_LIMIT_EXCEEDED') {
+        advice = 'Optimize data structure allocations. Consider reusable buffers or bitsets instead of heavy nested structures.';
+      } else if (verdict === 'WRONG_ANSWER') {
+        advice = `Analyze submission on ${latestFail.name || latestFail.problemId}. Check 64-bit integers (long long) for products/sums and 1-based indexing offsets.`;
+      }
+      return {
+        title: `Recent Verdict Notice: ${verdict} on ${latestFail.name || latestFail.problemId}`,
+        description: advice,
+        category: verdict || 'Growth Area',
+      };
+    }
+
+    if (recentAttempts.length > 0) {
+      return {
+        title: 'Maintaining Precision & Rating Momentum',
+        description: `Great recent accuracy across ${recentAttempts.length} submissions! Continue solving problems at rating ${Math.min(1600, (profile.verifiedCfRating || 800) + 100)} to stretch problem-solving intuition.`,
+        category: 'Consistent Progress',
+      };
+    }
+
+    return {
+      title: 'Initial Diagnostic Baseline',
+      description: 'Connect your Codeforces handle or solve your first practice problem to generate personalized telemetry diagnostics.',
+      category: 'Diagnostic Ready',
+    };
+  }, [mistakes, recentAttempts, profile.verifiedCfRating]);
 
   // User Initials for Avatar
   const userInitials = useMemo(() => {
@@ -532,10 +580,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Greeting Banner */}
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Good {timeOfDay}, {profile.name ? profile.name.split(' ')[0] : 'Jordan'}
+            Good {timeOfDay}, {profile.name?.trim() ? profile.name.split(' ')[0] : (profile.cfHandle || 'Climber')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            You've practiced {practicedSkillsTodayCount} skill{practicedSkillsTodayCount === 1 ? '' : 's'} today. Keep it up!
+            {practicedSkillsTodayCount > 0
+              ? `You've practiced ${practicedSkillsTodayCount} skill${practicedSkillsTodayCount === 1 ? '' : 's'} today. Keep it up!`
+              : `Ready for today's training? Let's make progress toward ${goal.targetRating} rating!`}
           </p>
         </div>
 
@@ -779,7 +829,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Mountain Summit Hero with 1600 Milestone Flag */}
       <MountainSummitHero
         targetRating={1600}
-        currentRating={profile.verifiedCfRating || 1000}
+        currentRating={profile.verifiedCfRating || 800}
       />
 
       {/* Rating 1600 Mission Control Telemetry */}
@@ -1158,12 +1208,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className="p-3.5 rounded-xl border border-amber-200 dark:border-amber-900/30 bg-amber-50/60 dark:bg-amber-950/20 space-y-1">
-            <div className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
-              <WarningStatusIcon size={14} semantic="warning" />
-              <span>Identified Growth Area</span>
+            <div className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center justify-between gap-1.5">
+              <div className="flex items-center gap-1.5">
+                <WarningStatusIcon size={14} semantic="warning" />
+                <span>{diagnosticWeakness.title}</span>
+              </div>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300">
+                {diagnosticWeakness.category}
+              </span>
             </div>
-            <p className="text-xs text-slate-700 dark:text-slate-300">
-              <strong>Integer overflow on large products:</strong> When calculating sums of prefixes or products of sizes, make sure to use 64-bit integers (<code className="text-emerald-700 dark:text-cyan-300">long long</code> in C++).
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+              {diagnosticWeakness.description}
             </p>
           </div>
 

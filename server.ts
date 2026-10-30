@@ -430,7 +430,7 @@ app.get('/api/users/:identifier', optionalAuth, moderationServer.getUserProfile)
 // Initiate handle verification challenge
 app.post('/api/codeforces/verify/initiate', verifyAuth, async (req: Request, res: Response) => {
   const user = (req as AuthenticatedRequest).user;
-  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  if (!user) return res.status(401).json({ error: 'Unauthorized', message: 'You must be signed in to verify Codeforces account ownership.' });
 
   const handle = req.body?.handle;
   try {
@@ -442,18 +442,18 @@ app.post('/api/codeforces/verify/initiate', verifyAuth, async (req: Request, res
       : err.message?.includes('does not exist')
       ? 404
       : 400;
-    return res.status(status).json({ status: 'FAILED', error: err.message });
+    return res.status(status).json({ status: 'FAILED', error: err.message, message: err.message });
   }
 });
 
 // Confirm handle ownership challenge
 app.post('/api/codeforces/verify/confirm', verifyAuth, async (req: Request, res: Response) => {
   const user = (req as AuthenticatedRequest).user;
-  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  if (!user) return res.status(401).json({ error: 'Unauthorized', message: 'You must be signed in to confirm Codeforces verification.' });
 
   const challengeId = req.body?.challengeId;
   if (!challengeId) {
-    return res.status(400).json({ status: 'FAILED', error: 'challengeId is required.' });
+    return res.status(400).json({ status: 'FAILED', error: 'challengeId is required.', message: 'challengeId is required.' });
   }
 
   try {
@@ -461,27 +461,27 @@ app.post('/api/codeforces/verify/confirm', verifyAuth, async (req: Request, res:
     return res.json({ status: 'OK', ...result });
   } catch (err: any) {
     const status = err.message?.includes('exceeded') ? 429 : 400;
-    return res.status(status).json({ status: 'FAILED', error: err.message });
+    return res.status(status).json({ status: 'FAILED', error: err.message, message: err.message });
   }
 });
 
 // Unlink handle
 app.post('/api/codeforces/unlink', verifyAuth, async (req: Request, res: Response) => {
   const user = (req as AuthenticatedRequest).user;
-  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  if (!user) return res.status(401).json({ error: 'Unauthorized', message: 'You must be signed in to unlink a Codeforces account.' });
 
   try {
     const result = await cfVerificationService.unlinkHandle(user.id);
     return res.json({ status: 'OK', ...result });
   } catch (err: any) {
-    return res.status(500).json({ status: 'FAILED', error: err.message });
+    return res.status(500).json({ status: 'FAILED', error: err.message, message: err.message });
   }
 });
 
 // Sync Codeforces public data
 app.post('/api/codeforces/sync', verifyAuth, async (req: Request, res: Response) => {
   const user = (req as AuthenticatedRequest).user;
-  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  if (!user) return res.status(401).json({ error: 'Unauthorized', message: 'You must be signed in to synchronize Codeforces data.' });
 
   try {
     const result = await cfVerificationService.syncCodeforcesData(user.id, true);

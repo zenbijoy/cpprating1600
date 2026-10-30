@@ -46,6 +46,7 @@ import {
   deriveStats,
   getSyncCooldownSeconds,
   calculateRatingDelta,
+  convertCfSubmissionsToAttempts,
 } from '../services/codeforces';
 import { cfStorageService, storageService } from '../services/storage';
 import { useToast } from './Toast';
@@ -58,6 +59,8 @@ interface CodeforcesProfileViewProps {
   targetRating?: number;
   onSelectProblem?: (prob: CFProblem) => void;
   onSaveMistake?: (mistake: MistakeRecord) => void;
+  isAuthenticated?: boolean;
+  onOpenAuthModal?: () => void;
 }
 
 type DateRange = '7d' | '30d' | '90d' | '180d' | 'all';
@@ -129,12 +132,21 @@ export const CodeforcesProfileView: React.FC<CodeforcesProfileViewProps> = ({
   targetRating = 1600,
   onSelectProblem,
   onSaveMistake,
+  isAuthenticated = false,
+  onOpenAuthModal,
 }) => {
   const { success, error: toastError, info: toastInfo } = useToast();
 
   const [handle, setHandle] = useState(profile.cfHandle ?? '');
   const [inputHandle, setInputHandle] = useState('');
   const [isEditing, setIsEditing] = useState(!profile.cfHandle);
+
+  useEffect(() => {
+    if (profile.cfHandle && profile.cfHandle !== handle) {
+      setHandle(profile.cfHandle);
+      setIsEditing(false);
+    }
+  }, [profile.cfHandle, handle]);
   const [loading, setLoading] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'ok' | 'cached' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -194,6 +206,12 @@ export const CodeforcesProfileView: React.FC<CodeforcesProfileViewProps> = ({
       cfStorageService.saveCFUserInfo(info);
       cfStorageService.saveRatingHistory(rating);
       cfStorageService.saveCFSubmissions(subs as CFSubmissionRecord[]);
+
+      // Standardize CF submissions into problem attempts for dashboard, heatmap & arena
+      const liveAttempts = convertCfSubmissionsToAttempts(subs as CFSubmissionRecord[]);
+      if (liveAttempts.length > 0) {
+        storageService.saveAttempts(liveAttempts);
+      }
 
       const now = new Date().toISOString();
       cfStorageService.saveSyncState({

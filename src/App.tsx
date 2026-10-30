@@ -40,6 +40,7 @@ import { notificationClient } from './services/notificationClient';
 import { authService, supabase, UserCfAccount } from './services/supabase';
 import { Session, User } from '@supabase/supabase-js';
 import { storageService, cfStorageService, defaultGoal, defaultProfile } from './services/storage';
+import { codeforcesService, convertCfSubmissionsToAttempts } from './services/codeforces';
 import { CFProblem, DailyPlan, DailyTask, MistakeRecord, ProblemAttempt, UserGoal, UserProfile } from './types';
 import { generateDailyPlan, getTopicForDay } from './utils/roadmap';
 import { applyThemeToDom } from './utils/themeEngine';
@@ -64,6 +65,20 @@ export default function App() {
     // Bootstrap active theme tokens on root document element
     const currentSettings = storageService.getSettings();
     applyThemeToDom(currentSettings.theme);
+
+    // If set to system, dynamically respond to OS dark/light mode toggles
+    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (!mediaQuery) return;
+
+    const handleSystemChange = () => {
+      const latestSettings = storageService.getSettings();
+      if (latestSettings.theme.mode === 'system') {
+        applyThemeToDom(latestSettings.theme);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleSystemChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemChange);
   }, []);
 
   // Active Daily Plan
@@ -275,21 +290,85 @@ export default function App() {
     setActiveTab('dashboard');
   };
 
-  const handleSyncCfData = async () => {
+  const handleSyncCfData = async (customHandle?: string) => {
+    const handle = customHandle || profile.cfHandle;
+    if (!handle) {
+      handleOpenVerification();
+      return;
+    }
     try {
-      const synced = await authService.syncCfData();
-      setProfile((prev) => ({
+      const userInfo = await codeforcesService.getUserInfo(handle);
+      const submissions = await codeforcesService.getUserSubmissions(handle, 500).catch(() => []);
+      const liveAttempts = convertCfSubmissionsToAttempts(submissions);
+
+      if (liveAttempts.length > 0) {
+        storageService.saveAttempts(liveAttempts);
+        setAttempts(liveAttempts);
+      }
+
+      const updatedProfile: UserProfile = {
+        ...profile,
+        cfHandle: userInfo.handle,
+        verifiedCfRating: userInfo.rating,
+        maxCfRating: userInfo.maxRating,
+        rank: userInfo.rank,
+        avatar: userInfo.avatar || profile.avatar,
+      };
+      setProfile(updatedProfile);
+      storageService.saveProfile(updatedProfile);
+
+      setCfAccount((prev) => (prev ? {
         ...prev,
-        cfHandle: synced.handle,
-        verifiedCfRating: synced.rating,
-        maxCfRating: synced.maxRating,
-        rank: synced.rank,
+        cf_handle: userInfo.handle,
+        cf_rating: userInfo.rating,
+        cf_rank: userInfo.rank,
+        cf_avatar: userInfo.avatar,
+        cf_solved_count: liveAttempts.filter((a) => a.officialVerdict === 'OK').length,
+        last_synced_at: new Date().toISOString(),
+      } : {
+        id: 'local_cf',
+        user_id: authUser?.id || 'guest',
+        cf_handle: userInfo.handle,
+        normalized_handle: userInfo.handle.toLowerCase(),
+        verification_status: 'verified',
+        cf_rating: userInfo.rating,
+        cf_rank: userInfo.rank,
+        cf_avatar: userInfo.avatar,
+        cf_solved_count: liveAttempts.filter((a) => a.officialVerdict === 'OK').length,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        last_synced_at: new Date().toISOString(),
       }));
-      setCfAccount((prev) => (prev ? { ...prev, last_synced_at: synced.lastSyncedAt } : null));
+
+      if (session) {
+        try {
+          await authService.syncCfData();
+        } catch {
+          // Ignore cloud sync notice for local session
+        }
+      }
     } catch (err: any) {
-      alert(`Sync notice: ${err.message}`);
+      console.error('[App] Failed to sync Codeforces data:', err);
+      alert(`Sync notice: ${err.message || 'Failed to sync Codeforces data'}`);
     }
   };
+
+  // Auto-sync real Codeforces submissions on mount if handle is set but attempts are empty
+  useEffect(() => {
+    if (profile.cfHandle && attempts.length === 0) {
+      codeforcesService.getUserSubmissions(profile.cfHandle, 500)
+        .then((submissions) => {
+          const converted = convertCfSubmissionsToAttempts(submissions);
+          if (converted.length > 0) {
+            storageService.saveAttempts(converted);
+            setAttempts(converted);
+          }
+        })
+        .catch((err) => {
+          console.warn('[App] Background CF auto-sync notice:', err);
+        });
+    }
+  }, [profile.cfHandle, attempts.length]);
 
   const handleUnlinkCfAccount = async () => {
     try {
@@ -602,7 +681,7 @@ export default function App() {
             mistakes={mistakes}
             onUpdateGoal={handleUpdateGoal}
             isAuthenticated={!!authUser}
-            isCfVerified={cfAccount?.verification_status === 'verified'}
+            isCfVerified={cfAccount?.verification_status === 'verified' || Boolean(profile.cfHandle)}
             cfAccount={cfAccount}
             onOpenAuthModal={() => setShowAuthModal(true)}
             onOpenVerificationModal={() => handleOpenVerification()}
@@ -722,11 +801,13 @@ export default function App() {
           <CodeforcesProfileView
             profile={profile}
             onUpdateProfile={handleUpdateProfile}
-            isCfVerified={cfAccount?.verification_status === 'verified'}
+            isCfVerified={cfAccount?.verification_status === 'verified' || Boolean(profile.cfHandle)}
             onOpenVerificationModal={(h) => handleOpenVerification(h)}
             targetRating={goal?.targetRating || 1600}
             onSelectProblem={(prob) => setActiveProblem(prob)}
             onSaveMistake={handleSaveMistake}
+            isAuthenticated={!!authUser}
+            onOpenAuthModal={() => setShowAuthModal(true)}
           />
         )}
 
@@ -914,7 +995,9 @@ export default function App() {
         isOpen={showVerificationModal}
         initialHandle={verificationInitialHandle}
         onClose={() => setShowVerificationModal(false)}
-        onVerified={(verifiedAcc) => {
+        isAuthenticated={!!authUser}
+        onOpenAuthModal={() => setShowAuthModal(true)}
+        onVerified={(verifiedAcc, newAttempts) => {
           setCfAccount((prev) => (prev ? { ...prev, ...verifiedAcc } : (verifiedAcc as UserCfAccount)));
           setProfile((prev) => ({
             ...prev,
@@ -923,6 +1006,9 @@ export default function App() {
             rank: verifiedAcc.cf_rank ?? prev.rank,
             avatar: verifiedAcc.cf_avatar ?? prev.avatar,
           }));
+          if (newAttempts && newAttempts.length > 0) {
+            setAttempts(storageService.getAttempts());
+          }
         }}
         onSkip={() => setShowVerificationModal(false)}
       />

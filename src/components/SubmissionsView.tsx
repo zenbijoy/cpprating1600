@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   SubmissionHistoryIcon,
   SearchIcon,
@@ -490,6 +490,17 @@ export const SubmissionsView: React.FC<SubmissionsViewProps> = ({
       setLoading(false);
     }
   }, [cfHandle]);
+
+  // Auto-load live submissions when cfHandle is available
+  useEffect(() => {
+    if (!cfHandle) return;
+    const cached = cfStorageService.getCFSubmissions();
+    if (cached && cached.length > 0) {
+      setSubmissions(cached);
+    } else {
+      refresh();
+    }
+  }, [cfHandle, refresh]);
 
   // Compute available languages
   const languages = useMemo(() => {

@@ -273,12 +273,22 @@ export const storageService = {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.ATTEMPTS);
       if (!data) {
-        localStorage.setItem(STORAGE_KEYS.ATTEMPTS, JSON.stringify(initialSampleAttempts));
-        return initialSampleAttempts;
+        return [];
       }
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (!Array.isArray(parsed)) return [];
+      // Filter out fake seed attempts so real data is never polluted
+      return parsed.filter((a) => !a.id?.startsWith('att_seed_'));
     } catch {
-      return initialSampleAttempts;
+      return [];
+    }
+  },
+
+  saveAttempts(attempts: ProblemAttempt[]): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.ATTEMPTS, JSON.stringify(attempts));
+    } catch (e) {
+      console.error('Failed to save attempts:', e);
     }
   },
 
@@ -297,13 +307,14 @@ export const storageService = {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.MISTAKES);
       if (!data) {
-        // Initialize with realistic initial sample mistakes so the feature is immediately testable
-        localStorage.setItem(STORAGE_KEYS.MISTAKES, JSON.stringify(initialSampleMistakes));
-        return initialSampleMistakes;
+        return [];
       }
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (!Array.isArray(parsed)) return [];
+      // Filter out fake sample mistakes so notebook starts clean and authentic
+      return parsed.filter((m) => !m.id?.startsWith('sample_m'));
     } catch {
-      return initialSampleMistakes;
+      return [];
     }
   },
 

@@ -29,7 +29,7 @@ export interface UserCfAccount {
   cf_rank?: string | null;
   cf_max_rank?: string | null;
   cf_avatar?: string | null;
-  cf_solved_count: number;
+  cf_solved_count?: number | null;
   synced_data?: any;
   last_synced_at?: string | null;
 }
@@ -199,9 +199,12 @@ export const authService = {
       headers,
       body: JSON.stringify({ handle }),
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok || data.status === 'FAILED') {
-      throw new Error(data.error || 'Failed to initiate verification challenge.');
+      if (res.status === 401) {
+        throw new Error(data.message || 'You must be signed in to verify Codeforces account ownership. Please sign in or continue in guest mode.');
+      }
+      throw new Error(data.message || data.error || 'Failed to initiate verification challenge.');
     }
     return data;
   },
@@ -221,9 +224,12 @@ export const authService = {
       headers,
       body: JSON.stringify({ challengeId }),
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok || data.status === 'FAILED') {
-      throw new Error(data.error || 'Verification check failed.');
+      if (res.status === 401) {
+        throw new Error(data.message || 'Authentication session expired. Please sign in again.');
+      }
+      throw new Error(data.message || data.error || 'Verification check failed.');
     }
     return data;
   },
@@ -235,9 +241,12 @@ export const authService = {
       method: 'POST',
       headers,
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok || data.status === 'FAILED') {
-      throw new Error(data.error || 'Failed to unlink Codeforces account.');
+      if (res.status === 401) {
+        throw new Error(data.message || 'Authentication session expired. Please sign in again.');
+      }
+      throw new Error(data.message || data.error || 'Failed to unlink Codeforces account.');
     }
     return data;
   },
@@ -249,9 +258,12 @@ export const authService = {
       method: 'POST',
       headers,
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok || data.status === 'FAILED') {
-      throw new Error(data.error || 'Failed to synchronize Codeforces data.');
+      if (res.status === 401) {
+        throw new Error(data.message || 'Authentication session expired. Please sign in again.');
+      }
+      throw new Error(data.message || data.error || 'Failed to synchronize Codeforces data.');
     }
     return data;
   },
