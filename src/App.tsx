@@ -290,8 +290,8 @@ export default function App() {
     setActiveTab('dashboard');
   };
 
-  const handleSyncCfData = async (customHandle?: string) => {
-    const handle = customHandle || profile.cfHandle;
+  const handleSyncCfData = async (customHandle?: unknown) => {
+    const handle = (typeof customHandle === 'string' && customHandle.trim()) ? customHandle.trim() : profile.cfHandle;
     if (!handle) {
       handleOpenVerification();
       return;
