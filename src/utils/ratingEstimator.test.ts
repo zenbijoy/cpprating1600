@@ -9,6 +9,18 @@ test('calculateTheoreticalRating returns baseline for 0 solves', () => {
   assert.equal(result.confidenceLevel, 'low');
   assert.equal(result.totalQualifiedSolves, 0);
   assert.equal(result.pointsTo1600, 800);
+  assert.equal(result.percentTowardsTarget, 0); // At 800 base, 0% of the 800-1600 journey is completed
+});
+
+test('calculateTheoreticalRating percentTowardsTarget calculates properly along 800 to 1600 range', () => {
+  const at800 = calculateTheoreticalRating([], 800, 800);
+  assert.equal(at800.percentTowardsTarget, 0);
+
+  const at1200 = calculateTheoreticalRating([], 800, 1200);
+  assert.equal(at1200.percentTowardsTarget, 50); // (1200 - 800) / (1600 - 800) = 50%
+
+  const at1600 = calculateTheoreticalRating([], 800, 1600);
+  assert.equal(at1600.percentTowardsTarget, 100);
 });
 
 test('calculateTheoreticalRating increases with higher difficulty solves and volume', () => {

@@ -147,7 +147,7 @@ export const CommunityBenchmarks: React.FC<CommunityBenchmarksProps> = ({
               <CommunityIcon size={16} />
             </div>
             <div>
-              <h3 className="font-bold text-white text-base tracking-tight flex items-center gap-2">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base tracking-tight flex items-center gap-2">
                 <span>Community & Cohort Hub</span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                   Target 1600 Cohort
@@ -238,7 +238,7 @@ export const CommunityBenchmarks: React.FC<CommunityBenchmarksProps> = ({
                 Cohort Percentile
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-xl md:text-2xl font-black text-white">
+                <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">
                   {comparison.cohortPercentile}
                   <span className="text-xs text-indigo-300">th</span>
                 </span>
@@ -306,7 +306,7 @@ export const CommunityBenchmarks: React.FC<CommunityBenchmarksProps> = ({
           <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4 space-y-2">
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-white">
+                <span className="font-bold text-slate-900 dark:text-white">
                   {metric === 'rating'
                     ? 'Codeforces Rating Trajectory (User vs Cohort)'
                     : 'Cumulative Solves Progression (User vs Cohort)'}
@@ -406,7 +406,7 @@ export const CommunityBenchmarks: React.FC<CommunityBenchmarksProps> = ({
           <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4 space-y-2 text-xs">
             <div className="flex items-center gap-2">
               <AISparkleIcon size={16} semantic="warning" />
-              <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">
+              <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px]">
                 Cohort Progress Analysis
               </h4>
             </div>
@@ -619,7 +619,7 @@ export const CommunityBenchmarks: React.FC<CommunityBenchmarksProps> = ({
       <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4 space-y-2 text-xs">
         <div className="flex items-center gap-2">
           <AISparkleIcon size={16} semantic="warning" />
-          <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">
+          <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px]">
             Cohort Progress Analysis
           </h4>
         </div>

@@ -5,11 +5,14 @@ import {
   TimerIcon,
   ExternalLinkIcon,
   WarningStatusIcon,
+  FlameIcon,
 } from './icons';
 import { CFContest, codeforcesService } from '../services/codeforces';
 import { CFProblem, MistakeRecord } from '../types';
 import { VirtualContestArenaView } from './VirtualContestArenaView';
 import { EmptyContestsState } from './assets';
+import { soundEffects } from '../utils/soundEffects';
+import { AnimeViewCompanionBanner } from './common/AnimeViewCompanionBanner';
 
 interface ContestsViewProps {
   onSelectProblem: (problem: CFProblem) => void;
@@ -68,36 +71,66 @@ export const ContestsView: React.FC<ContestsViewProps> = ({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* Top Mode Switcher */}
-      <div className="flex items-center gap-2 p-1 rounded-2xl bg-slate-900 border border-slate-800 w-fit">
-        <button
-          onClick={() => setActiveSubTab('arena')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            activeSubTab === 'arena'
-              ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20'
-              : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <TrophyIcon size={16} />
-          <span>Virtual Contest Arena</span>
-        </button>
+      {/* Anime Tournament Cheerleader Banner */}
+      <AnimeViewCompanionBanner
+        screenTitle="Tournament Arena &amp; Codeforces Contests"
+        subtitle="Simulate authentic Codeforces Division 2 &amp; 3 contests under 2-hour battle pressure. Test your time management and claim the champion crown!"
+        badgeText="Coliseum Arena"
+        badgeIcon="⚔️"
+        stickerType="speedrun_1600"
+      />
 
-        <button
-          onClick={() => setActiveSubTab('upcoming')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            activeSubTab === 'upcoming'
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
-              : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <CalendarIcon size={16} />
-          <span>Official Upcoming Schedule</span>
-          {contests.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-indigo-950 text-indigo-300 text-[10px] border border-indigo-800">
-              {contests.length}
+      {/* Top Mode Switcher */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-lg backdrop-blur-sm">
+          <button
+            onClick={() => {
+              soundEffects.playPop();
+              setActiveSubTab('arena');
+            }}
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeSubTab === 'arena'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 shadow-md shadow-amber-500/20'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <TrophyIcon size={16} />
+            <span>Virtual Contest Arena</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+                activeSubTab === 'arena' ? 'bg-amber-950/40 text-amber-950' : 'bg-slate-800 text-slate-400'
+              }`}
+            >
+              Multi-Platform
             </span>
-          )}
-        </button>
+          </button>
+
+          <button
+            onClick={() => {
+              soundEffects.playPop();
+              setActiveSubTab('upcoming');
+            }}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeSubTab === 'upcoming'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <CalendarIcon size={16} />
+            <span>Official Upcoming Schedule</span>
+            {contests.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-indigo-950 text-indigo-300 text-[10px] border border-indigo-800 font-mono">
+                {contests.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Quick reminder pill */}
+        <div className="hidden lg:flex items-center gap-2 text-xs text-slate-400 bg-slate-900/50 border border-slate-800 px-3 py-1.5 rounded-xl">
+          <FlameIcon size={14} className="text-amber-400" />
+          <span>Rating 1600 Target: Solve 3–4 problems consistently in virtual rounds</span>
+        </div>
       </div>
 
       {/* Render selected mode */}
@@ -112,7 +145,7 @@ export const ContestsView: React.FC<ContestsViewProps> = ({
         /* Official Upcoming Codeforces Rounds */
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
               <CalendarIcon size={16} semantic="primary" />
               <span>Official Codeforces Calendar</span>
             </h3>
@@ -120,7 +153,7 @@ export const ContestsView: React.FC<ContestsViewProps> = ({
           </div>
 
           {error && (
-            <div className="p-4 rounded-xl border border-rose-900/40 bg-rose-950/30 text-rose-300 text-xs flex items-center gap-2">
+            <div className="p-4 rounded-2xl border border-rose-900/40 bg-rose-950/30 text-rose-300 text-xs flex items-center gap-2">
               <WarningStatusIcon size={16} semantic="error" className="shrink-0" />
               <span>{error}</span>
             </div>
@@ -129,7 +162,7 @@ export const ContestsView: React.FC<ContestsViewProps> = ({
           {loading ? (
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 rounded-xl bg-slate-900/50 animate-pulse border border-slate-800" />
+                <div key={i} className="h-20 rounded-2xl bg-slate-900/50 animate-pulse border border-slate-800" />
               ))}
             </div>
           ) : contests.length === 0 ? (
@@ -140,31 +173,38 @@ export const ContestsView: React.FC<ContestsViewProps> = ({
               onAction={() => setActiveSubTab('arena')}
             />
           ) : (
-            <div className="space-y-2.5">
-              {contests.slice(0, 10).map((c) => (
+            <div className="space-y-3">
+              {contests.slice(0, 15).map((c) => (
                 <div
                   key={c.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-slate-700 transition-all gap-3"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-slate-950/80 hover:border-slate-700 transition-all gap-4 shadow-md"
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-purple-400">#{c.id}</span>
-                      <h4 className="text-sm font-bold text-white">{c.name}</h4>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-2 py-0.5 rounded-md bg-indigo-950 border border-indigo-800 text-indigo-300 text-xs font-mono font-bold">
+                        #{c.id}
+                      </span>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">{c.name}</h4>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-slate-400">
                       <span className="flex items-center gap-1 text-slate-300">
                         <TimerIcon size={14} semantic="primary" />
-                        <span>{formatLocalTime(c.startTimeSeconds)}</span>
+                        <span>{formatLocalTime(c.startTimeSeconds || 0)}</span>
                       </span>
+                      <span>·</span>
                       <span>Duration: {Math.round(c.durationSeconds / 3600)}h</span>
+                      <span>·</span>
+                      <span className="text-slate-400">Type: {c.type}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 self-end sm:self-center shrink-0">
                     <div className="text-right">
-                      <span className="block text-[10px] text-slate-400 uppercase font-semibold">Starts in</span>
-                      <span className="text-xs font-mono font-bold text-amber-300">
-                        {formatCountdown(c.startTimeSeconds)}
+                      <span className="block text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                        Starts in
+                      </span>
+                      <span className="text-sm font-mono font-black text-amber-300">
+                        {formatCountdown(c.startTimeSeconds || 0)}
                       </span>
                     </div>
 
@@ -172,7 +212,7 @@ export const ContestsView: React.FC<ContestsViewProps> = ({
                       href={`https://codeforces.com/contestRegistration/${c.id}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3.5 py-2 transition-all shadow-sm"
+                      className="flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2.5 transition-all shadow-md shadow-indigo-600/20"
                     >
                       <span>Register on CF</span>
                       <ExternalLinkIcon size={14} />

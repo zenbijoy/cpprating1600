@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Navbar, TabId } from './components/Navbar';
 import { DashboardView } from './components/DashboardView';
 import { CurriculumView } from './components/CurriculumView';
@@ -17,8 +18,13 @@ import { MistakeNotebookView } from './components/MistakeNotebookView';
 import { SettingsView } from './components/SettingsView';
 import { SolutionLibraryView } from './components/SolutionLibraryView';
 import { PlaygroundView } from './components/PlaygroundView';
+import { FunnyGamesHubView } from './components/FunnyGamesHubView';
+import { DailyLoginRewardsModal } from './components/DailyLoginRewardsModal';
+import { DailyFortuneModal } from './components/DailyFortuneModal';
+import { FloatingHabitCompanion } from './components/FloatingHabitCompanion';
+import { ProblemRouletteModal } from './components/ProblemRouletteModal';
+import { gameRewardService } from './services/gameRewardService';
 import { AdminDashboardView } from './components/AdminDashboardView';
-import { IconSystemView } from './components/icons/IconSystemView';
 import { SocialFeedView, PostComposerPrefill } from './components/SocialFeedView';
 import { CommunityHubView } from './components/CommunityHubView';
 import { DirectMessagesView } from './components/DirectMessagesView';
@@ -42,9 +48,10 @@ import { Session, User } from '@supabase/supabase-js';
 import { storageService, cfStorageService, defaultGoal, defaultProfile } from './services/storage';
 import { codeforcesService, convertCfSubmissionsToAttempts } from './services/codeforces';
 import { CFProblem, DailyPlan, DailyTask, MistakeRecord, ProblemAttempt, UserGoal, UserProfile } from './types';
-import { generateDailyPlan, getTopicForDay } from './utils/roadmap';
+import { generateDailyPlan, getTopicForDay, TOPICS } from './utils/roadmap';
 import { applyThemeToDom } from './utils/themeEngine';
 import { TranslationContext, t, LanguageCode } from './utils/i18n';
+import { AppBackground } from './components/AppBackground';
 
 export default function App() {
   // Check URL query parameters (e.g. ?autostart=1 to skip onboarding for verification)
@@ -156,10 +163,24 @@ export default function App() {
 
   const [activeProblem, setActiveProblem] = useState<CFProblem | null>(null);
   const [workspaceInitialCode, setWorkspaceInitialCode] = useState<string | undefined>(undefined);
+  const [solutionLibraryProblemId, setSolutionLibraryProblemId] = useState<string | undefined>(undefined);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState<boolean>(false);
   const [showAntiProcrastination, setShowAntiProcrastination] = useState<boolean>(false);
+  const [showProblemSpinner, setShowProblemSpinner] = useState<boolean>(false);
+  const [showDailyLoginModal, setShowDailyLoginModal] = useState<boolean>(false);
+  const [showDailyFortuneModal, setShowDailyFortuneModal] = useState<boolean>(false);
   const [curriculumSelectedTopicId, setCurriculumSelectedTopicId] = useState<string | undefined>(undefined);
+
+  // Auto-prompt Daily Login Rewards on daily visit if unclaimed
+  useEffect(() => {
+    if (!showSplash && !showOnboarding && !gameRewardService.hasClaimedDailyToday()) {
+      const timer = setTimeout(() => {
+        setShowDailyLoginModal(true);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [showSplash, showOnboarding]);
 
   // Supabase Auth and Codeforces State
   const [session, setSession] = useState<Session | null>(null);
@@ -306,12 +327,15 @@ export default function App() {
         setAttempts(liveAttempts);
       }
 
+      const ratingHistory = await codeforcesService.getUserRating(handle).catch(() => []);
+      const latestContestRating = ratingHistory.length > 0 ? ratingHistory[ratingHistory.length - 1].newRating : userInfo.rating;
+
       const fullName = [userInfo.firstName, userInfo.lastName].filter(Boolean).join(' ');
       const updatedProfile: UserProfile = {
         ...profile,
         name: (fullName && (!profile.name || profile.name === 'Competitive Programmer')) ? fullName : (profile.name || fullName || userInfo.handle),
         cfHandle: userInfo.handle,
-        verifiedCfRating: userInfo.rating,
+        verifiedCfRating: latestContestRating,
         maxCfRating: userInfo.maxRating,
         rank: userInfo.rank,
         avatar: userInfo.avatar || profile.avatar,
@@ -355,9 +379,10 @@ export default function App() {
     }
   };
 
-  // Auto-sync real Codeforces submissions on mount if handle is set but attempts are empty
+  // Auto-sync real Codeforces submissions on mount if handle is set but attempts are empty or seed data
   useEffect(() => {
-    if (profile.cfHandle && attempts.length === 0) {
+    const hasOnlySeedAttempts = attempts.length > 0 && attempts.every((a) => a.id.startsWith('att_seed_'));
+    if (profile.cfHandle && (attempts.length === 0 || hasOnlySeedAttempts)) {
       codeforcesService.getUserSubmissions(profile.cfHandle, 500)
         .then((submissions) => {
           const converted = convertCfSubmissionsToAttempts(submissions);
@@ -487,6 +512,17 @@ export default function App() {
     };
   }, []);
 
+  const handleViewSolution = (problemOrId: CFProblem | string) => {
+    let pid = '';
+    if (typeof problemOrId === 'string') {
+      pid = problemOrId;
+    } else if (problemOrId.contestId && problemOrId.index) {
+      pid = `${problemOrId.contestId}${problemOrId.index}`;
+    }
+    setSolutionLibraryProblemId(pid);
+    setActiveTab('solutions');
+  };
+
   const handleOpenWorkspaceWithCode = (code: string, problemNameOrId?: string) => {
     let matchedProb: CFProblem = {
       contestId: 1352,
@@ -496,13 +532,32 @@ export default function App() {
       tags: ['implementation'],
     };
     if (problemNameOrId) {
-      const match = problemNameOrId.match(/^(\d+)([A-Za-z]\d?)$/);
+      const match = problemNameOrId.match(/^(\d+)\s*[-_]?\s*([A-Za-z]\d?)$/);
       if (match) {
         matchedProb.contestId = parseInt(match[1], 10);
         matchedProb.index = match[2].toUpperCase();
-        matchedProb.name = `Problem ${problemNameOrId}`;
+        matchedProb.name = `Problem ${match[1]}${match[2].toUpperCase()}`;
       } else {
-        matchedProb.name = problemNameOrId;
+        const contestMatch = problemNameOrId.match(/\b(\d+)\s*[-_]?\s*([A-Za-z]\d?)\b/);
+        if (contestMatch) {
+          matchedProb.contestId = parseInt(contestMatch[1], 10);
+          matchedProb.index = contestMatch[2].toUpperCase();
+          matchedProb.name = problemNameOrId;
+        } else {
+          matchedProb.name = problemNameOrId;
+        }
+      }
+
+      // Check if this problem exists in any curriculum topic for enriched tags and rating
+      for (const t of TOPICS) {
+        const found = t.recommendedProblems.find((p) =>
+          (matchedProb.contestId && p.contestId === matchedProb.contestId && p.index.toUpperCase() === matchedProb.index.toUpperCase()) ||
+          p.name.toLowerCase() === problemNameOrId.toLowerCase()
+        );
+        if (found) {
+          matchedProb = { ...found };
+          break;
+        }
       }
     }
     const pid = `${matchedProb.contestId}${matchedProb.index}`;
@@ -645,7 +700,10 @@ export default function App() {
   return (
     <TranslationContext.Provider value={{ lang, setLang, t: (k) => t(k, lang) }}>
       <ToastProvider>
-        <div className="min-h-screen bg-[var(--climb-bg-app,#0b0f19)] text-[var(--climb-text-main,#f1f5f9)] flex flex-col lg:flex-row antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+        <div className="min-h-screen bg-[var(--climb-bg-app,#0b0f19)] text-[var(--climb-text-main,#f1f5f9)] flex flex-col antialiased selection:bg-indigo-500/30 selection:text-indigo-200 relative">
+          {/* Dynamic Themed Ambient Background */}
+          <AppBackground />
+
           {/* Navigation */}
           <Navbar
             activeTab={activeTab}
@@ -663,25 +721,38 @@ export default function App() {
             unreadNotificationCount={unreadNotificationCount}
             unreadMessageCount={unreadMessageCount}
             onOpenNotifications={() => setShowNotificationInbox(true)}
+            onOpenDailyRewards={() => setShowDailyLoginModal(true)}
+            onOpenDailyFortune={() => setShowDailyFortuneModal(true)}
+            onOpenProblemSpinner={() => setShowProblemSpinner(true)}
             onReplaySplash={() => handleReplaySplash(false)}
             onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
             onOpenShortcutsModal={() => setIsShortcutsOpen(true)}
-          />
-
-      {/* Main Content Area */}
-      <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8 pb-28 lg:pb-8 overflow-y-auto max-w-7xl mx-auto w-full safe-area-overlay">
-        {activeTab === 'dashboard' && (
+          >
+            {/* Main Content Area */}
+            <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8 pb-28 lg:pb-8 overflow-y-auto max-w-7xl mx-auto w-full min-w-0 safe-area-overlay">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 14, scale: 0.995 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.995 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full"
+          >
+            {activeTab === 'dashboard' && (
           <DashboardView
             goal={goal}
             profile={profile}
             dailyPlan={dailyPlan}
             onUpdateDailyPlan={handleUpdateDailyPlan}
             onSelectProblem={(prob) => setActiveProblem(prob)}
+            onViewSolution={handleViewSolution}
             onOpenAntiProcrastination={() => setShowAntiProcrastination(true)}
             onOpenCurriculumTopic={handleOpenCurriculumTopic}
             recentAttempts={attempts}
             mistakes={mistakes}
             onUpdateGoal={handleUpdateGoal}
+            onUpdateProfile={handleUpdateProfile}
             isAuthenticated={!!authUser}
             isCfVerified={cfAccount?.verification_status === 'verified' || Boolean(profile.cfHandle)}
             cfAccount={cfAccount}
@@ -704,8 +775,16 @@ export default function App() {
         {activeTab === 'problems' && (
           <ProblemArenaView
             onSelectProblem={(prob) => setActiveProblem(prob)}
+            onViewSolution={handleViewSolution}
             attempts={attempts}
             currentRating={profile.verifiedCfRating}
+          />
+        )}
+
+        {activeTab === 'games' && (
+          <FunnyGamesHubView
+            onOpenSpinner={() => setShowProblemSpinner(true)}
+            onOpenDailyLogin={() => setShowDailyLoginModal(true)}
           />
         )}
 
@@ -731,6 +810,7 @@ export default function App() {
 
         {activeTab === 'solutions' && (
           <SolutionLibraryView
+            initialProblemId={solutionLibraryProblemId}
             onOpenWorkspaceWithCode={handleOpenWorkspaceWithCode}
             onShareToCommunity={(code, name, url) => handleShareToCommunity(code, name, url)}
           />
@@ -766,6 +846,7 @@ export default function App() {
           <SubmissionsView
             cfHandle={profile.cfHandle}
             onSelectProblem={(prob) => setActiveProblem(prob)}
+            onViewSolution={handleViewSolution}
             onSaveMistake={handleSaveMistake}
           />
         )}
@@ -817,6 +898,7 @@ export default function App() {
           <CurriculumView
             currentDay={goal.currentDay}
             onSelectProblem={(prob) => setActiveProblem(prob)}
+            onViewSolution={handleViewSolution}
             selectedTopicId={curriculumSelectedTopicId}
             attempts={attempts}
           />
@@ -858,10 +940,6 @@ export default function App() {
             onSignOut={handleSignOut}
             onReplaySplash={() => handleReplaySplash(false)}
           />
-        )}
-
-        {activeTab === 'icons' && (
-          <IconSystemView />
         )}
 
         {activeTab === 'feed' && (
@@ -924,7 +1002,10 @@ export default function App() {
             onOpenAuthModal={() => setShowAuthModal(true)}
           />
         )}
+          </motion.div>
+        </AnimatePresence>
       </main>
+    </Navbar>
 
       {/* App Entry & First-Time Download Splash Screen with Loading Bar */}
       {showSplash && (
@@ -1056,10 +1137,43 @@ export default function App() {
         currentDay={goal.currentDay}
       />
 
+      {/* Problem Wheel / Spinner Modal */}
+      <ProblemRouletteModal
+        isOpen={showProblemSpinner}
+        onClose={() => setShowProblemSpinner(false)}
+        onSelectProblem={(prob) => setActiveProblem(prob)}
+        userRating={profile.verifiedCfRating || 1000}
+        solvedProblemIds={new Set(attempts.filter((a) => a.officialVerdict === 'OK').map((a) => `${a.contestId}${a.index}`))}
+      />
+
+      {/* Everyday Login Rewards & Interesting Lore Modal */}
+      <DailyLoginRewardsModal
+        isOpen={showDailyLoginModal}
+        onClose={() => setShowDailyLoginModal(false)}
+      />
+
+      {/* Daily Fortune Cookie & Code Prophecy Modal */}
+      <DailyFortuneModal
+        isOpen={showDailyFortuneModal}
+        onClose={() => setShowDailyFortuneModal(false)}
+        onPracticeConcept={() => {
+          setActiveTab('dashboard');
+        }}
+      />
+
       {/* Keyboard Shortcuts Cheatsheet Modal */}
       <KeyboardShortcutsModal
         isOpen={isShortcutsOpen}
         onClose={() => setIsShortcutsOpen(false)}
+      />
+
+      {/* Global Floating Habit & Mascot Companion (Active across all tabs) */}
+      <FloatingHabitCompanion
+        streakDays={gameRewardService.getDailyLoginState().streakCount || 1}
+        onOpen5MinWarmup={() => setShowAntiProcrastination(true)}
+        onOpenDailyLogin={() => setShowDailyLoginModal(true)}
+        onOpenFortuneModal={() => setShowDailyFortuneModal(true)}
+        onOpenRoulette={() => setShowProblemSpinner(true)}
       />
     </div>
     </ToastProvider>

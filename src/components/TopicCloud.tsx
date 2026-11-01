@@ -99,7 +99,7 @@ export const TopicCloud: React.FC<TopicCloudProps> = ({
               <ProblemTagsIcon size={16} />
             </div>
             <div>
-              <h3 className="font-bold text-white text-base tracking-tight flex items-center gap-2">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base tracking-tight flex items-center gap-2">
                 <span>Topic Cloud & Practice Deficit</span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-mono bg-rose-500/20 text-rose-300 border border-rose-500/30">
                   {analysis.topDeficitTags.filter((t) => t.status === 'critical').length} Urgent Focus Areas
@@ -193,7 +193,7 @@ export const TopicCloud: React.FC<TopicCloudProps> = ({
                 }`}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="text-xs font-bold text-white truncate">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                     {metric.displayName}
                   </span>
                   <span
@@ -306,8 +306,8 @@ export const TopicCloud: React.FC<TopicCloudProps> = ({
                         onClick={() => setSelectedTag(metric)}
                         className={`p-2.5 rounded-lg border text-xs transition-all cursor-pointer flex items-center justify-between ${
                           isSelected
-                            ? 'border-indigo-500 bg-indigo-950/50 text-white font-bold'
-                            : 'border-slate-800/80 bg-slate-900/40 text-slate-300 hover:border-slate-700'
+                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-950 dark:text-white font-bold'
+                            : 'border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/40 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
                         }`}
                       >
                         <div className="flex items-center gap-2 truncate">
@@ -337,7 +337,7 @@ export const TopicCloud: React.FC<TopicCloudProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-base font-bold text-white">{activeTag.displayName}</h4>
+                  <h4 className="text-base font-bold text-slate-900 dark:text-white">{activeTag.displayName}</h4>
                   <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getStatusBadge(activeTag.status).bg} ${getStatusBadge(activeTag.status).text} ${getStatusBadge(activeTag.status).border}`}>
                     {getStatusBadge(activeTag.status).label}
                   </span>
@@ -355,7 +355,7 @@ export const TopicCloud: React.FC<TopicCloudProps> = ({
             <div className="flex items-center gap-4 text-xs font-mono shrink-0">
               <div className="text-right">
                 <span className="text-slate-400 block text-[10px]">CURRENT SOLVES</span>
-                <span className="text-white font-bold text-sm">
+                <span className="text-slate-900 dark:text-white font-bold text-sm">
                   {activeTag.solvedCount} / {activeTag.targetSolves}
                 </span>
               </div>
@@ -376,7 +376,7 @@ export const TopicCloud: React.FC<TopicCloudProps> = ({
               </span>
               {matchingCurriculumProblem ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-white">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">
                     {matchingCurriculumProblem.name}
                   </span>
                   {matchingCurriculumProblem.rating && (

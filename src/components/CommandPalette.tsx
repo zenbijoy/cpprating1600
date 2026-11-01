@@ -302,16 +302,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         action: () => { onNavigate('admin'); onClose(); },
         keywords: ['admin', 'importer', 'pipeline', 'solutions', 'telemetry'],
       },
-      {
-        id: 'view-icons',
-        title: 'CLIMB 1600 Icon System',
-        subtitle: 'Browse 200+ bespoke SVG icons, design tokens & JSX code snippets',
-        category: 'Views',
-        icon: CodingBracketsIcon,
-        action: () => { onNavigate('icons'); onClose(); },
-        badge: 'Design System',
-        keywords: ['icons', 'svg', 'tokens', 'system', 'symbols', 'climb'],
-      },
     ];
 
     const actions: CommandItem[] = [
@@ -488,7 +478,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-150"
+        className="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
@@ -504,7 +494,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             }}
             onKeyDown={handleInputKeyDown}
             placeholder="Type a command, problem (e.g. 4A), view, or concept..."
-            className="w-full bg-transparent text-sm sm:text-base text-slate-100 placeholder-slate-500 focus:outline-none"
+            className="w-full bg-transparent text-sm sm:text-base text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none"
           />
           {query && (
             <button
@@ -512,12 +502,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 setQuery('');
                 setSelectedIndex(0);
               }}
-              className="p-1 rounded text-slate-500 hover:text-slate-300 mr-2 cursor-pointer"
+              className="p-1 rounded text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mr-2 cursor-pointer"
             >
               <CloseIcon size={16} />
             </button>
           )}
-          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-800 border border-slate-700 rounded-md">
+          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md">
             ESC
           </kbd>
         </div>
@@ -539,10 +529,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   key={item.id}
                   onClick={item.action}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-all duration-150 cursor-pointer ${
                     isSelected
-                      ? 'bg-indigo-600/20 border border-indigo-500/40 text-white'
-                      : 'hover:bg-slate-800/60 border border-transparent text-slate-300'
+                      ? 'bg-indigo-600/15 dark:bg-indigo-600/25 border border-indigo-500/50 text-indigo-950 dark:text-white shadow-sm scale-[1.008]'
+                      : 'hover:bg-slate-800/60 border border-transparent text-slate-700 dark:text-slate-300 hover:translate-x-1'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -557,7 +547,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold truncate ${isSelected ? 'text-indigo-200' : 'text-slate-200'}`}>
+                        <span className={`text-sm font-semibold truncate ${isSelected ? 'text-indigo-950 dark:text-indigo-200' : 'text-slate-800 dark:text-slate-200'}`}>
                           {item.title}
                         </span>
                         {item.badge && (

@@ -105,7 +105,7 @@ export const AdminDashboardView: React.FC = () => {
             <Activity size={14} />
             <span>Telemetry & Ingestion Control Center</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Codeforces Importer Admin</h1>
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Codeforces Importer Admin</h1>
           <p className="text-slate-400 text-sm max-w-2xl mt-1">
             Real-time pipeline monitoring, license compliance auditing, duplicate tracking, and Supabase database synchronization.
           </p>
@@ -145,7 +145,7 @@ export const AdminDashboardView: React.FC = () => {
       {actionMessage && (
         <div className="p-4 rounded-xl border border-blue-500/30 bg-blue-950/40 text-blue-200 text-xs flex items-center justify-between">
           <span>{actionMessage}</span>
-          <button onClick={() => setActionMessage(null)} className="text-blue-400 hover:text-white">
+          <button onClick={() => setActionMessage(null)} className="text-blue-500 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white cursor-pointer">
             Dismiss
           </button>
         </div>
@@ -159,7 +159,7 @@ export const AdminDashboardView: React.FC = () => {
             <span className="text-xs font-medium">Scanned Repositories</span>
             <Server size={16} className="text-blue-400" />
           </div>
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">
             {summary?.repositories_scanned ?? inventory.length}
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
@@ -173,7 +173,7 @@ export const AdminDashboardView: React.FC = () => {
             <span className="text-xs font-medium">Candidate Files</span>
             <FileCode size={16} className="text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">
             {summary?.total_files_discovered?.toLocaleString() ?? '5,191'}
           </div>
           <p className="text-[11px] text-emerald-400 mt-1">
@@ -187,7 +187,7 @@ export const AdminDashboardView: React.FC = () => {
             <span className="text-xs font-medium">Unique Active Solutions</span>
             <CheckCircle2 size={16} className="text-purple-400" />
           </div>
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">
             {status?.total_in_memory?.toLocaleString() ?? '5,164'}
           </div>
           <p className="text-[11px] text-purple-400 mt-1">
@@ -201,7 +201,7 @@ export const AdminDashboardView: React.FC = () => {
             <span className="text-xs font-medium">Official CF Problems</span>
             <Database size={16} className="text-amber-400" />
           </div>
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">
             {status?.official_problems_indexed?.toLocaleString() ?? '11,481'}
           </div>
           <p className="text-[11px] text-slate-400 mt-1">
@@ -354,7 +354,7 @@ export const AdminDashboardView: React.FC = () => {
             </div>
             <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl text-xs space-y-1">
               <span className="text-slate-500">Sample Test Success Rate</span>
-              <p className="font-bold text-white text-base">
+              <p className="font-bold text-slate-900 dark:text-white text-base">
                 {validationReport?.sample_tests_passed || 49} / {validationReport?.sample_tests_run || 50} passed (98%)
               </p>
             </div>
@@ -419,12 +419,12 @@ export const AdminDashboardView: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl text-xs space-y-1">
               <span className="text-slate-500">Exact Byte Duplicates</span>
-              <p className="font-bold text-white text-lg">{status?.duplicate_stats?.exact_duplicates_count ?? 27}</p>
+              <p className="font-bold text-slate-900 dark:text-white text-lg">{status?.duplicate_stats?.exact_duplicates_count ?? 27}</p>
               <p className="text-[11px] text-slate-400">Merged into canonical records with multi-source provenance</p>
             </div>
             <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl text-xs space-y-1">
               <span className="text-slate-500">Normalized Whitespace/Comment Duplicates</span>
-              <p className="font-bold text-white text-lg">{status?.duplicate_stats?.normalized_duplicates_count ?? 0}</p>
+              <p className="font-bold text-slate-900 dark:text-white text-lg">{status?.duplicate_stats?.normalized_duplicates_count ?? 0}</p>
               <p className="text-[11px] text-slate-400">Conservative problem-scoped deduplication</p>
             </div>
           </div>

@@ -66,7 +66,7 @@ export const DataSettingsSection: React.FC<DataSettingsSectionProps> = ({
       {/* 1. Data Portability & Backup */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Database className="w-4 h-4 text-emerald-400" />
             <span>{t('data.title')}</span>
           </h3>
@@ -106,13 +106,13 @@ export const DataSettingsSection: React.FC<DataSettingsSectionProps> = ({
 
         {showImportBox && (
           <div className="p-4 rounded-xl border border-slate-800 bg-slate-950 space-y-3">
-            <label className="text-xs font-bold text-slate-300">Paste Backup JSON Content</label>
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Paste Backup JSON Content</label>
             <textarea
               rows={4}
               value={importJsonText}
               onChange={(e) => setImportJsonText(e.target.value)}
               placeholder='{"profile": {...}, "attempts": [...], "mistakes": [...]}'
-              className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             />
             <div className="flex items-center gap-2">
               <button
@@ -128,7 +128,7 @@ export const DataSettingsSection: React.FC<DataSettingsSectionProps> = ({
                   setShowImportBox(false);
                   setImportJsonText('');
                 }}
-                className="px-3 py-2 rounded-xl border border-slate-800 text-xs text-slate-400 hover:text-white"
+                className="px-3 py-2 rounded-xl border border-slate-800 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
@@ -139,7 +139,7 @@ export const DataSettingsSection: React.FC<DataSettingsSectionProps> = ({
 
       {/* 2. Storage Inspector & Cache Control */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <HardDrive className="w-4 h-4 text-cyan-400" />
           <span>Local Storage Health & Diagnostics</span>
         </h3>
@@ -147,7 +147,7 @@ export const DataSettingsSection: React.FC<DataSettingsSectionProps> = ({
         <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <p className="text-xs text-slate-400">{t('data.storage_used')}</p>
-            <p className="font-mono text-xl font-bold text-white">
+            <p className="font-mono text-xl font-bold text-slate-900 dark:text-white">
               {storageUsage.formatted}{' '}
               <span className="text-xs text-slate-500 font-normal">({storageUsage.itemCount} storage keys)</span>
             </p>
@@ -202,7 +202,7 @@ export const DataSettingsSection: React.FC<DataSettingsSectionProps> = ({
             <button
               type="button"
               onClick={() => setShowResetConfirm(false)}
-              className="rounded-xl border border-slate-800 px-3 py-1.5 text-xs text-slate-400 hover:text-white"
+              className="rounded-xl border border-slate-800 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer"
             >
               Cancel
             </button>

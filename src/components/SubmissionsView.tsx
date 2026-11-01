@@ -24,6 +24,7 @@ import {
   CalendarIcon,
   AcceptedIcon,
   WrongAnswerIcon,
+  CodeFileIcon,
 } from './icons';
 import { CFSubmissionRecord, CFProblem, MistakeRecord } from '../types';
 import { cfStorageService } from '../services/storage';
@@ -32,6 +33,7 @@ import { codeforcesService } from '../services/codeforces';
 interface SubmissionsViewProps {
   cfHandle?: string;
   onSelectProblem?: (prob: CFProblem) => void;
+  onViewSolution?: (prob: CFProblem) => void;
   onSaveMistake?: (mistake: MistakeRecord) => void;
 }
 
@@ -255,7 +257,7 @@ function AIAnalysisPanel({ submission, onSaveMistake }: AIAnalysisPanelProps) {
               className={`text-xs px-2.5 py-1.5 rounded-lg border transition-all disabled:opacity-50 flex items-center gap-1 ${
                 hintLevel === h.level && analysis
                   ? 'bg-violet-900/40 border-violet-500/70 text-violet-200 shadow-sm'
-                  : 'bg-slate-900 border-slate-700/70 text-slate-300 hover:text-white hover:bg-slate-800'
+                  : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-700/70 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <span className="font-semibold">{h.label}:</span>
@@ -322,10 +324,11 @@ function AIAnalysisPanel({ submission, onSaveMistake }: AIAnalysisPanelProps) {
 interface SubmissionRowProps {
   sub: CFSubmissionRecord;
   onSelectProblem?: (prob: CFProblem) => void;
+  onViewSolution?: (prob: CFProblem) => void;
   onSaveMistake?: (mistake: MistakeRecord) => void;
 }
 
-function SubmissionRow({ sub, onSelectProblem, onSaveMistake }: SubmissionRowProps) {
+function SubmissionRow({ sub, onSelectProblem, onViewSolution, onSaveMistake }: SubmissionRowProps) {
   const [expanded, setExpanded] = useState(false);
   const v = getVerdictInfo(sub.verdict);
   const pid = `${sub.problem.contestId ?? sub.contestId ?? ''}${sub.problem.index}`;
@@ -386,10 +389,24 @@ function SubmissionRow({ sub, onSelectProblem, onSaveMistake }: SubmissionRowPro
               target="_blank"
               rel="noopener noreferrer"
               title="View authoritative submission on Codeforces"
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors border border-slate-700/60"
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors border border-slate-200 dark:border-slate-700/60"
             >
               <ExternalLinkIcon size={14} />
             </a>
+            {onViewSolution && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewSolution(sub.problem);
+                }}
+                title="View canonical Codeforces solution"
+                className="text-xs px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border border-slate-200 dark:border-slate-700/60 font-medium transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <CodeFileIcon size={12} semantic="primary" />
+                <span className="hidden sm:inline">Solution</span>
+              </button>
+            )}
             <button
               onClick={() => onSelectProblem?.(sub.problem)}
               className="text-xs px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors"
@@ -461,6 +478,7 @@ function SubmissionRow({ sub, onSelectProblem, onSaveMistake }: SubmissionRowPro
 export const SubmissionsView: React.FC<SubmissionsViewProps> = ({
   cfHandle,
   onSelectProblem,
+  onViewSolution,
   onSaveMistake,
 }) => {
   const [submissions, setSubmissions] = useState<CFSubmissionRecord[]>(() => cfStorageService.getCFSubmissions());
@@ -545,8 +563,8 @@ export const SubmissionsView: React.FC<SubmissionsViewProps> = ({
         <div className="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-800/40 inline-flex">
           <SubmissionHistoryIcon size={48} semantic="primary" />
         </div>
-        <h2 className="text-xl font-bold text-slate-100">Connect Codeforces to View Submissions</h2>
-        <p className="text-slate-400 text-sm max-w-md mx-auto">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Connect Codeforces to View Submissions</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
           Please link your handle in the CF Profile tab to automatically fetch, filter, and inspect your real submission history.
         </p>
       </div>
@@ -558,12 +576,12 @@ export const SubmissionsView: React.FC<SubmissionsViewProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <SubmissionHistoryIcon size={20} semantic="primary" />
             Submission History & Logs
           </h1>
-          <p className="text-sm text-slate-400 mt-0.5">
-            Handle: <span className="font-semibold text-slate-200">{cfHandle}</span> · {stats.total} submissions · {stats.ac} AC · {stats.wa} WA · {stats.tle} TLE
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+            Handle: <span className="font-semibold text-slate-800 dark:text-slate-200">{cfHandle}</span> · {stats.total} submissions · {stats.ac} AC · {stats.wa} WA · {stats.tle} TLE
           </p>
         </div>
         <button
@@ -711,6 +729,7 @@ export const SubmissionsView: React.FC<SubmissionsViewProps> = ({
                     key={`${sub.id}-${sub.creationTimeSeconds}`}
                     sub={sub}
                     onSelectProblem={onSelectProblem}
+                    onViewSolution={onViewSolution}
                     onSaveMistake={onSaveMistake}
                   />
                 ))}

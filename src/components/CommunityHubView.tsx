@@ -12,6 +12,7 @@ import {
 } from './icons';
 import { Community, communityClient, CreateCommunityPayload } from '../services/communityClient';
 import { CommunityDetailView } from './CommunityDetailView';
+import { AnimeViewCompanionBanner } from './common/AnimeViewCompanionBanner';
 
 interface CommunityHubViewProps {
   currentUserId?: string;
@@ -178,6 +179,15 @@ export const CommunityHubView: React.FC<CommunityHubViewProps> = ({
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-16">
+      {/* Anime Guildmaster Companion Banner */}
+      <AnimeViewCompanionBanner
+        screenTitle="Adventurer Guilds &amp; Study Circles"
+        subtitle="Form study parties, discuss post-contest upsolving strategies, trade algorithmic spells, and tackle difficult Codeforces problems with friends!"
+        badgeText="Coding Guilds"
+        badgeIcon="🏰"
+        stickerType="climb_champ"
+      />
+
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-indigo-200 dark:border-indigo-900/40 bg-gradient-to-r from-indigo-50/70 via-white to-sky-50/70 dark:from-slate-900 dark:via-indigo-950/20 dark:to-slate-900 p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

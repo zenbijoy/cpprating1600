@@ -221,6 +221,121 @@ export const codeforcesService = {
     return (data.result as CFSubmissionRecord[]) ?? [];
   },
 
+  async submitSolution(params: {
+    contestId: number;
+    index: string;
+    language: string;
+    code: string;
+    handle?: string;
+    sessionCookie?: string;
+  }): Promise<{
+    success: boolean;
+    requiresWebBridge?: boolean;
+    method?: string;
+    submitUrl?: string;
+    problemsetUrl?: string;
+    programTypeId?: string;
+    message?: string;
+    contestId?: number;
+    index?: string;
+  }> {
+    const res = await fetch('/api/codeforces/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    return await res.json();
+  },
+
+  async pollLatestSubmission(options: {
+    handle: string;
+    contestId: number;
+    index: string;
+    minTimestampSeconds: number;
+    onUpdate: (sub: CFSubmissionRecord) => void;
+    onLog?: (msg: string) => void;
+    maxAttempts?: number;
+    intervalMs?: number;
+  }): Promise<CFSubmissionRecord | null> {
+    const {
+      handle,
+      contestId,
+      index,
+      minTimestampSeconds,
+      onUpdate,
+      onLog,
+      maxAttempts = 50,
+      intervalMs = 2500,
+    } = options;
+    let targetSubmissionId: number | null = null;
+    let attemptsCount = 0;
+
+    onLog?.(`[Codeforces Judge] Watching submission stream for @${handle} on ${contestId}${index}...`);
+
+    while (attemptsCount < maxAttempts) {
+      attemptsCount++;
+      try {
+        const res = await fetch(
+          `/api/codeforces/user-status?handle=${encodeURIComponent(handle)}&count=10&noCache=true&t=${Date.now()}`
+        );
+        const data = await res.json();
+
+        if (data.status === 'OK' && Array.isArray(data.result)) {
+          const subs: CFSubmissionRecord[] = data.result;
+
+          let match: CFSubmissionRecord | undefined;
+          if (targetSubmissionId != null) {
+            match = subs.find((s) => s.id === targetSubmissionId);
+          } else {
+            // Find recent submission for this contest and problem index
+            match = subs.find((s) => {
+              const sContest = s.problem?.contestId ?? s.contestId;
+              const sIndex = (s.problem?.index || '').toUpperCase();
+              const creation = s.creationTimeSeconds || 0;
+              return (
+                sContest === contestId &&
+                sIndex === index.toUpperCase() &&
+                creation >= minTimestampSeconds - 120
+              );
+            });
+            if (match) {
+              targetSubmissionId = match.id;
+              onLog?.(`[Codeforces Judge] 📡 Detected submission #${match.id} (${match.programmingLanguage || 'Code'})`);
+            }
+          }
+
+          if (match) {
+            onUpdate(match);
+
+            const verdict = match.verdict;
+            if (verdict && verdict !== 'TESTING') {
+              const runtimeStr = match.timeConsumedMillis != null ? `${match.timeConsumedMillis}ms` : '';
+              const memoryStr = match.memoryConsumedBytes != null ? `${Math.round(match.memoryConsumedBytes / 1024)}KB` : '';
+              onLog?.(
+                `[Codeforces Judge] Verdict finalized: ${verdict} | Passed ${match.passedTestCount || 0} tests ${runtimeStr ? `(${runtimeStr}, ${memoryStr})` : ''}`
+              );
+              return match;
+            } else {
+              const currentTest = match.passedTestCount != null ? match.passedTestCount + 1 : 1;
+              onLog?.(`[Codeforces Judge] 🔄 Testing on test ${currentTest}...`);
+            }
+          } else {
+            if (attemptsCount % 3 === 0) {
+              onLog?.(`[Codeforces Judge] Waiting for new submission from @${handle}... (probe ${attemptsCount})`);
+            }
+          }
+        }
+      } catch (err: any) {
+        onLog?.(`[Codeforces Judge] Notice: ${err.message || 'Connecting to judge'}`);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+
+    onLog?.('[Codeforces Judge] Polling window ended. Check status again anytime.');
+    return null;
+  },
+
   async getUpcomingContests(): Promise<CFContest[]> {
     const res = await fetchWithRetry('/api/codeforces/contests');
     const data = await res.json();
@@ -248,15 +363,81 @@ export const codeforcesService = {
     tag?: string;
     minRating?: number;
     maxRating?: number;
+    search?: string;
+    limit?: number | 'all';
+    page?: number;
+    pageSize?: number;
   }): Promise<CFProblem[]> {
     const query = new URLSearchParams();
-    if (params?.tag) query.set('tag', params.tag);
-    if (params?.minRating) query.set('minRating', String(params.minRating));
-    if (params?.maxRating) query.set('maxRating', String(params.maxRating));
+    if (params?.tag && params.tag !== 'all') query.set('tag', params.tag);
+    if (params?.minRating != null) query.set('minRating', String(params.minRating));
+    if (params?.maxRating != null) query.set('maxRating', String(params.maxRating));
+    if (params?.search) query.set('search', params.search);
+    if (params?.limit != null) query.set('limit', String(params.limit));
+    if (params?.page != null) query.set('page', String(params.page));
+    if (params?.pageSize != null) query.set('pageSize', String(params.pageSize));
+
     const res = await fetchWithRetry(`/api/codeforces/problems?${query.toString()}`);
     const data = await res.json();
     if (data.status !== 'OK') throw new Error(data.comment || 'Failed to fetch problems');
-    return (data.result?.problems as CFProblem[]) ?? [];
+    const problems = (data.result?.problems as CFProblem[]) ?? [];
+    (problems as any).total = data.total ?? problems.length;
+    (problems as any).source = data.source ?? 'codeforces';
+    return problems;
+  },
+
+  async getRandomProblem(params?: {
+    minRating?: number;
+    maxRating?: number;
+    tag?: string;
+  }): Promise<CFProblem> {
+    const query = new URLSearchParams();
+    if (params?.minRating != null) query.set('minRating', String(params.minRating));
+    if (params?.maxRating != null) query.set('maxRating', String(params.maxRating));
+    if (params?.tag && params.tag !== 'all') query.set('tag', params.tag);
+
+    const res = await fetchWithRetry(`/api/codeforces/random?${query.toString()}`);
+    const data = await res.json();
+    if (data.status !== 'OK' || !data.problem) {
+      throw new Error(data.comment || 'Failed to pick random problem');
+    }
+    return data.problem as CFProblem;
+  },
+
+  async getProblemById(id: string): Promise<CFProblem | null> {
+    const clean = id.trim().toUpperCase();
+    const res = await fetchWithRetry(`/api/codeforces/problems?search=${encodeURIComponent(clean)}&limit=10`);
+    const data = await res.json();
+    if (data.status !== 'OK') return null;
+    const list: CFProblem[] = data.result?.problems || [];
+    const match = list.find((p) => `${p.contestId}${p.index}`.toUpperCase() === clean);
+    return match || list[0] || null;
+  },
+
+  async getContestProblems(contestId: number): Promise<CFProblem[]> {
+    try {
+      const res = await fetchWithRetry(`/api/codeforces/contest-problems?contestId=${contestId}`);
+      const data = await res.json();
+      if (data.status === 'OK' && Array.isArray(data.problems)) {
+        return data.problems;
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  },
+
+  async getLeetCodeContests(): Promise<any[]> {
+    try {
+      const res = await fetchWithRetry('/api/leetcode/contests');
+      const data = await res.json();
+      if (data.status === 'OK' && Array.isArray(data.contests)) {
+        return data.contests;
+      }
+    } catch {
+      // ignore
+    }
+    return [];
   },
 };
 

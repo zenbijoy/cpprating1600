@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FocusDisciplineIllustration } from './assets';
+import { AnimeViewCompanionBanner } from './common/AnimeViewCompanionBanner';
 import {
   ShieldIcon as Shield,
   PreferencesIcon as Smartphone,
@@ -13,6 +14,8 @@ import {
   AISparkleIcon as Sparkles,
   ForwardIcon as ArrowRight,
   FilterIcon as Filter,
+  AddIcon as Plus,
+  CloseIcon as X,
 } from './icons';
 import {
   AndroidDeviceHealth,
@@ -55,8 +58,7 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
     androidVersion: 'Android 15 (API 35)',
   });
 
-  // Sample App Restriction Rules (Feature 11, 15, 17)
-  const [appRules, setAppRules] = useState<AppRestrictionRule[]>([
+  const DEFAULT_APP_RULES: AppRestrictionRule[] = [
     { id: 'r1', packageName: 'com.instagram.android', appName: 'Instagram', category: 'social_media', isBlocked: true, delaySeconds: 15, allowInStrictFocus: false, isEssential: false },
     { id: 'r2', packageName: 'com.zhiliaoapp.musically', appName: 'TikTok', category: 'entertainment', isBlocked: true, delaySeconds: 30, allowInStrictFocus: false, isEssential: false },
     { id: 'r3', packageName: 'com.reddit.frontpage', appName: 'Reddit', category: 'entertainment', isBlocked: true, delaySeconds: 15, allowInStrictFocus: false, isEssential: false },
@@ -64,15 +66,59 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
     { id: 'r5', packageName: 'com.google.android.apps.authenticator2', appName: 'Authenticator (2FA)', category: 'productivity', isBlocked: false, delaySeconds: 0, allowInStrictFocus: true, isEssential: true },
     { id: 'r6', packageName: 'com.instructure.candroid', appName: 'Canvas Student (University)', category: 'university_study', isBlocked: false, delaySeconds: 0, allowInStrictFocus: true, isEssential: true },
     { id: 'r7', packageName: 'com.termux', appName: 'Termux (C++ Terminal)', category: 'competitive_programming', isBlocked: false, delaySeconds: 0, allowInStrictFocus: true, isEssential: true },
-  ]);
+  ];
 
-  // Study-Only Website Profiles (Feature 12 & 13)
-  const [studyProfiles, setStudyProfiles] = useState<StudyProfile[]>([
+  const DEFAULT_STUDY_PROFILES: StudyProfile[] = [
     { id: 'p1', name: 'Codeforces Practice', allowedDomains: ['codeforces.com', 'atcoder.jp', 'cses.fi', 'cppreference.com'], restrictedApps: ['Instagram', 'TikTok'], strictBlocking: true, active: true },
     { id: 'p2', name: 'C++ Learning', allowedDomains: ['learncpp.com', 'en.cppreference.com', 'cplusplus.com', 'geeksforgeeks.org'], restrictedApps: ['Netflix'], strictBlocking: false, active: false },
     { id: 'p3', name: 'University Study', allowedDomains: ['canvas.instructure.com', 'blackboard.com', 'edx.org', 'coursera.org'], restrictedApps: ['Social Media'], strictBlocking: false, active: false },
     { id: 'p4', name: 'Deep Work', allowedDomains: ['codeforces.com', 'github.com'], restrictedApps: ['All entertainment'], strictBlocking: true, active: false },
-  ]);
+  ];
+
+  // Persistent App Restriction Rules (Feature 11, 15, 17)
+  const [appRules, setAppRules] = useState<AppRestrictionRule[]>(() => {
+    try {
+      const saved = localStorage.getItem('climb1600_guardian_app_rules');
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // Fallback
+    }
+    return DEFAULT_APP_RULES;
+  });
+
+  // Persistent Study-Only Website Profiles (Feature 12 & 13)
+  const [studyProfiles, setStudyProfiles] = useState<StudyProfile[]>(() => {
+    try {
+      const saved = localStorage.getItem('climb1600_guardian_study_profiles');
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // Fallback
+    }
+    return DEFAULT_STUDY_PROFILES;
+  });
+
+  // Add Custom App Restriction State
+  const [showAddAppModal, setShowAddAppModal] = useState(false);
+  const [newAppName, setNewAppName] = useState('');
+  const [newPackageName, setNewPackageName] = useState('');
+  const [newAppCategory, setNewAppCategory] = useState<any>('entertainment');
+  const [newAppDelay, setNewAppDelay] = useState(15);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('climb1600_guardian_app_rules', JSON.stringify(appRules));
+    } catch {
+      // ignore
+    }
+  }, [appRules]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('climb1600_guardian_study_profiles', JSON.stringify(studyProfiles));
+    } catch {
+      // ignore
+    }
+  }, [studyProfiles]);
 
   // Raw Usage Events
   const [usageEvents, setUsageEvents] = useState<AppUsageEvent[]>([
@@ -211,6 +257,15 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
 
   return (
     <div className="space-y-6">
+      {/* Anime Study Guardian Companion */}
+      <AnimeViewCompanionBanner
+        screenTitle="Focus Guardian &amp; Discipline Tamagotchi"
+        subtitle="Keep distractions blocked and your study streak protected! Your anime companion stays energized and happy when you maintain pure focus."
+        badgeText="Zero Distraction Zone"
+        badgeIcon="🛡️"
+        stickerType="zero_bugs"
+      />
+
       {/* Top Header Card */}
       <div className="rounded-2xl border border-indigo-900/50 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-5 sm:p-6 shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -452,11 +507,36 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
       {activeSubTab === 'apps' && (
         <div className="space-y-5">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-            <div>
-              <h3 className="text-sm font-bold text-slate-200">User-Configured App Restriction Ladder (Feature 11 & 17)</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                When opened during an active focus session, restricted apps trigger a gentle breathing delay screen reminding you of your problem. Emergency and 2FA apps are permanently permitted.
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-200">User-Configured App Restriction Ladder (Feature 11 & 17)</h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  When opened during an active focus session, restricted apps trigger a gentle breathing delay screen reminding you of your problem. Emergency and 2FA apps are permanently permitted.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setShowAddAppModal(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all cursor-pointer shadow-md"
+                >
+                  <Plus size={14} />
+                  <span>Add Restriction</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm('Reset all app restriction rules to defaults?')) {
+                      setAppRules(DEFAULT_APP_RULES);
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer border border-slate-700"
+                  title="Reset to default rules"
+                >
+                  <RefreshCw size={13} />
+                  <span>Reset</span>
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2.5">
@@ -492,6 +572,7 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
                         <option value={0}>Instant Pause</option>
                         <option value={15}>15s Breathe</option>
                         <option value={30}>30s Delay</option>
+                        <option value={60}>60s Friction</option>
                       </select>
                     )}
 
@@ -513,11 +594,133 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
                     ) : (
                       <span className="text-emerald-400 font-semibold text-xs">Always Allowed</span>
                     )}
+
+                    {!rule.isEssential && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAppRules((prev) => prev.filter((r) => r.id !== rule.id));
+                        }}
+                        className="text-slate-500 hover:text-rose-400 p-1 rounded transition-colors cursor-pointer"
+                        title="Remove restriction rule"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Add App Restriction Modal */}
+          {showAddAppModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <Shield size={16} className="text-indigo-600 dark:text-indigo-400" />
+                    <span>Add App Restriction Rule</span>
+                  </h3>
+                  <button
+                    onClick={() => setShowAddAppModal(false)}
+                    className="p-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">App Display Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Discord, Steam, Twitter"
+                      value={newAppName}
+                      onChange={(e) => setNewAppName(e.target.value)}
+                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Package Name / Identifier</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. com.discord, com.twitter.android"
+                      value={newPackageName}
+                      onChange={(e) => setNewPackageName(e.target.value)}
+                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500 font-mono text-[11px]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Category</label>
+                      <select
+                        value={newAppCategory}
+                        onChange={(e) => setNewAppCategory(e.target.value as any)}
+                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500"
+                      >
+                        <option value="entertainment">Entertainment</option>
+                        <option value="social_media">Social Media</option>
+                        <option value="gaming">Gaming</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Breathing Delay</label>
+                      <select
+                        value={newAppDelay}
+                        onChange={(e) => setNewAppDelay(Number(e.target.value))}
+                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500"
+                      >
+                        <option value={0}>Instant Pause</option>
+                        <option value={15}>15s Breathe</option>
+                        <option value={30}>30s Delay</option>
+                        <option value={60}>60s Friction</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddAppModal(false)}
+                    className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!newAppName.trim() || !newPackageName.trim()}
+                    onClick={() => {
+                      if (!newAppName.trim() || !newPackageName.trim()) return;
+                      const newRule: AppRestrictionRule = {
+                        id: 'r_custom_' + Date.now(),
+                        appName: newAppName.trim(),
+                        packageName: newPackageName.trim(),
+                        category: newAppCategory,
+                        isBlocked: true,
+                        delaySeconds: newAppDelay,
+                        allowInStrictFocus: false,
+                        isEssential: false,
+                      };
+                      setAppRules((prev) => [newRule, ...prev]);
+                      setNewAppName('');
+                      setNewPackageName('');
+                      setShowAddAppModal(false);
+                    }}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-bold transition-all cursor-pointer shadow-md"
+                  >
+                    Save Restriction Rule
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -525,11 +728,26 @@ export const GuardianView: React.FC<GuardianViewProps> = ({ goal, profile, onSel
       {activeSubTab === 'websites' && (
         <div className="space-y-5">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-            <div>
-              <h3 className="text-sm font-bold text-slate-200">Study-Only Website Profiles (Feature 12 & 13)</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Powered by Android's local VpnService. Drops DNS requests for distracting sites during practice. No remote proxying or encrypted packet inspection.
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-200">Study-Only Website Profiles (Feature 12 & 13)</h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Powered by Android's local VpnService. Drops DNS requests for distracting sites during practice. No remote proxying or encrypted packet inspection.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Reset study profiles to defaults?')) {
+                    setStudyProfiles(DEFAULT_STUDY_PROFILES);
+                  }
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer border border-slate-700 shrink-0"
+                title="Reset to default study profiles"
+              >
+                <RefreshCw size={13} />
+                <span>Reset Profiles</span>
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

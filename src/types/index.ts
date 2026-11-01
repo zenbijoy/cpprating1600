@@ -62,6 +62,7 @@ export interface UserProfile {
   email: string;
   cfHandle?: string;
   verifiedCfRating?: number;
+  baselineRating?: number; // Self-calibrated or estimated baseline rating (e.g. 800-1200)
   maxCfRating?: number;
   rank?: string;
   avatar?: string;

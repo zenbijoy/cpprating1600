@@ -95,8 +95,30 @@ export class R2StorageClient {
         }
       };
 
-      xhr.onerror = () => {
+      xhr.onerror = async () => {
         this.activeUploads.delete(uploadId);
+
+        // If presigned R2 direct PUT failed (e.g. CORS preflight blocked on R2 bucket),
+        // seamlessly fallback to server-side direct proxy upload to ensure zero user disruption.
+        if (authData.strategy === 'r2_presigned') {
+          try {
+            console.warn('[R2Client] Direct presigned PUT failed (likely R2 bucket CORS not configured). Falling back to direct server upload proxy.');
+            const fallbackRes = await this.uploadViaServerFallback(
+              file,
+              fileKey,
+              token,
+              file.type || 'application/octet-stream',
+              fileType,
+              onProgress,
+              signal
+            );
+            resolve(fallbackRes);
+            return;
+          } catch (fallbackErr: any) {
+            console.error('[R2Client] Server fallback upload also failed:', fallbackErr);
+          }
+        }
+
         reject(new Error('Network error occurred during file upload. Check your connection and retry.'));
       };
 
@@ -111,6 +133,78 @@ export class R2StorageClient {
           xhr.setRequestHeader(key, value as string);
         }
       }
+      xhr.send(file);
+    });
+  }
+
+  /**
+   * Resilient server proxy upload fallback if direct R2 presigned PUT encounters CORS/preflight issues
+   */
+  private uploadViaServerFallback(
+    file: File,
+    fileKey: string,
+    token: string,
+    mimeType: string,
+    fileType: string,
+    onProgress?: (progress: UploadProgressEvent) => void,
+    signal?: AbortSignal
+  ): Promise<UploadResult> {
+    const fallbackId = `fallback-${fileKey}-${Date.now()}`;
+    return new Promise<UploadResult>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      this.activeUploads.set(fallbackId, xhr);
+
+      if (signal) {
+        signal.addEventListener('abort', () => {
+          xhr.abort();
+          this.activeUploads.delete(fallbackId);
+          reject(new DOMException('Upload aborted by user', 'AbortError'));
+        });
+      }
+
+      xhr.upload.onprogress = (evt) => {
+        if (evt.lengthComputable && onProgress) {
+          const percent = Math.round((evt.loaded / evt.total) * 100);
+          onProgress({ percent, loaded: evt.loaded, total: evt.total });
+        }
+      };
+
+      xhr.onload = () => {
+        this.activeUploads.delete(fallbackId);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            resolve({
+              fileKey,
+              publicUrl: data.publicUrl || `/uploads/${fileKey}`,
+              fileName: file.name,
+              fileSize: file.size,
+              mimeType,
+              fileType: (fileType || 'image') as any,
+            });
+          } catch {
+            resolve({
+              fileKey,
+              publicUrl: `/uploads/${fileKey}`,
+              fileName: file.name,
+              fileSize: file.size,
+              mimeType,
+              fileType: (fileType || 'image') as any,
+            });
+          }
+        } else {
+          reject(new Error(`Server fallback upload failed with status ${xhr.status}`));
+        }
+      };
+
+      xhr.onerror = () => {
+        this.activeUploads.delete(fallbackId);
+        reject(new Error('Network error during fallback file upload.'));
+      };
+
+      xhr.open('PUT', `/api/storage/local-upload?key=${encodeURIComponent(fileKey)}&mime=${encodeURIComponent(mimeType)}`, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.setRequestHeader('Content-Type', mimeType);
       xhr.send(file);
     });
   }

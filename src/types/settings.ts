@@ -5,16 +5,69 @@ export type AppearanceMode = 'light' | 'dark' | 'multicolor' | 'orange' | 'purpl
 export type ThemePresetId =
   | 'climb-default'
   | 'midnight'
-  | 'amoled'
+  | 'cyber-matrix'
+  | 'candy-pop'
+  | 'kawaii-anime'
+  | 'retro-arcade'
+  | 'galaxy-space'
+  | 'jungle-safari'
+  | 'coffee-overdrive'
+  | 'dragon-fire'
   | 'ocean'
   | 'forest'
   | 'violet'
   | 'warm-neutral'
-  | 'high-contrast';
+  | 'amoled'
+  | 'high-contrast'
+  // 24 New Cartoon & Anime Themed Environments (40 Total)
+  | 'mountain-summit'
+  | 'sea-beach'
+  | 'railway-express'
+  | 'jorna-waterfall'
+  | 'neon-road'
+  | 'anime-village'
+  | 'sci-fi-mecha'
+  | 'fighting-coliseum'
+  | 'sakura-shrine'
+  | 'pixel-dungeon'
+  | 'steampunk-airship'
+  | 'aurora-borealis'
+  | 'desert-oasis'
+  | 'ninja-shadow'
+  | 'magic-academy'
+  | 'underwater-atlantis'
+  | 'sunset-lofi'
+  | 'volcano-forge'
+  | 'cyberpunk-tokyo'
+  | 'wild-west'
+  | 'pirate-cove'
+  | 'superhero-city'
+  | 'fairytale-wonderland'
+  | 'valhalla-viking';
+
+export type AnimeCharacterId =
+  | 'climby'
+  | 'byte-cat'
+  | 'shinobi-sasuke'
+  | 'mecha-aoi'
+  | 'flame-ren'
+  | 'magical-sakura'
+  | 'samurai-kenshi'
+  | 'astro-pup'
+  | 'pixel-knight'
+  | 'coffee-sloth'
+  | 'big-brain-dino'
+  | 'archmage-luna'
+  | 'mochi-bunny'
+  | 'pip-penguin'
+  | 'boba-otter'
+  | 'kitsu-fox'
+  | 'bao-panda';
 
 export type InterfaceDensity = 'compact' | 'comfortable' | 'spacious';
 export type BorderRadiusOption = 'compact' | 'standard' | 'rounded';
-export type FontScaleOption = 'small' | 'standard' | 'large';
+export type FontScaleOption = 'small' | 'standard' | 'large' | 'extra-large';
+export type FontFamilyOption = 'outfit' | 'jakarta' | 'space-grotesk' | 'sora' | 'system';
 export type AnimationIntensity = 'full' | 'reduced' | 'off';
 export type TransparencyOption = 'normal' | 'reduced';
 
@@ -42,8 +95,14 @@ export interface ThemeConfig {
   density: InterfaceDensity;
   borderRadius: BorderRadiusOption;
   fontSize: FontScaleOption;
+  fontFamily?: FontFamilyOption;
   animationIntensity: AnimationIntensity;
   transparency: TransparencyOption;
+  funnyThemeSounds?: boolean;
+  playfulMascot?: boolean;
+  backgroundSparkles?: boolean;
+  selectedCharacter?: AnimeCharacterId;
+  characterMood?: 'happy' | 'coding' | 'celebrating' | 'thinking' | 'zen' | 'excited' | 'battle';
 }
 
 export type ExperienceLevel = 'complete_beginner' | 'some_experience' | 'experienced_coder';
@@ -89,6 +148,7 @@ export interface LocalizationPreferences {
 
 export interface AccessibilitySettings {
   fontSize: FontScaleOption;
+  fontFamily?: FontFamilyOption;
   reducedMotion: boolean;
   highContrast: boolean;
   clearFocusIndicators: boolean;

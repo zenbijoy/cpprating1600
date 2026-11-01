@@ -38,7 +38,7 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
       {/* 1. Interface Language */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Languages className="w-4 h-4 text-indigo-400" />
             <span>{t('lang.interface')}</span>
           </h3>
@@ -60,8 +60,8 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
                 onClick={() => handleLanguageChange(item.id)}
                 className={`flex flex-col p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-950/40 text-white shadow-md'
-                    : 'border-slate-800 bg-slate-950/60 text-slate-300 hover:border-slate-700'
+                    ? 'border-indigo-500 bg-indigo-950/40 text-slate-900 dark:text-white shadow-md'
+                    : 'border-slate-800 bg-slate-950/60 text-slate-700 dark:text-slate-300 hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-center justify-between w-full mb-1">
@@ -78,7 +78,7 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
       {/* 2. Region, Timezone & Formatting */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Globe className="w-4 h-4 text-cyan-400" />
             <span>Timezone & Temporal Formatting</span>
           </h3>
@@ -90,11 +90,11 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           {/* Timezone */}
           <div className="space-y-1.5 sm:col-span-2">
-            <label className="font-bold text-slate-300">{t('lang.timezone')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('lang.timezone')}</label>
             <select
               value={localization.timeZone}
               onChange={(e) => onChange({ ...localization, timeZone: e.target.value })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               {SUPPORTED_TIMEZONES.map((tz) => (
                 <option key={tz.value} value={tz.value}>
@@ -106,11 +106,11 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
 
           {/* Date Format */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('lang.date_format')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('lang.date_format')}</label>
             <select
               value={localization.dateFormat}
               onChange={(e) => onChange({ ...localization, dateFormat: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="YYYY-MM-DD">YYYY-MM-DD (ISO 8601)</option>
               <option value="DD/MM/YYYY">DD/MM/YYYY (Day/Month/Year)</option>
@@ -120,11 +120,11 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
 
           {/* Time Format */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('lang.time_format')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('lang.time_format')}</label>
             <select
               value={localization.timeFormat}
               onChange={(e) => onChange({ ...localization, timeFormat: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="12h">12-Hour (AM / PM)</option>
               <option value="24h">24-Hour (Military / Railway)</option>
@@ -133,11 +133,11 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
 
           {/* Week Start */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('lang.week_start')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('lang.week_start')}</label>
             <select
               value={localization.weekStart}
               onChange={(e) => onChange({ ...localization, weekStart: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="monday">{t('lang.monday')}</option>
               <option value="sunday">{t('lang.sunday')}</option>
@@ -147,8 +147,8 @@ export const LocalizationSettingsSection: React.FC<LocalizationSettingsSectionPr
 
           {/* Live Preview Pill */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Live Clock Preview</label>
-            <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-300 font-mono text-xs flex items-center gap-2">
+            <label className="font-bold text-slate-700 dark:text-slate-300">Live Clock Preview</label>
+            <div className="rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-700 dark:text-slate-300 font-mono text-xs flex items-center gap-2">
               <Clock className="w-3.5 h-3.5 text-indigo-400" />
               <span>{formattedPreviewDate} • {formattedPreviewTime}</span>
             </div>

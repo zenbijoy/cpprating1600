@@ -69,7 +69,7 @@ export const GuestMigrationModal: React.FC<GuestMigrationModalProps> = ({
       <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 md:p-8 shadow-2xl space-y-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
         >
           <CloseIcon size={20} />
         </button>
@@ -78,7 +78,7 @@ export const GuestMigrationModal: React.FC<GuestMigrationModalProps> = ({
           <div className="w-14 h-14 rounded-2xl bg-indigo-950/70 border border-indigo-700/60 flex items-center justify-center mx-auto text-indigo-400 mb-2">
             <ImportIcon size={28} />
           </div>
-          <h3 className="text-xl font-bold text-white">Import Guest Practice Data?</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Import Guest Practice Data?</h3>
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
             We discovered unassociated local practice progress in this browser. Would you like to link it to your Google account?
           </p>

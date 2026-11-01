@@ -32,6 +32,7 @@ import {
 } from 'recharts';
 import { MistakeRecord, ProblemAttempt, UserGoal, UserProfile } from '../types';
 import { calculateRatingForecast } from '../utils/forecast';
+import { AnimeViewCompanionBanner } from './common/AnimeViewCompanionBanner';
 import {
   calculateTheoreticalRating,
   simulateRatingProgression,
@@ -142,6 +143,15 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-12 font-sans text-slate-900 dark:text-slate-100">
+      {/* Anime Data Scientist Companion */}
+      <AnimeViewCompanionBanner
+        screenTitle="Truthful Growth &amp; Rating Trajectory"
+        subtitle="Unbiased analytics tracking your journey from 800 to 1600. Every graph and distribution metric separates raw volume from true algorithmic mastery."
+        badgeText="Analytics Radar"
+        badgeIcon="📊"
+        stickerType="coffee_power"
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

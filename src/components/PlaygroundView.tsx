@@ -38,6 +38,7 @@ import {
   PlaygroundSnippet,
 } from '../types';
 import { playgroundApi } from '../services/playgroundApi';
+import { MobileCodeToolbar } from './MobileCodeToolbar';
 
 // ─── Default Language Starter Templates ─────────────────────────────────────
 
@@ -293,6 +294,7 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
   const [showSnippets, setShowSnippets] = useState<boolean>(false);
   const [showHistory, setShowHistory] = useState<boolean>(false);
   const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
+  const [showMobileMoreMenu, setShowMobileMoreMenu] = useState<boolean>(false);
 
   // Notifications / feedback
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
@@ -470,7 +472,7 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
   const isOutputMatching = hasExpectedComparison && actualOutputNormalized === expectedOutputNormalized;
 
   return (
-    <div className={`flex flex-col h-full bg-[#0b0f19] text-slate-100 ${isFullscreen ? 'fixed inset-0 z-50 p-2 bg-[#0b0f19]' : ''}`}>
+    <div className={`flex flex-col h-full bg-[#0b0f19] text-slate-100 keep-white ${isFullscreen ? 'fixed inset-0 z-50 p-2 bg-[#0b0f19]' : ''}`}>
       {/* ── Top Workspace Toolbar ── */}
       <header className="flex items-center justify-between px-3 py-2 bg-slate-950/95 border-b border-slate-800 text-xs flex-wrap gap-2 shrink-0">
         <div className="flex items-center gap-2">
@@ -497,7 +499,7 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-center gap-1.5">
           {statusToast && (
             <span className="text-[11px] text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/60 flex items-center gap-1">
               <CheckIcon size={12} semantic="success" />
@@ -505,110 +507,20 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
             </span>
           )}
 
-          {/* Editor Preferences */}
-          <div className="hidden sm:flex items-center gap-1 bg-slate-900/80 px-1.5 py-0.5 rounded-lg border border-slate-800">
-            <span className="text-[10px] text-slate-500 font-mono">Font:</span>
-            {[12, 14, 16].map((sz) => (
-              <button
-                key={sz}
-                onClick={() => setFontSize(sz)}
-                className={`px-1 py-0.2 rounded text-[10px] font-mono ${
-                  fontSize === sz ? 'text-indigo-300 font-bold bg-indigo-950' : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {sz}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={() => setEditorTheme((t) => (t === 'vs-dark' ? 'light' : 'vs-dark'))}
-            title="Toggle Dark / Light Editor Theme"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
-          >
-            {editorTheme === 'vs-dark' ? '🌙' : '☀️'}
-          </button>
-
-          <button
-            onClick={handleFormatCode}
-            title="Format Code (Shift+Alt+F)"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
-          >
-            <CodeFileIcon size={14} />
-          </button>
-
-          <button
-            onClick={handleCopyCode}
-            title="Copy Source Code"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
-          >
-            {copiedCode ? <CheckIcon size={14} semantic="success" /> : <CopyIcon size={14} />}
-          </button>
-
-          <button
-            onClick={handleDownloadCode}
-            title="Download Solution File"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
-          >
-            <DownloadIcon size={14} />
-          </button>
-
-          <button
-            onClick={handleResetToTemplate}
-            title="Reset to Starter Template"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 border border-slate-800 transition-colors cursor-pointer"
-          >
-            <RefreshIcon size={14} />
-          </button>
-
-          <div className="w-px h-4 bg-slate-800 mx-0.5" />
-
-          {/* Snippets / Cloud Save */}
-          <button
-            onClick={() => setShowSnippets(true)}
-            title="Saved Snippets & Cloud Storage (Ctrl+S)"
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-colors cursor-pointer"
-          >
-            <BookmarksIcon size={14} semantic="primary" />
-            <span className="hidden md:inline font-medium">Snippets</span>
-          </button>
-
-          {/* Execution History */}
-          <button
-            onClick={() => setShowHistory(true)}
-            title="Recent Execution History"
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 transition-colors cursor-pointer"
-          >
-            <SubmissionHistoryIcon size={14} semantic="primary" />
-            <span className="hidden md:inline">({history.length})</span>
-          </button>
-
           {/* AI Debug Assistant */}
           <button
             onClick={() => setShowAiDebug(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs shadow-md shadow-violet-600/30 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs shadow-md shadow-violet-600/30 transition-all cursor-pointer"
           >
             <AISparkleIcon size={14} semantic="warning" />
-            <span>AI Debug</span>
+            <span className="hidden xs:inline">AI Debug</span>
           </button>
-
-          {/* Share with Community */}
-          {onShareToCommunity && (
-            <button
-              onClick={() => onShareToCommunity(code, language)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 font-semibold text-xs transition-all cursor-pointer"
-              title="Share snippet with the community feed"
-            >
-              <CommunityIcon size={14} />
-              <span className="hidden sm:inline">Share</span>
-            </button>
-          )}
 
           {/* Run Button */}
           <button
             onClick={handleRun}
             disabled={isRunning}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-emerald-600/30 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-emerald-600/30 transition-all cursor-pointer"
             title="Compile & Run Code (Ctrl+Enter)"
           >
             {isRunning ? (
@@ -616,17 +528,213 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
             ) : (
               <RunCodeIcon size={14} />
             )}
-            <span>{isRunning ? 'Running...' : 'Run Code'}</span>
+            <span>{isRunning ? 'Running...' : 'Run'}</span>
           </button>
 
-          {/* Fullscreen toggle */}
-          <button
-            onClick={() => setIsFullscreen((v) => !v)}
-            title={isFullscreen ? 'Exit Distraction-Free Fullscreen' : 'Enter Distraction-Free Fullscreen'}
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 cursor-pointer"
-          >
-            {isFullscreen ? <ExitFullscreenIcon size={14} /> : <FullscreenIcon size={14} />}
-          </button>
+          {/* Desktop-only Quick Tools */}
+          <div className="hidden lg:flex items-center gap-1.5">
+            {/* Editor Preferences */}
+            <div className="flex items-center gap-1 bg-slate-900/80 px-1.5 py-0.5 rounded-lg border border-slate-800">
+              <span className="text-[10px] text-slate-500 font-mono">Font:</span>
+              {[12, 14, 16].map((sz) => (
+                <button
+                  key={sz}
+                  onClick={() => setFontSize(sz)}
+                  className={`px-1 py-0.2 rounded text-[10px] font-mono ${
+                    fontSize === sz ? 'text-indigo-300 font-bold bg-indigo-950' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {sz}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setEditorTheme((t) => (t === 'vs-dark' ? 'light' : 'vs-dark'))}
+              title="Toggle Dark / Light Editor Theme"
+              className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
+            >
+              {editorTheme === 'vs-dark' ? '🌙' : '☀️'}
+            </button>
+
+            <button
+              onClick={handleFormatCode}
+              title="Format Code (Shift+Alt+F)"
+              className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
+            >
+              <CodeFileIcon size={14} />
+            </button>
+
+            <button
+              onClick={handleCopyCode}
+              title="Copy Source Code"
+              className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
+            >
+              {copiedCode ? <CheckIcon size={14} semantic="success" /> : <CopyIcon size={14} />}
+            </button>
+
+            <button
+              onClick={handleDownloadCode}
+              title="Download Solution File"
+              className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors cursor-pointer"
+            >
+              <DownloadIcon size={14} />
+            </button>
+
+            <button
+              onClick={handleResetToTemplate}
+              title="Reset to Starter Template"
+              className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 border border-slate-800 transition-colors cursor-pointer"
+            >
+              <RefreshIcon size={14} />
+            </button>
+
+            <div className="w-px h-4 bg-slate-800 mx-0.5" />
+
+            {/* Snippets / Cloud Save */}
+            <button
+              onClick={() => setShowSnippets(true)}
+              title="Saved Snippets & Cloud Storage (Ctrl+S)"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-colors cursor-pointer"
+            >
+              <BookmarksIcon size={14} semantic="primary" />
+              <span className="font-medium">Snippets</span>
+            </button>
+
+            {/* Execution History */}
+            <button
+              onClick={() => setShowHistory(true)}
+              title="Recent Execution History"
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 transition-colors cursor-pointer"
+            >
+              <SubmissionHistoryIcon size={14} semantic="primary" />
+              <span>({history.length})</span>
+            </button>
+
+            {/* Share with Community */}
+            {onShareToCommunity && (
+              <button
+                onClick={() => onShareToCommunity(code, language)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 font-semibold text-xs transition-all cursor-pointer"
+                title="Share snippet with the community feed"
+              >
+                <CommunityIcon size={14} />
+                <span>Share</span>
+              </button>
+            )}
+
+            {/* Fullscreen toggle */}
+            <button
+              onClick={() => setIsFullscreen((v) => !v)}
+              title={isFullscreen ? 'Exit Distraction-Free Fullscreen' : 'Enter Distraction-Free Fullscreen'}
+              className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 cursor-pointer"
+            >
+              {isFullscreen ? <ExitFullscreenIcon size={14} /> : <FullscreenIcon size={14} />}
+            </button>
+          </div>
+
+          {/* Mobile More Actions Menu (Dropdown) */}
+          <div className="relative lg:hidden">
+            <button
+              type="button"
+              onClick={() => setShowMobileMoreMenu(!showMobileMoreMenu)}
+              className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-bold text-sm cursor-pointer"
+              title="More Playground Options"
+            >
+              ⋮
+            </button>
+
+            {showMobileMoreMenu && (
+              <div
+                className="absolute right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl py-1.5 z-50 text-xs text-slate-200"
+                onClick={() => setShowMobileMoreMenu(false)}
+              >
+                <button
+                  type="button"
+                  onClick={handleFormatCode}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-slate-300"
+                >
+                  <CodeFileIcon size={14} />
+                  <span>Format Code</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowSnippets(true)}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-indigo-300"
+                >
+                  <BookmarksIcon size={14} semantic="primary" />
+                  <span>Saved Snippets</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowHistory(true)}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-slate-300"
+                >
+                  <SubmissionHistoryIcon size={14} semantic="primary" />
+                  <span>Execution History ({history.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-slate-300"
+                >
+                  <CopyIcon size={14} />
+                  <span>Copy Code</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadCode}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-slate-300"
+                >
+                  <DownloadIcon size={14} />
+                  <span>Download File</span>
+                </button>
+
+                {onShareToCommunity && (
+                  <button
+                    type="button"
+                    onClick={() => onShareToCommunity(code, language)}
+                    className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-indigo-300"
+                  >
+                    <CommunityIcon size={14} />
+                    <span>Share to Feed</span>
+                  </button>
+                )}
+
+                <div className="h-px bg-slate-800 my-1" />
+
+                <button
+                  type="button"
+                  onClick={() => setEditorTheme((t) => (t === 'vs-dark' ? 'light' : 'vs-dark'))}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-slate-400"
+                >
+                  <span>{editorTheme === 'vs-dark' ? '☀️ Switch to Light Theme' : '🌙 Switch to Dark Theme'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResetToTemplate}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-rose-400"
+                >
+                  <RefreshIcon size={14} />
+                  <span>Reset to Template</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsFullscreen((v) => !v)}
+                  className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 text-slate-400"
+                >
+                  {isFullscreen ? <ExitFullscreenIcon size={14} /> : <FullscreenIcon size={14} />}
+                  <span>{isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -704,6 +812,19 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
                   <span>Loading Monaco Code Editor...</span>
                 </div>
               }
+            />
+          </div>
+
+          {/* Mobile Accessory / CP Shortcuts Toolbar */}
+          <div className="lg:hidden">
+            <MobileCodeToolbar
+              editorRef={editorRef}
+              language={language}
+              fontSize={fontSize}
+              onFontSizeChange={setFontSize}
+              wordWrap={wordWrap}
+              onToggleWordWrap={() => setWordWrap((w) => (w === 'on' ? 'off' : 'on'))}
+              onFormatCode={handleFormatCode}
             />
           </div>
 
@@ -1029,8 +1150,8 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-slate-950 border border-slate-800 rounded-xl max-w-md w-full p-4 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-              <h3 className="font-bold text-white text-sm">Playground Keyboard Shortcuts</h3>
-              <button onClick={() => setShowShortcuts(false)} className="text-slate-400 hover:text-white">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Playground Keyboard Shortcuts</h3>
+              <button onClick={() => setShowShortcuts(false)} className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer">
                 <CloseIcon size={16} />
               </button>
             </div>
@@ -1134,12 +1255,12 @@ const AiDebugModal: React.FC<AiDebugModalProps> = ({
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-slate-900/80">
           <div className="flex items-center gap-2">
             <AISparkleIcon size={18} semantic="warning" />
-            <h2 className="font-bold text-white text-base">AI Compiler &amp; Runtime Debugger</h2>
+            <h2 className="font-bold text-slate-900 dark:text-white text-base">AI Compiler &amp; Runtime Debugger</h2>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-900/50 text-violet-300 font-semibold border border-violet-700/50">
               Gemini Powered
             </span>
           </div>
-          <button onClick={onClose} className="p-1 rounded text-slate-400 hover:text-white cursor-pointer">
+          <button onClick={onClose} className="p-1 rounded text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer">
             <CloseIcon size={16} />
           </button>
         </div>
@@ -1182,13 +1303,13 @@ const AiDebugModal: React.FC<AiDebugModalProps> = ({
               {/* Problem Summary & Category */}
               <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <span className="font-bold text-white text-sm">{debugResponse.summary}</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-sm">{debugResponse.summary}</span>
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-violet-950 text-violet-300 border border-violet-800">
                       Category: {debugResponse.errorCategory}
                     </span>
                     <span className="text-[11px] text-slate-400">
-                      Confidence: <strong className="text-white capitalize">{debugResponse.confidence}</strong>
+                      Confidence: <strong className="text-slate-900 dark:text-white capitalize">{debugResponse.confidence}</strong>
                     </span>
                   </div>
                 </div>
@@ -1417,14 +1538,14 @@ const SavedSnippetsModal: React.FC<SavedSnippetsModalProps> = ({
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-slate-900/80">
           <div className="flex items-center gap-2">
             <BookmarksIcon size={18} semantic="primary" />
-            <h2 className="font-bold text-white text-base">Saved Code Snippets</h2>
+            <h2 className="font-bold text-slate-900 dark:text-white text-base">Saved Code Snippets</h2>
             {!isAuthenticated && (
               <span className="text-[10px] px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800">
                 Local Guest Storage
               </span>
             )}
           </div>
-          <button onClick={onClose} className="p-1 rounded text-slate-400 hover:text-white cursor-pointer">
+          <button onClick={onClose} className="p-1 rounded text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer">
             <CloseIcon size={16} />
           </button>
         </div>
@@ -1484,7 +1605,7 @@ const SavedSnippetsModal: React.FC<SavedSnippetsModalProps> = ({
                 >
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-white text-xs truncate">{snip.title}</span>
+                      <span className="font-bold text-slate-900 dark:text-white text-xs truncate">{snip.title}</span>
                       <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 uppercase">
                         {snip.language}
                       </span>
@@ -1548,7 +1669,7 @@ const ExecutionHistoryDrawer: React.FC<ExecutionHistoryDrawerProps> = ({
         <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/80">
           <div className="flex items-center gap-2">
             <SubmissionHistoryIcon size={16} semantic="primary" />
-            <h3 className="font-bold text-white text-sm">Execution History</h3>
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">Execution History</h3>
           </div>
           <div className="flex items-center gap-2">
             {history.length > 0 && (
@@ -1559,7 +1680,7 @@ const ExecutionHistoryDrawer: React.FC<ExecutionHistoryDrawerProps> = ({
                 Clear All
               </button>
             )}
-            <button onClick={onClose} className="p-1 rounded text-slate-400 hover:text-white cursor-pointer">
+            <button onClick={onClose} className="p-1 rounded text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer">
               <CloseIcon size={16} />
             </button>
           </div>

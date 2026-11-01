@@ -29,7 +29,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
       {/* 1. Visual & Contrast Settings */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Eye className="w-4 h-4 text-amber-400" />
             <span>Visual Ergonomics & High Contrast</span>
           </h3>
@@ -42,7 +42,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
           {/* High Contrast Mode */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('a11y.high_contrast')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('a11y.high_contrast')}</p>
               <p className="text-[11px] text-slate-400">
                 Enhance edge borders and boost text-to-background contrast to 7:1 (WCAG AAA standard).
               </p>
@@ -65,7 +65,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
           {/* Clear Focus Indicators */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('a11y.focus_rings')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('a11y.focus_rings')}</p>
               <p className="text-[11px] text-slate-400">
                 Display high-visibility 2px glowing rings around active inputs and buttons for keyboard navigators.
               </p>
@@ -88,7 +88,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
           {/* Reduced Motion */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('a11y.reduced_motion')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('a11y.reduced_motion')}</p>
               <p className="text-[11px] text-slate-400">
                 Disable transition animations, modal bounce effects, and progress ring pulses.
               </p>
@@ -112,7 +112,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
 
       {/* 2. Sizing, Density & Screen Readers */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Type className="w-4 h-4 text-indigo-400" />
           <span>Sizing, Layout Density & Screen Reader Support</span>
         </h3>
@@ -120,25 +120,26 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           {/* Font Scale */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Base Font Scale</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Base Font Scale</label>
             <select
               value={accessibility.fontSize}
               onChange={(e) => onChange({ ...accessibility, fontSize: e.target.value as FontScaleOption })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
-              <option value="small">Small (14px base - more information on screen)</option>
-              <option value="standard">Standard (15px base - balanced CP layout)</option>
-              <option value="large">Large (17px base - high legibility)</option>
+              <option value="small">Small (15px base - compact & high information density)</option>
+              <option value="standard">Standard (17px base - comfortable & readable default)</option>
+              <option value="large">Large (19px base - high legibility)</option>
+              <option value="extra-large">Extra Large (21px base - maximum legibility)</option>
             </select>
           </div>
 
           {/* Density */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Layout Spacing Density</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Layout Spacing Density</label>
             <select
               value={accessibility.density}
               onChange={(e) => onChange({ ...accessibility, density: e.target.value as InterfaceDensity })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="compact">Compact (Tighter lists, fewer scrolls)</option>
               <option value="comfortable">Comfortable (Standard spacing)</option>
@@ -151,7 +152,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
           {/* Screen Reader Optimized */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('a11y.screen_reader')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('a11y.screen_reader')}</p>
               <p className="text-[11px] text-slate-400">
                 Embed explicit ARIA live regions and detailed audio descriptions for math symbols and code diffs.
               </p>
@@ -174,7 +175,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
           {/* Tooltips */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('a11y.tooltips')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('a11y.tooltips')}</p>
               <p className="text-[11px] text-slate-400">
                 Display explanatory hover tooltips explaining algorithm terms, rating calculations, and icons.
               </p>
@@ -197,7 +198,7 @@ export const AccessibilitySettingsSection: React.FC<AccessibilitySettingsSection
           {/* Confirm Destructive */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('a11y.confirm_destructive')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('a11y.confirm_destructive')}</p>
               <p className="text-[11px] text-slate-400">
                 Prompt an explicit confirmation modal before deleting mistake cards, code drafts, or resets.
               </p>

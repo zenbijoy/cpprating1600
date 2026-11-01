@@ -21,7 +21,7 @@ export const NotificationSettingsSection: React.FC = () => {
       {/* 1. Notification Channels */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Bell className="w-4 h-4 text-indigo-400" />
             <span>Delivery Channels & Notification Types</span>
           </h3>
@@ -34,7 +34,7 @@ export const NotificationSettingsSection: React.FC = () => {
           {/* In-App Notifications */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">In-App Notification Inbox</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">In-App Notification Inbox</p>
               <p className="text-[11px] text-slate-400">
                 Display badge counter and bell alerts directly in the top navigation bar.
               </p>
@@ -57,7 +57,7 @@ export const NotificationSettingsSection: React.FC = () => {
           {/* Android Companion Push */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">Android Guardian Mobile Push</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">Android Guardian Mobile Push</p>
               <p className="text-[11px] text-slate-400">
                 Send focus session prompts and daily streak reminders to your Android smartphone.
               </p>
@@ -80,7 +80,7 @@ export const NotificationSettingsSection: React.FC = () => {
           {/* Web Push API */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">Browser Desktop Push Notifications</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">Browser Desktop Push Notifications</p>
               <p className="text-[11px] text-slate-400">
                 W3C standard push notifications when Codeforces contests are 15 minutes away.
               </p>
@@ -104,7 +104,7 @@ export const NotificationSettingsSection: React.FC = () => {
 
       {/* 2. Quiet Hours & Schedule */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Moon className="w-4 h-4 text-cyan-400" />
           <span>Quiet Hours & Study Routine</span>
         </h3>
@@ -112,7 +112,7 @@ export const NotificationSettingsSection: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">Enable Nighttime Quiet Hours</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">Enable Nighttime Quiet Hours</p>
               <p className="text-[11px] text-slate-400">
                 Mute all non-urgent push notifications while you sleep or attend university lectures.
               </p>
@@ -135,22 +135,22 @@ export const NotificationSettingsSection: React.FC = () => {
           {quietHours && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-xl border border-slate-800 bg-slate-950 text-xs">
               <div className="space-y-1.5">
-                <label className="font-bold text-slate-300">Quiet Hours Start</label>
+                <label className="font-bold text-slate-700 dark:text-slate-300">Quiet Hours Start</label>
                 <input
                   type="time"
                   value={quietStart}
                   onChange={(e) => setQuietStart(e.target.value)}
-                  className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2 text-white focus:outline-none focus:border-cyan-500 font-mono"
+                  className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="font-bold text-slate-300">Quiet Hours End</label>
+                <label className="font-bold text-slate-700 dark:text-slate-300">Quiet Hours End</label>
                 <input
                   type="time"
                   value={quietEnd}
                   onChange={(e) => setQuietEnd(e.target.value)}
-                  className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2 text-white focus:outline-none focus:border-cyan-500 font-mono"
+                  className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 font-mono"
                 />
               </div>
             </div>
@@ -159,19 +159,19 @@ export const NotificationSettingsSection: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-xs">
             {/* Preferred Daily Reminder */}
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-300">Daily Practice Reminder Time</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Daily Practice Reminder Time</label>
               <input
                 type="time"
                 value={practiceTime}
                 onChange={(e) => setPracticeTime(e.target.value)}
-                className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2 text-white focus:outline-none focus:border-indigo-500 font-mono"
+                className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 font-mono"
               />
             </div>
 
             {/* Contest Alerts */}
             <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
               <div>
-                <p className="font-semibold text-white text-xs">Upcoming Div.2 Contest Alerts</p>
+                <p className="font-semibold text-slate-900 dark:text-white text-xs">Upcoming Div.2 Contest Alerts</p>
                 <p className="text-[11px] text-slate-400">1 day, 1 hour, and 15 minutes before round</p>
               </div>
               <button

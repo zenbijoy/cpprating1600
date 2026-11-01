@@ -107,7 +107,7 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
               <WeeklyActivityIcon size={16} />
             </div>
             <div>
-              <h3 className="font-bold text-white text-base tracking-tight flex items-center gap-2">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base tracking-tight flex items-center gap-2">
                 <span>Problem Difficulty Distribution Heatmap</span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                   {totalAnalyzedSolves} Solves Mapped
@@ -153,14 +153,14 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
                   Risk Index: {diagnostic.riskScore}%
                 </span>
               </div>
-              <h4 className="text-sm font-bold text-white mt-0.5">{diagnostic.title}</h4>
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{diagnostic.title}</h4>
             </div>
           </div>
 
           <div className="flex items-center gap-4 text-xs font-mono shrink-0">
             <div>
               <span className="text-[10px] text-slate-400 uppercase block">Recent Avg Rating</span>
-              <span className="font-bold text-white text-sm">{diagnostic.recentAverageDifficulty}</span>
+              <span className="font-bold text-slate-900 dark:text-white text-sm">{diagnostic.recentAverageDifficulty}</span>
             </div>
             <div>
               <span className="text-[10px] text-slate-400 uppercase block">Peak Solved</span>
@@ -233,7 +233,7 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
                     style={{ backgroundColor: band.tierColor }}
                   />
                   <div className="truncate">
-                    <span className="text-xs font-bold text-white block truncate">{band.label}</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">{band.label}</span>
                     <span className="text-[10px] text-slate-400 truncate block">{band.badge}</span>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
                       {/* Tooltip on hover */}
                       <div className="absolute bottom-full mb-2 hidden group-hover:block z-30 pointer-events-none">
                         <div className="rounded-lg bg-slate-950 border border-slate-700 p-2 text-left text-[11px] shadow-xl w-44">
-                          <div className="font-bold text-white">{band.label}</div>
+                          <div className="font-bold text-slate-900 dark:text-white">{band.label}</div>
                           <div className="text-slate-400 font-mono text-[10px] mb-1">
                             {bucket.label}
                           </div>
@@ -300,7 +300,7 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
           <div className="p-4 rounded-xl border border-indigo-900/60 bg-slate-950/90 space-y-2.5 transition-all">
             <div className="flex items-center justify-between border-b border-slate-800 pb-2">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-bold text-slate-900 dark:text-white">
                   Inspect: {bands.find((b) => b.id === selectedCell.bandId)?.label} during{' '}
                   {buckets.find((b) => b.id === selectedCell.bucketId)?.label}
                 </span>
@@ -311,7 +311,7 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedCellKey(null)}
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer"
               >
                 Close
               </button>
@@ -324,7 +324,7 @@ export const DifficultyHeatmap: React.FC<DifficultyHeatmapProps> = ({
                     key={p.id}
                     className="p-2.5 rounded-lg border border-slate-800 bg-slate-900/60 text-xs space-y-0.5"
                   >
-                    <div className="font-bold text-white truncate">{p.name}</div>
+                    <div className="font-bold text-slate-900 dark:text-white truncate">{p.name}</div>
                     <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
                       <span>Rating {p.rating || 800}</span>
                       <span className="text-emerald-400 font-bold">{p.verdict || 'OK'}</span>

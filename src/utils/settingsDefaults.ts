@@ -15,30 +15,19 @@ export const DEFAULT_CPP20_TEMPLATE = `#include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <numeric>
-#include <map>
-#include <set>
-#include <queue>
 
 using namespace std;
 
 void solve() {
-    // Fast independent logic
-    int n;
-    if (!(cin >> n)) return;
-    vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-    long long ans = 0;
-    cout << ans << "\\n";
+    // Write your solution here
+    
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     int t = 1;
-    // cin >> t; // Uncomment if multiple test cases
+    // cin >> t; // Uncomment if problem has multiple test cases
     while (t--) {
         solve();
     }
@@ -50,15 +39,18 @@ export const DEFAULT_CPP17_TEMPLATE = `#include <bits/stdc++.h>
 using namespace std;
 
 void solve() {
-    // Solution code
+    // Write your solution here
+    
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     int t = 1;
-    // cin >> t;
-    while (t--) solve();
+    // cin >> t; // Uncomment if problem has multiple test cases
+    while (t--) {
+        solve();
+    }
     return 0;
 }
 `;
@@ -68,14 +60,13 @@ export const DEFAULT_C_TEMPLATE = `#include <stdio.h>
 #include <string.h>
 
 void solve() {
-    int n;
-    if (scanf("%d", &n) != 1) return;
-    printf("%d\\n", n);
+    // Write your solution here
+    
 }
 
 int main() {
     int t = 1;
-    // scanf("%d", &t);
+    // scanf("%d", &t); // Uncomment if problem has multiple test cases
     while (t--) {
         solve();
     }
@@ -89,7 +80,7 @@ def solve():
     input_data = sys.stdin.read().split()
     if not input_data:
         return
-    # Process logic
+    # Write your solution here
     pass
 
 if __name__ == '__main__':
@@ -99,10 +90,10 @@ if __name__ == '__main__':
 export const DEFAULT_JS_TEMPLATE = `const fs = require('fs');
 
 function solve() {
-    const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);
-    if (!input || input.length === 0 || input[0] === '') return;
-    // Process input
-    console.log(input.join(' '));
+    const input = fs.readFileSync(0, 'utf-8').trim();
+    if (!input) return;
+    // Write your solution here
+    
 }
 
 solve();
@@ -114,9 +105,8 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String line = br.readLine();
-        if (line == null) return;
-        System.out.println(line);
+        // Write your solution here
+        
     }
 }
 `;
@@ -151,6 +141,7 @@ export const DEFAULT_GLOBAL_SETTINGS: GlobalUserSettings = {
   },
   accessibility: {
     fontSize: 'standard',
+    fontFamily: 'outfit',
     reducedMotion: false,
     highContrast: false,
     clearFocusIndicators: true,

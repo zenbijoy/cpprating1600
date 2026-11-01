@@ -40,7 +40,7 @@ export const EmptyProblemsState: React.FC<EmptyStateProps> = ({
         <circle cx="28" cy="28" r="2.5" fill="#fef08a" />
       </svg>
     </div>
-    <h3 className="text-lg font-bold text-slate-100 tracking-tight">{title}</h3>
+    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">{title}</h3>
     <p className="mt-1.5 max-w-sm text-sm text-slate-400">{description}</p>
     {effectiveAction && onAction && (
       <button
@@ -81,7 +81,7 @@ export const EmptyContestsState: React.FC<EmptyStateProps> = ({
         <circle cx="50" cy="38" r="4" fill="#fef08a" />
       </svg>
     </div>
-    <h3 className="text-lg font-bold text-slate-100 tracking-tight">{title}</h3>
+    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">{title}</h3>
     <p className="mt-1.5 max-w-sm text-sm text-slate-400">{description}</p>
     {actionText && onAction && (
       <button
@@ -118,7 +118,7 @@ export const EmptySavedState: React.FC<EmptyStateProps> = ({
         <polygon points="56,20 66,20 66,36 61,32 56,36" fill="#facc15" />
       </svg>
     </div>
-    <h3 className="text-lg font-bold text-slate-100 tracking-tight">{title}</h3>
+    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">{title}</h3>
     <p className="mt-1.5 max-w-sm text-sm text-slate-400">{description}</p>
     {effectiveAction && onAction && (
       <button
@@ -152,7 +152,7 @@ export const EmptyOfflineState: React.FC<EmptyStateProps> = ({
         <line x1="20" y1="20" x2="80" y2="80" stroke="#ef4444" strokeWidth="4" strokeLinecap="round" />
       </svg>
     </div>
-    <h3 className="text-lg font-bold text-slate-100 tracking-tight">{title}</h3>
+    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">{title}</h3>
     <p className="mt-1.5 max-w-sm text-sm text-slate-400">{description}</p>
     {actionText && onAction && (
       <button

@@ -29,7 +29,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
       {/* 1. Visibility & Social Sharing */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Lock className="w-4 h-4 text-indigo-400" />
             <span>Profile Visibility & Social Sharing</span>
           </h3>
@@ -42,7 +42,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
           {/* Profile Visibility */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('privacy.profile_visibility')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('privacy.profile_visibility')}</p>
               <p className="text-[11px] text-slate-400">
                 {privacy.profileVisibility === 'public'
                   ? 'Your solved problem counts and unlocked badges can be viewed in community benchmarks.'
@@ -52,7 +52,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
             <select
               value={privacy.profileVisibility}
               onChange={(e) => onChange({ ...privacy, profileVisibility: e.target.value as any })}
-              className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="public">{t('privacy.visibility_public')}</option>
               <option value="private">{t('privacy.visibility_private')}</option>
@@ -62,7 +62,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
           {/* Activity Status */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('privacy.activity_status')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('privacy.activity_status')}</p>
               <p className="text-[11px] text-slate-400">
                 Indicate when you are actively solving problems in study groups.
               </p>
@@ -85,7 +85,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
           {/* Share Achievements */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('privacy.share_achievements')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('privacy.share_achievements')}</p>
               <p className="text-[11px] text-slate-400">
                 Allow milestone badges (e.g. 10-day streak, 1200 rating reached) to be shown on your profile card.
               </p>
@@ -110,7 +110,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
       {/* 2. Personalization & Telemetry */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-emerald-400" />
             <span>AI Personalization & Telemetry</span>
           </h3>
@@ -123,7 +123,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
           {/* Personalized Recommendations */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('privacy.recommendations')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('privacy.recommendations')}</p>
               <p className="text-[11px] text-slate-400">
                 Enable our adaptive algorithm to inspect mistake patterns and suggest problems that address your specific weaknesses.
               </p>
@@ -146,7 +146,7 @@ export const PrivacySettingsSection: React.FC<PrivacySettingsSectionProps> = ({
           {/* Telemetry */}
           <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('privacy.telemetry')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('privacy.telemetry')}</p>
               <p className="text-[11px] text-slate-400">
                 Send anonymous runtime diagnostic metrics to help the CLIMB 1600 engineering team identify client-side bugs.
               </p>

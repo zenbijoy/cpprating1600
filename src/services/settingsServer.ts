@@ -4,30 +4,68 @@ import { getSupabaseAdmin, AuthenticatedRequest } from './authServer';
 import { DEFAULT_GLOBAL_SETTINGS, mergeWithDefaultSettings } from '../utils/settingsDefaults';
 import { GlobalUserSettings } from '../types/settings';
 
+const VALID_THEME_PRESETS = [
+  'climb-default',
+  'midnight',
+  'cyber-matrix',
+  'candy-pop',
+  'kawaii-anime',
+  'retro-arcade',
+  'galaxy-space',
+  'jungle-safari',
+  'coffee-overdrive',
+  'dragon-fire',
+  'ocean',
+  'forest',
+  'violet',
+  'warm-neutral',
+  'amoled',
+  'high-contrast',
+  'mountain-summit',
+  'sea-beach',
+  'railway-express',
+  'jorna-waterfall',
+  'neon-road',
+  'anime-village',
+  'sci-fi-mecha',
+  'fighting-coliseum',
+  'sakura-shrine',
+  'pixel-dungeon',
+  'steampunk-airship',
+  'aurora-borealis',
+  'desert-oasis',
+  'ninja-shadow',
+  'magic-academy',
+  'underwater-atlantis',
+  'sunset-lofi',
+  'volcano-forge',
+  'cyberpunk-tokyo',
+  'wild-west',
+  'pirate-cove',
+  'superhero-city',
+  'fairytale-wonderland',
+  'valhalla-viking',
+] as const;
+
 // Schema for updating settings
 export const SettingsUpdateSchema = z.object({
   theme: z
     .object({
       mode: z.enum(['light', 'dark', 'multicolor', 'orange', 'purple', 'system']).optional(),
-      preset: z
-        .enum([
-          'climb-default',
-          'midnight',
-          'amoled',
-          'ocean',
-          'forest',
-          'violet',
-          'warm-neutral',
-          'high-contrast',
-        ])
-        .optional(),
+      preset: z.enum(VALID_THEME_PRESETS).optional(),
       customPrimaryAccent: z.string().max(30).optional(),
       customSecondaryAccent: z.string().max(30).optional(),
       density: z.enum(['compact', 'comfortable', 'spacious']).optional(),
       borderRadius: z.enum(['compact', 'standard', 'rounded']).optional(),
-      fontSize: z.enum(['small', 'standard', 'large']).optional(),
+      fontSize: z.enum(['small', 'standard', 'large', 'extra-large']).optional(),
+      fontFamily: z.enum(['outfit', 'jakarta', 'space-grotesk', 'sora', 'system']).optional(),
       animationIntensity: z.enum(['full', 'reduced', 'off']).optional(),
       transparency: z.enum(['normal', 'reduced']).optional(),
+      funnyThemeSounds: z.boolean().optional(),
+      playfulMascot: z.boolean().optional(),
+      backgroundSparkles: z.boolean().optional(),
+      selectedCharacter: z.string().max(64).optional(),
+      characterMood: z.string().max(32).optional(),
     })
     .optional(),
 

@@ -64,7 +64,33 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
-      if (!token) return;
+      if (!token) {
+        // Initialize from local currentProfile for Guest / Local mode
+        const guestData = {
+          id: currentProfile.id || 'guest',
+          display_name: currentProfile.name || 'Competitive Programmer',
+          username: currentProfile.cfHandle || 'guest_coder',
+          bio: 'Codeforces enthusiast climbing towards Candidate Master and beyond with climb-1600.',
+          skills: ['C++', 'Data Structures', 'Dynamic Programming', 'Binary Search'],
+          interests: ['Codeforces', 'Competitive Programming', 'Algorithms'],
+          avatar_url: currentProfile.avatar || null,
+          cf_handle: currentProfile.cfHandle || null,
+          cf_rating: currentProfile.verifiedCfRating || null,
+          cf_max_rating: currentProfile.maxCfRating || null,
+          created_at: currentProfile.createdAt || new Date().toISOString(),
+          privacy_settings: { show_online_status: true, profile_visibility: 'public' },
+        };
+        setProfileData(guestData);
+        setDisplayName(guestData.display_name);
+        setUsername(guestData.username);
+        setBio(guestData.bio);
+        setSkills(guestData.skills);
+        setInterests(guestData.interests);
+        setAvatarUrl(guestData.avatar_url);
+        setShowOnlineStatus(true);
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` },
@@ -111,20 +137,22 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     try {
       const result = await r2StorageClient.uploadFile(file, 'avatars');
       setAvatarUrl(result.publicUrl);
+      onUpdateProfile({ avatar: result.publicUrl });
 
-      // Auto save avatar
+      // Save avatar in remote profile if authenticated
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
-      await fetch('/api/auth/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ avatarUrl: result.publicUrl }),
-      });
-
-      onUpdateProfile({ avatar: result.publicUrl });
+      if (token) {
+        await fetch('/api/auth/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ avatarUrl: result.publicUrl }),
+        });
+      }
+      setProfileData((prev: any) => (prev ? { ...prev, avatar_url: result.publicUrl } : null));
     } catch (err: any) {
       alert(err.message || 'Avatar upload failed');
     } finally {
@@ -140,6 +168,23 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
+
+      if (!token) {
+        // Save locally in guest mode
+        const updatedLocal = {
+          ...profileData,
+          display_name: displayName,
+          username: username.trim() || null,
+          bio,
+          skills,
+          interests,
+          avatar_url: avatarUrl,
+        };
+        setProfileData(updatedLocal);
+        setIsEditing(false);
+        onUpdateProfile({ name: displayName, avatar: avatarUrl || undefined });
+        return;
+      }
 
       const res = await fetch('/api/auth/profile', {
         method: 'PUT',
@@ -169,7 +214,6 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
       setProfileData(updated.profile);
       setIsEditing(false);
       onUpdateProfile({ name: displayName });
-      alert('Profile updated successfully!');
     } catch (err: any) {
       alert(err.message || 'Error updating profile');
     } finally {

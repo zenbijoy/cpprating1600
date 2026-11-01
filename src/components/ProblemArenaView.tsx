@@ -12,14 +12,19 @@ import {
   BookmarkActionIcon,
   ExternalLinkIcon,
   ChevronRightIcon,
+  CodeFileIcon,
 } from './icons';
 import { CFProblem, ProblemAttempt } from '../types';
 import { codeforcesService } from '../services/codeforces';
 import { cfStorageService } from '../services/storage';
 import { EmptyProblemsState, EmptyOfflineState, RocketLoading } from './assets';
+import { FunCard } from './common/CardBackgrounds';
+import { MascotClimby, FunnyStickerBadge, AnimeCharacterSprite } from './assets/MascotAndStickers';
+import { storageService } from '../services/storage';
 
 interface ProblemArenaViewProps {
   onSelectProblem: (problem: CFProblem) => void;
+  onViewSolution?: (problem: CFProblem) => void;
   attempts: ProblemAttempt[];
   currentRating?: number;
 }
@@ -73,6 +78,7 @@ function pushFiltersToURL(filters: ReturnType<typeof getFiltersFromURL>) {
 
 export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
   onSelectProblem,
+  onViewSolution,
   attempts,
   currentRating,
 }) => {
@@ -137,6 +143,7 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
         tag: selectedTag === 'all' ? undefined : selectedTag,
         minRating,
         maxRating,
+        limit: 'all',
       });
       setProblems(list);
     } catch (err: any) {
@@ -242,94 +249,107 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
 
   const hasActiveFilters = searchQuery || selectedTag !== 'all' || minRating !== 800 || maxRating !== 1600 || statusFilter !== 'all';
 
-  const getRatingColor = (r?: number) => {
-    if (!r) return 'text-slate-500';
-    if (r < 1200) return 'text-green-400';
-    if (r < 1400) return 'text-cyan-400';
-    if (r < 1600) return 'text-blue-400';
-    if (r < 1900) return 'text-violet-400';
-    return 'text-orange-400';
+  const getRatingBadgeClass = (r?: number) => {
+    if (!r) return 'bg-slate-600 text-white';
+    if (r < 1000) return 'bg-emerald-600 text-white shadow-xs';
+    if (r < 1200) return 'bg-teal-600 text-white shadow-xs';
+    if (r < 1400) return 'bg-cyan-600 text-white shadow-xs';
+    if (r < 1600) return 'bg-blue-600 text-white shadow-xs';
+    if (r < 1900) return 'bg-purple-600 text-white shadow-xs';
+    return 'bg-amber-600 text-white shadow-xs';
   };
 
   return (
-    <div className="space-y-5 max-w-6xl mx-auto pb-12">
+    <div className="space-y-6 max-w-6xl mx-auto pb-12 font-sans">
       {/* Visual Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-indigo-500/30 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-5 sm:p-6 shadow-xl">
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
-              <ProblemsIcon size={14} semantic="primary" />
-              <span>Official Codeforces Problemset</span>
+      <FunCard variant="arcade" sticker="speedrun_1600" className="p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex shrink-0 p-2.5 rounded-2xl bg-indigo-500/10 border border-indigo-400/25 backdrop-blur-xs shadow-inner">
+              <AnimeCharacterSprite characterId={storageService.getSettings()?.theme?.selectedCharacter || 'climby'} size={68} mood="celebrating" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              Problem Arena & Archive
-            </h1>
-            <div className="flex items-center gap-2.5 flex-wrap text-xs text-slate-300 font-medium">
-              <span className="bg-slate-800/80 border border-slate-700/60 px-2.5 py-1 rounded-lg">
-                📚 <strong>{loading ? '...' : filteredProblems.length.toLocaleString()}</strong> available
-              </span>
-              <span className="bg-emerald-950/60 border border-emerald-800/60 text-emerald-300 px-2.5 py-1 rounded-lg">
-                ✅ <strong>{filterStats.solved}</strong> solved ({filterStats.pct}%)
-              </span>
-              {currentRating && (
-                <span className="bg-indigo-950/60 border border-indigo-800/60 text-indigo-300 px-2.5 py-1 rounded-lg">
-                  🎯 Rating <strong>{currentRating}</strong>
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-2xs">
+                <ProblemsIcon size={14} semantic="primary" />
+                <span>Official Codeforces Problemset</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Problem Arena & Archive
+              </h1>
+              <div className="flex items-center gap-2.5 flex-wrap text-xs text-slate-600 dark:text-slate-300 font-medium pt-0.5">
+                <span className="bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1 rounded-xl shadow-2xs">
+                  📚 <strong>{loading ? '...' : filteredProblems.length.toLocaleString()}</strong> available
                 </span>
-              )}
+                <span className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-xl shadow-2xs font-bold">
+                  ✅ <strong>{filterStats.solved}</strong> solved ({filterStats.pct}%)
+                </span>
+                {currentRating && (
+                  <span className="bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 px-3 py-1 rounded-xl shadow-2xs font-bold">
+                    🎯 Rating <strong>{currentRating}</strong>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+          <div className="flex items-center gap-3 self-stretch sm:self-auto justify-end">
             <button
               onClick={handlePickRandom}
               disabled={loading || filteredProblems.length === 0}
-              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-md shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 text-xs sm:text-sm px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-md shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50"
               title="Pick a random problem from current filter"
             >
-              <RefreshIcon size={14} semantic="primary" />
+              <RefreshIcon size={16} semantic="primary" />
               <span>Surprise Me</span>
             </button>
             <button
               onClick={fetchProblems}
               disabled={loading}
-              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/60 text-slate-300 transition-colors disabled:opacity-50 cursor-pointer"
+              className="p-2.5 sm:px-3.5 sm:py-2.5 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-50 cursor-pointer shadow-2xs"
               title="Sync Archive from Codeforces"
             >
-              <RefreshIcon size={14} className={loading ? 'animate-spin' : ''} />
+              <RefreshIcon size={16} className={loading ? 'animate-spin' : ''} />
             </button>
           </div>
         </div>
-      </div>
+      </FunCard>
 
       {/* Search + Quick Filters */}
-      <div className="space-y-3">
+      <FunCard variant="clean" className="p-4 sm:p-5 space-y-4">
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <SearchIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <SearchIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               ref={searchInputRef}
               type="text"
               value={searchQuery}
               onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
               placeholder="Search by name or ID (e.g. 158A)… Press / to focus"
-              className="w-full bg-slate-900/60 border border-slate-700/60 rounded-lg pl-9 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 shadow-xs"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <CloseIcon size={14} />
               </button>
             )}
           </div>
           <button
             onClick={() => setShowFilters(v => !v)}
-            className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg border text-sm transition-colors ${showFilters ? 'bg-indigo-600/20 border-indigo-500/60 text-indigo-300' : 'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-slate-200'}`}
+            className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-xs ${
+              showFilters
+                ? 'bg-indigo-600 text-white border-indigo-600'
+                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+            }`}
           >
             <FilterIcon size={16} />
-            Filters
-            {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />}
+            <span>Filters</span>
+            {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-amber-400" />}
           </button>
           {hasActiveFilters && (
-            <button onClick={resetFilters} className="text-xs px-3 py-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-400 hover:text-slate-200 transition-colors">
+            <button
+              onClick={resetFilters}
+              className="text-xs font-semibold px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shadow-xs"
+            >
               Reset
             </button>
           )}
@@ -337,7 +357,7 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
 
         {/* Quick Difficulty Presets */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          <span className="text-[11px] text-slate-500 font-medium shrink-0 mr-1">Difficulty:</span>
+          <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider shrink-0 mr-1">Difficulty:</span>
           {[
             { label: 'All', min: 800, max: 2400 },
             { label: '800–1000 (Div. 2 A/B)', min: 800, max: 1000 },
@@ -354,10 +374,10 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
                   setMaxRating(preset.max);
                   setPage(1);
                 }}
-                className={`px-2.5 py-1 rounded-lg border text-xs whitespace-nowrap transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all cursor-pointer shadow-xs ${
                   isSelected
-                    ? 'bg-indigo-600/30 border-indigo-500 text-indigo-300 font-semibold'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
                 {preset.label}
@@ -369,19 +389,26 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
         {/* Status Quick Filters + Sort Dropdown */}
         <div className="flex items-center justify-between flex-wrap gap-2 pt-1">
           <div className="flex gap-2 flex-wrap">
-            {(['all', 'unsolved', 'solved', 'bookmarked'] as const).map(s => (
-              <button
-                key={s}
-                onClick={() => { setStatusFilter(s); setPage(1); }}
-                className={`text-xs px-3 py-1.5 rounded-lg border transition-colors capitalize ${
-                  statusFilter === s
-                    ? 'bg-indigo-600/30 border-indigo-500/60 text-indigo-300'
-                    : 'bg-slate-800/60 border-slate-700/40 text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {s === 'bookmarked' ? '🔖 Saved' : s}
-              </button>
-            ))}
+            {(['all', 'unsolved', 'solved', 'bookmarked'] as const).map(s => {
+              const isSelected = statusFilter === s;
+              return (
+                <button
+                  key={s}
+                  onClick={() => { setStatusFilter(s); setPage(1); }}
+                  className={`text-xs px-3 py-1.5 rounded-xl border font-bold transition-all cursor-pointer shadow-xs capitalize ${
+                    isSelected
+                      ? s === 'solved'
+                        ? 'bg-emerald-600 border-emerald-600 text-white'
+                        : s === 'bookmarked'
+                        ? 'bg-amber-500 border-amber-500 text-slate-950'
+                        : 'bg-indigo-600 border-indigo-600 text-white'
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                >
+                  {s === 'bookmarked' ? '🔖 Saved' : s}
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-1.5 text-xs">
@@ -453,7 +480,7 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
             </div>
           </div>
         )}
-      </div>
+      </FunCard>
 
       {/* Error */}
       {error && (
@@ -493,83 +520,101 @@ export const ProblemArenaView: React.FC<ProblemArenaViewProps> = ({
               return (
                 <div
                   key={id}
-                  className={`bg-slate-900/40 border rounded-xl p-3.5 flex items-center gap-3 hover:bg-slate-900/80 transition-all group ${
-                    isSolved ? 'border-emerald-800/30' : 'border-slate-800/60'
+                  className={`rounded-2xl p-4 flex items-center gap-3.5 transition-all group border shadow-xs hover:shadow-md ${
+                    isSolved
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60'
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500/60'
                   }`}
                 >
-                  {/* Status icon */}
+                  {/* Status icon with solid background */}
                   <div className="shrink-0">
                     {isSolved ? (
-                      <CheckCircleIcon size={20} semantic="success" />
+                      <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                        <CheckCircleIcon size={18} />
+                      </div>
                     ) : isAttempted ? (
-                      <TimerIcon size={20} semantic="warning" />
+                      <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center shadow-xs">
+                        <TimerIcon size={18} />
+                      </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-slate-700" />
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono font-bold text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                        {prob.index}
+                      </div>
                     )}
                   </div>
 
                   {/* Problem Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-mono text-slate-500 shrink-0">{id}</span>
+                      <span className="text-xs font-mono font-bold text-slate-400 shrink-0">{id}</span>
                       <button
                         onClick={() => onSelectProblem(prob)}
-                        className="text-sm font-medium text-slate-200 hover:text-indigo-300 transition-colors text-left truncate"
+                        className="text-sm font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-left truncate cursor-pointer"
                       >
                         {prob.name}
                       </button>
                       {prob.rating && (
-                        <span className={`text-xs font-bold ${getRatingColor(prob.rating)}`}>
+                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-black tracking-wide ${getRatingBadgeClass(prob.rating)}`}>
                           ⚡{prob.rating}
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-wrap gap-1 mt-1.5">
+                    <div className="flex flex-wrap gap-1.5 mt-2">
                       {prob.tags.slice(0, 5).map(tag => (
                         <button
                           key={tag}
                           onClick={() => { setSelectedTag(tag); setPage(1); setShowFilters(true); }}
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-colors border border-slate-700/40"
+                          className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors border border-slate-200 dark:border-slate-700/80 cursor-pointer"
                         >
                           {tag}
                         </button>
                       ))}
                       {prob.tags.length > 5 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700/80">
                           +{prob.tags.length - 5}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Actions (Visible across Mobile & Desktop) */}
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  {/* Actions with comfortable, spacious targets */}
+                  <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
                     <button
                       onClick={() => toggleBookmark(prob)}
                       title={isBookmarked ? 'Remove bookmark' : 'Save for later'}
-                      className={`p-2 rounded-xl transition-all cursor-pointer ${
+                      className={`p-2.5 rounded-xl border transition-all cursor-pointer shadow-2xs ${
                         isBookmarked
-                          ? 'text-amber-400 bg-amber-900/30 border border-amber-600/40'
-                          : 'text-slate-400 hover:text-amber-300 hover:bg-slate-800'
+                          ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-600/50'
+                          : 'text-slate-400 bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:text-amber-500 hover:border-amber-300'
                       }`}
                     >
-                      {isBookmarked ? <BookmarksIcon size={16} semantic="primary" /> : <BookmarkActionIcon size={16} />}
+                      {isBookmarked ? <BookmarksIcon size={16} semantic="warning" /> : <BookmarkActionIcon size={16} />}
                     </button>
                     <a
                       href={cfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       title="Open on Codeforces"
-                      className="p-2 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors hidden sm:flex"
+                      className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-indigo-600 dark:hover:text-white transition-all cursor-pointer shadow-2xs hidden sm:flex"
                     >
                       <ExternalLinkIcon size={16} />
                     </a>
+                    {onViewSolution && (
+                      <button
+                        onClick={() => onViewSolution(prob)}
+                        title="View Codeforces Solution"
+                        className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-indigo-200 border border-slate-700/60 transition-all font-semibold cursor-pointer shadow-2xs"
+                      >
+                        <CodeFileIcon size={14} semantic="primary" />
+                        <span className="hidden md:inline">Solution</span>
+                      </button>
+                    )}
                     <button
                       onClick={() => onSelectProblem(prob)}
-                      className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-sm cursor-pointer"
+                      className="flex items-center gap-1.5 text-xs sm:text-sm px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-md shadow-indigo-600/25 cursor-pointer"
                     >
                       <span>Solve</span>
-                      <ChevronRightIcon size={14} />
+                      <ChevronRightIcon size={16} />
                     </button>
                   </div>
                 </div>

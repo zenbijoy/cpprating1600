@@ -31,6 +31,9 @@ import {
 import { compute30DayStreak } from '../utils/streak';
 import { getTopicForDay } from '../utils/roadmap';
 import { AIAssistantCompanion } from './assets';
+import { FunCard } from './common/CardBackgrounds';
+import { MascotBigBrain, MascotClimby, MascotByteCat, AnimeCharacterSprite } from './assets/MascotAndStickers';
+import { storageService } from '../services/storage';
 import { useToast } from './Toast';
 import { MathText } from './MathText';
 
@@ -268,31 +271,44 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
       {/* =========================================================================
           TOP HEADER: Brand, Subtitle, Language Switcher
           ========================================================================= */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-100 dark:border-slate-800">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-sm">
-                <AIAssistantBotIcon size={20} className="text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                AI Coach Studio
-              </h1>
+      <FunCard variant="cosmic" sticker="1000_iq" className="p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4 border-b border-white/10 dark:border-white/5">
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex shrink-0 p-2.5 rounded-2xl bg-indigo-500/10 border border-indigo-400/25 backdrop-blur-xs shadow-inner">
+              <AnimeCharacterSprite characterId={storageService.getSettings()?.theme?.selectedCharacter || 'big-brain-dino'} size={68} mood="thinking" />
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Personalized competitive programming tutor. Teaches intuition, provides progressive Socratic hints with spoiler guards, audits complexity, and eliminates contest blunders.
-            </p>
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md">
+                  <AIAssistantBotIcon size={22} className="text-white" />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  AI Coach Studio
+                </h1>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shadow-2xs">
+                  🎯 Target {targetRating}
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30 shadow-2xs">
+                  ⚡ Socratic Invariants
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30 shadow-2xs">
+                  🛡️ Anti-Spoiler Guards
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
             {/* Language Switcher */}
-            <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 text-xs font-semibold">
+            <div className="flex items-center rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 p-1 text-xs font-semibold gap-1 shadow-2xs">
               <button
                 type="button"
                 onClick={() => setCoachLang('en')}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                   coachLang === 'en'
-                    ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs'
+                    ? 'bg-emerald-600 text-white font-bold shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
@@ -301,25 +317,20 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
               <button
                 type="button"
                 onClick={() => setCoachLang('bn')}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                   coachLang === 'bn'
-                    ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs'
+                    ? 'bg-emerald-600 text-white font-bold shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 বাংলা
               </button>
             </div>
-
-            <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">
-              <AISparkleIcon size={14} semantic="success" />
-              <span>Socratic Reasoning</span>
-            </div>
           </div>
         </div>
 
-        {/* Mode Selector Tabs (Horizontal swipeable on mobile) */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+        {/* Mode Selector Tabs (Spacious with generous gaps) */}
+        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
           {[
             { id: 'concept' as CoachMode, label: 'Concept Teacher', icon: GenerateExplanationIcon },
             { id: 'hints' as CoachMode, label: 'Socratic Hint Ladder', icon: HintIcon },
@@ -341,10 +352,10 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
                   setCoachOutput(null);
                   if (tab.id === 'weakness') handleRunWeaknessDetection();
                 }}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-xs ${
                   isActive
-                    ? 'bg-emerald-600 text-white shadow-xs font-bold'
-                    : 'bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-2 ring-emerald-500/40'
+                    : 'bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Icon size={16} />
@@ -353,14 +364,32 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
             );
           })}
         </div>
-      </div>
+      </FunCard>
 
       {/* =========================================================================
           MAIN WORKSPACE GRID: Left Input Panel + Right Coach Terminal
           ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left: Input Form */}
-        <div className="lg:col-span-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 space-y-5 shadow-sm">
+        <div className="lg:col-span-5">
+          <FunCard
+            variant={
+              activeMode === 'hints'
+                ? 'frost'
+                : activeMode === 'review'
+                ? 'matrix'
+                : activeMode === 'complexity'
+                ? 'arcade'
+                : activeMode === 'weakness'
+                ? 'coffee'
+                : activeMode === 'decisions'
+                ? 'candy'
+                : activeMode === 'checkin'
+                ? 'emerald'
+                : 'clean'
+            }
+            className="p-6 space-y-5"
+          >
           {/* Mode 1: Concept Teacher */}
           {activeMode === 'concept' && (
             <div className="space-y-4">
@@ -426,9 +455,9 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
                 type="button"
                 onClick={handleAskConcept}
                 disabled={loading || !conceptTopic}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 text-xs shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 text-xs shadow-sm transition-all cursor-pointer disabled:opacity-50 interactive-button shimmer-sheen"
               >
-                <AISparkleIcon size={14} className="text-white" />
+                <AISparkleIcon size={14} className="text-white animate-spin-slow" />
                 <span>{loading ? 'Teaching...' : 'Explain Concept & Invariants'}</span>
               </button>
             </div>
@@ -471,9 +500,9 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
                       <div
                         key={h.level}
                         onClick={() => setHintLevel(h.level)}
-                        className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                        className={`p-3 rounded-xl border text-left cursor-pointer transition-all interactive-card ${
                           isSelected
-                            ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 shadow-xs'
+                            ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 shadow-xs ring-1 ring-emerald-500/30'
                             : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 hover:border-slate-300 dark:hover:border-slate-700'
                         }`}
                       >
@@ -760,79 +789,88 @@ export const AICoachView: React.FC<AICoachViewProps> = ({
               </button>
             </div>
           )}
+          </FunCard>
         </div>
 
         {/* Right: AI Output Terminal Display */}
-        <div className="lg:col-span-7 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col justify-between space-y-4 min-h-[460px] shadow-sm">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
-                <AIAssistantBotIcon size={16} semantic="primary" />
-                <span>Coach Diagnostic & Guidance</span>
+        <div className="lg:col-span-7">
+          <FunCard
+            variant="matrix"
+            sticker="zero_bugs"
+            className="p-6 flex flex-col justify-between space-y-4 min-h-[500px]"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-white/10 dark:border-white/5 pb-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                  <AIAssistantBotIcon size={16} semantic="primary" />
+                  <span>Coach Diagnostic & Guidance Terminal</span>
+                </div>
+                {coachOutput && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(coachOutput.message);
+                        setCopied(true);
+                        success('Coach response copied to clipboard!', 'Copied');
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer font-bold shadow-2xs"
+                    >
+                      {copied ? <CheckIcon size={12} className="text-emerald-600" /> : <CopyIcon size={12} />}
+                      <span>{copied ? 'Copied' : 'Copy'}</span>
+                    </button>
+                    <span className="text-[10px] font-mono text-slate-400 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5">
+                      Source: {coachOutput.source}
+                    </span>
+                  </div>
+                )}
               </div>
-              {coachOutput && (
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(coachOutput.message);
-                      setCopied(true);
-                      success('Coach response copied to clipboard!', 'Copied');
-                      setTimeout(() => setCopied(false), 2000);
-                    }}
-                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
-                  >
-                    {copied ? <CheckIcon size={12} className="text-emerald-600" /> : <CopyIcon size={12} />}
-                    <span>{copied ? 'Copied' : 'Copy'}</span>
-                  </button>
-                  <span className="text-[10px] font-mono text-slate-400 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5">
-                    Source: {coachOutput.source}
-                  </span>
+
+              {loading ? (
+                <div className="py-16 flex flex-col items-center justify-center space-y-4 text-center">
+                  <AIAssistantCompanion
+                    state="thinking"
+                    size={130}
+                    speechBubble="Synthesizing Socratic reasoning & auditing algorithmic constraints..."
+                  />
+                </div>
+              ) : coachOutput ? (
+                <div className="space-y-3 text-xs leading-relaxed text-slate-800 dark:text-slate-200 overflow-y-auto max-h-[520px] pr-2 animate-fade-in-up">
+                  {coachOutput.warning && (
+                    <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-[11px] flex items-center gap-2">
+                      <WarningStatusIcon size={16} semantic="warning" className="shrink-0" />
+                      <span>{coachOutput.warning}</span>
+                    </div>
+                  )}
+                  <div className="whitespace-pre-line font-sans text-xs space-y-2 leading-relaxed">
+                    <MathText text={coachOutput.message} inline={false} />
+                  </div>
+                </div>
+              ) : (
+                <div className="py-14 text-center space-y-4 text-slate-400 flex flex-col items-center justify-center">
+                  <AIAssistantCompanion
+                    state="idle"
+                    size={130}
+                    speechBubble="Select any coaching mode on the left! I'll guide your problem solving step-by-step toward 1600."
+                  />
+                  <div className="space-y-1">
+                    <h4 className="text-base font-bold text-slate-900 dark:text-white">
+                      AI Coach Ready
+                    </h4>
+                    <p className="text-xs max-w-sm mx-auto text-slate-500 dark:text-slate-400">
+                      Concept teaching, progressive Socratic hints with spoiler guards, code reviews, and weakness analysis.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
 
-            {loading ? (
-              <div className="py-16 flex flex-col items-center justify-center space-y-3 text-center">
-                <AIAssistantCompanion
-                  state="thinking"
-                  size={120}
-                  speechBubble="Synthesizing Socratic reasoning & auditing algorithmic constraints..."
-                />
-              </div>
-            ) : coachOutput ? (
-              <div className="space-y-3 text-xs leading-relaxed text-slate-800 dark:text-slate-200 overflow-y-auto max-h-[500px] pr-2">
-                {coachOutput.warning && (
-                  <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-[11px] flex items-center gap-2">
-                    <WarningStatusIcon size={16} semantic="warning" className="shrink-0" />
-                    <span>{coachOutput.warning}</span>
-                  </div>
-                )}
-                <div className="whitespace-pre-line font-sans text-xs space-y-2 leading-relaxed">
-                  <MathText text={coachOutput.message} inline={false} />
-                </div>
-              </div>
-            ) : (
-              <div className="py-12 text-center space-y-3 text-slate-400 flex flex-col items-center justify-center">
-                <AIAssistantCompanion
-                  state="idle"
-                  size={120}
-                  speechBubble="Select any coaching mode on the left! I'll guide your problem solving step-by-step toward 1600."
-                />
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-2">
-                  AI Coach Ready
-                </h4>
-                <p className="text-xs max-w-sm mx-auto text-slate-500 dark:text-slate-400">
-                  Concept teaching, progressive Socratic hints with spoiler guards, code reviews, and weakness analysis.
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className="border-t border-slate-100 dark:border-slate-800 pt-3 text-[11px] text-slate-400 flex items-center justify-between">
-            <span>Powered by official Google GenAI SDK & CP Heuristics</span>
-            <span>Zero hallucinated problems or fake guarantees</span>
-          </div>
+            <div className="border-t border-white/10 dark:border-white/5 pt-3 text-[11px] text-slate-400 flex items-center justify-between">
+              <span>Powered by official Google GenAI SDK & CP Heuristics</span>
+              <span>Zero hallucinated problems or fake guarantees</span>
+            </div>
+          </FunCard>
         </div>
       </div>
 

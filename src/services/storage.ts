@@ -812,6 +812,10 @@ export const cfStorageService = {
     if (idx >= 0) all[idx] = draft; else all.unshift(draft);
     writeJSON(EXT_KEYS.CODE_DRAFTS, all);
   },
+  removeDraft: (problemId: string, language: string) => {
+    const all = readJSON<CodeDraft[]>(EXT_KEYS.CODE_DRAFTS, []);
+    writeJSON(EXT_KEYS.CODE_DRAFTS, all.filter(d => !(d.problemId === problemId && d.language === language)));
+  },
 
   // Local Submissions
   getLocalSubmissions: (): LocalSubmission[] =>

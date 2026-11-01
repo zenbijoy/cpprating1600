@@ -87,18 +87,18 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border shadow-xl backdrop-blur-md transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${
+              className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border shadow-xl backdrop-blur-md transition-all duration-300 animate-fade-in-up interactive-card ${
                 isSuccess
-                  ? 'bg-slate-900/95 border-emerald-500/40 text-emerald-100 shadow-emerald-950/20'
+                  ? 'bg-white/95 dark:bg-slate-900/95 border-emerald-500/40 text-emerald-900 dark:text-emerald-100 shadow-emerald-950/20'
                   : isError
-                  ? 'bg-slate-900/95 border-rose-500/40 text-rose-100 shadow-rose-950/20'
+                  ? 'bg-white/95 dark:bg-slate-900/95 border-rose-500/40 text-rose-900 dark:text-rose-100 shadow-rose-950/20'
                   : isWarning
-                  ? 'bg-slate-900/95 border-amber-500/40 text-amber-100 shadow-amber-950/20'
-                  : 'bg-slate-900/95 border-indigo-500/40 text-indigo-100 shadow-indigo-950/20'
+                  ? 'bg-white/95 dark:bg-slate-900/95 border-amber-500/40 text-amber-900 dark:text-amber-100 shadow-amber-950/20'
+                  : 'bg-white/95 dark:bg-slate-900/95 border-indigo-500/40 text-indigo-900 dark:text-indigo-100 shadow-indigo-950/20'
               }`}
               role="alert"
             >
-              <div className="shrink-0 mt-0.5">
+              <div className="shrink-0 mt-0.5 animate-pop-spring">
                 {isSuccess && <SuccessStatusIcon size={16} semantic="success" />}
                 {isError && <ErrorStatusIcon size={16} semantic="error" />}
                 {isWarning && <WarningStatusIcon size={16} semantic="warning" />}
@@ -106,17 +106,17 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               </div>
 
               <div className="flex-1 min-w-0">
-                {toast.title && <div className="text-xs font-bold text-slate-100 mb-0.5">{toast.title}</div>}
-                <div className="text-xs text-slate-300 leading-snug break-words">{toast.message}</div>
+                {toast.title && <div className="text-xs font-bold text-slate-900 dark:text-slate-100 mb-0.5">{toast.title}</div>}
+                <div className="text-xs text-slate-700 dark:text-slate-300 leading-snug break-words">{toast.message}</div>
               </div>
 
               <button
                 type="button"
                 onClick={() => removeToast(toast.id)}
-                className="shrink-0 p-1 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                className="shrink-0 p-1 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
                 aria-label="Dismiss toast"
               >
-                <CloseIcon size={14} className="text-slate-400" />
+                <CloseIcon size={14} className="text-slate-500 dark:text-slate-400" />
               </button>
             </div>
           );

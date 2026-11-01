@@ -1,6 +1,6 @@
 import { CFProblem, MistakeRecord } from '../types';
 
-export type ContestDivision = 'Div. 2' | 'Div. 3' | 'Div. 4' | 'Educational' | 'Div. 1 + Div. 2' | 'Other';
+export type ContestDivision = 'Div. 2' | 'Div. 3' | 'Div. 4' | 'Educational' | 'Div. 1 + Div. 2' | 'Weekly' | 'Biweekly' | 'ABC' | 'Other';
 
 export type ContestSessionMode = 'simulated' | 'practice';
 
@@ -49,6 +49,9 @@ export interface ContestDebrief {
  */
 export function parseContestDivision(name: string): ContestDivision {
   const lower = name.toLowerCase();
+  if (lower.includes('biweekly')) return 'Biweekly';
+  if (lower.includes('weekly')) return 'Weekly';
+  if (lower.includes('abc') || lower.includes('atcoder beginner')) return 'ABC';
   if (lower.includes('div. 4') || lower.includes('div.4') || lower.includes('division 4')) return 'Div. 4';
   if (lower.includes('div. 3') || lower.includes('div.3') || lower.includes('division 3')) return 'Div. 3';
   if (lower.includes('div. 2') || lower.includes('div.2') || lower.includes('division 2')) return 'Div. 2';
@@ -134,6 +137,18 @@ export function estimatePerformanceRating(
     else if (solvedCount === 5) baseRating = 1320;
     else if (solvedCount === 6) baseRating = 1480;
     else if (solvedCount >= 7) baseRating = 1640;
+  } else if (division === 'Weekly' || division === 'Biweekly') {
+    if (solvedCount === 0) baseRating = 1100;
+    else if (solvedCount === 1) baseRating = 1350;
+    else if (solvedCount === 2) baseRating = 1600;
+    else if (solvedCount === 3) baseRating = 1850;
+    else baseRating = 2150;
+  } else if (division === 'ABC') {
+    if (solvedCount <= 1) baseRating = 800 + solvedCount * 150;
+    else if (solvedCount === 2) baseRating = 1100;
+    else if (solvedCount === 3) baseRating = 1350;
+    else if (solvedCount === 4) baseRating = 1600;
+    else baseRating = 1800 + (solvedCount - 4) * 150;
   } else {
     baseRating = 1000 + solvedCount * 180;
   }

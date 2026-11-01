@@ -215,7 +215,7 @@ export const SubmissionAutopsyView: React.FC<SubmissionAutopsyViewProps> = ({
               <DebugCodeIcon size={20} semantic="error" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-100">Submission Autopsy</h1>
+              <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Submission Autopsy</h1>
               <p className="text-xs text-slate-400 mt-0.5">
                 Root-cause diagnostic engine for failed verdicts (WA, TLE, MLE, RE, CE) with 1-click spaced revision scheduling.
               </p>
@@ -410,7 +410,7 @@ export const SubmissionAutopsyView: React.FC<SubmissionAutopsyViewProps> = ({
 
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-slate-100 text-base">
+                    <span className="font-mono font-bold text-slate-900 dark:text-slate-100 text-base">
                       {autopsyReport.problem.contestId || ''}{autopsyReport.problem.index}: {autopsyReport.problem.name}
                     </span>
                     {autopsyReport.problem.rating && (
@@ -553,7 +553,7 @@ export const SubmissionAutopsyView: React.FC<SubmissionAutopsyViewProps> = ({
                         >
                           {badge.label}
                         </span>
-                        <h4 className="text-sm font-bold text-slate-100">{f.title}</h4>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{f.title}</h4>
                       </div>
 
                       {f.lineNumber && (
@@ -633,7 +633,7 @@ export const SubmissionAutopsyView: React.FC<SubmissionAutopsyViewProps> = ({
           <div className="p-5 rounded-2xl border border-indigo-900/40 bg-gradient-to-r from-indigo-950/50 via-slate-900 to-slate-900 p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
-                <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                   <BookmarksIcon size={16} semantic="primary" />
                   Record to Mistake Notebook & Schedule Spaced Repetition
                 </h4>

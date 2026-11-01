@@ -44,29 +44,15 @@ const TEMPLATES: Record<ProgrammingLanguage, string> = {
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <numeric>
-#include <map>
-#include <set>
-#include <queue>
 
 using namespace std;
 
 void solve() {
     // Write your solution here
-    int n;
-    if (!(cin >> n)) return;
-    vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
     
-    // Output result
-    long long ans = 0;
-    cout << ans << "\\n";
 }
 
 int main() {
-    // Fast I/O for competitive programming
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     
@@ -82,15 +68,18 @@ int main() {
 using namespace std;
 
 void solve() {
-    // Solution code
+    // Write your solution here
+    
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     int t = 1;
-    // cin >> t;
-    while (t--) solve();
+    // cin >> t; // Uncomment if problem has multiple test cases
+    while (t--) {
+        solve();
+    }
     return 0;
 }
 `,
@@ -99,14 +88,13 @@ int main() {
 #include <string.h>
 
 void solve() {
-    int n;
-    if (scanf("%d", &n) != 1) return;
-    printf("%d\\n", n);
+    // Write your solution here
+    
 }
 
 int main() {
     int t = 1;
-    // scanf("%d", &t);
+    // scanf("%d", &t); // Uncomment if problem has multiple test cases
     while (t--) {
         solve();
     }
@@ -116,12 +104,10 @@ int main() {
   python: `import sys
 
 def solve():
-    # Read all inputs from stdin
     input_data = sys.stdin.read().split()
     if not input_data:
         return
-    
-    # Process problem logic here
+    # Write your solution here
     pass
 
 if __name__ == '__main__':
@@ -130,10 +116,10 @@ if __name__ == '__main__':
   javascript: `const fs = require('fs');
 
 function solve() {
-    const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);
-    if (!input || input.length === 0 || input[0] === '') return;
-    // Process problem logic here
-    console.log(input.join(' '));
+    const input = fs.readFileSync(0, 'utf-8').trim();
+    if (!input) return;
+    // Write your solution here
+    
 }
 
 solve();
@@ -144,9 +130,8 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String line = br.readLine();
-        if (line == null) return;
-        System.out.println(line);
+        // Write your solution here
+        
     }
 }
 `,
@@ -170,9 +155,42 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 }) => {
   const cpPrefs = storageService.getSettings().competitiveProgramming;
   const [fontSize, setFontSize] = useState<number>(() => cpPrefs.editorFontSize || 14);
-  const [editorTheme, setEditorTheme] = useState<'vs-dark' | 'light' | 'hc-black'>(
-    () => (cpPrefs.editorTheme as any) || 'vs-dark'
-  );
+  const [editorTheme, setEditorTheme] = useState<'vs-dark' | 'light' | 'hc-black'>(() => {
+    if (cpPrefs.editorTheme) return cpPrefs.editorTheme as any;
+    if (typeof document !== 'undefined') {
+      const mode = document.documentElement.getAttribute('data-mode');
+      if (mode === 'light') return 'light';
+    }
+    return 'vs-dark';
+  });
+
+  // Dynamic synchronization of Monaco Editor theme with global theme changes
+  useEffect(() => {
+    const handleThemeChange = (e: any) => {
+      const mode = e.detail?.mode;
+      if (mode === 'light') {
+        setEditorTheme('light');
+      } else {
+        setEditorTheme('vs-dark');
+      }
+    };
+    window.addEventListener('climb1600:theme-changed', handleThemeChange);
+
+    const observer = new MutationObserver(() => {
+      const currentMode = document.documentElement.getAttribute('data-mode');
+      if (currentMode === 'light') {
+        setEditorTheme('light');
+      } else if (currentMode) {
+        setEditorTheme('vs-dark');
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode', 'class'] });
+
+    return () => {
+      window.removeEventListener('climb1600:theme-changed', handleThemeChange);
+      observer.disconnect();
+    };
+  }, []);
   const [copied, setCopied] = useState<boolean>(false);
   const [savedToast, setSavedToast] = useState<string | null>(null);
   const [activeDraftName, setActiveDraftName] = useState<string>('Main Solution');
@@ -327,11 +345,11 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   const monacoLanguage = language === 'python' ? 'python' : language === 'c' ? 'c' : 'cpp';
 
   return (
-    <div className="flex flex-col h-full bg-[#0d1117] rounded-xl border border-slate-800 overflow-hidden shadow-2xl">
+    <div className="flex flex-col h-full bg-white dark:bg-[#0d1117] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xl">
       {/* Editor Top Toolbar */}
-      <div className="flex items-center justify-between px-3 py-2 bg-slate-950/90 border-b border-slate-800 text-xs flex-wrap gap-2">
+      <div className="flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-950/90 border-b border-slate-200 dark:border-slate-800 text-xs flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 font-semibold text-slate-200">
+          <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
             <CodingBracketsIcon size={16} semantic="primary" />
             <span>Code Workspace</span>
           </div>
@@ -346,7 +364,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                 onChangeCode(TEMPLATES[newLang]);
               }
             }}
-            className="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-slate-200 text-xs focus:outline-none focus:border-indigo-500 font-mono font-medium"
+            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 rounded-lg px-2.5 py-1 text-slate-900 dark:text-slate-200 text-xs focus:outline-none focus:border-indigo-500 font-mono font-medium"
           >
             <option value="cpp20">C++20 (GCC)</option>
             <option value="cpp17">C++17 (GCC)</option>
@@ -355,7 +373,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           </select>
 
           {/* Draft selector */}
-          <div className="flex items-center gap-1 bg-slate-900/80 p-0.5 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-900/80 p-0.5 rounded-lg border border-slate-300 dark:border-slate-800">
             {draftList.map((dName) => (
               <button
                 key={dName}
@@ -363,7 +381,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                 className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
                   activeDraftName === dName
                     ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
                 {dName}
@@ -386,7 +404,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             type="button"
             onClick={handleSaveVersionSnapshot}
             title="Save version snapshot (Ctrl+S)"
-            className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors flex items-center gap-1 cursor-pointer"
+            className="px-2 py-1 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/60 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <SaveIcon size={14} semantic="indigo" />
             <span>Snapshot</span>
@@ -397,7 +415,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             type="button"
             onClick={() => setShowVersionList((v) => !v)}
             title="View saved version history"
-            className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors flex items-center gap-1 cursor-pointer"
+            className="px-2 py-1 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/60 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <SubmissionHistoryIcon size={14} semantic="info" />
             <span>v({versions.length})</span>
@@ -413,7 +431,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                 });
               }}
               title="Compare latest 2 versions with code diff"
-              className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-800/50 transition-colors flex items-center gap-1 cursor-pointer"
+              className="px-2 py-1 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-cyan-600 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-800/50 transition-colors flex items-center gap-1 cursor-pointer"
             >
               <SourceCodeIcon size={14} semantic="info" />
               <span>Diff</span>
@@ -421,7 +439,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           )}
 
           {/* Font size */}
-          <div className="flex items-center gap-1 text-slate-400">
+          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
             <span className="text-[10px] uppercase tracking-wider">Font:</span>
             {[12, 14, 16].map((sz) => (
               <button
@@ -429,8 +447,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                 onClick={() => setFontSize(sz)}
                 className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
                   fontSize === sz
-                    ? 'bg-indigo-950 border border-indigo-700/60 text-indigo-300 font-bold'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-indigo-100 dark:bg-indigo-950 border border-indigo-300 dark:border-indigo-700/60 text-indigo-700 dark:text-indigo-300 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
                 {sz}
@@ -438,10 +456,20 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             ))}
           </div>
 
+          {/* Monaco Editor Theme Switcher */}
+          <button
+            type="button"
+            onClick={() => setEditorTheme((prev) => (prev === 'light' ? 'vs-dark' : 'light'))}
+            title={`Toggle editor theme (${editorTheme === 'light' ? 'Light' : 'Dark'})`}
+            className="px-2 py-0.5 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/60 text-[10px] font-medium transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <span>{editorTheme === 'light' ? '☀️ Light' : '🌙 Dark'}</span>
+          </button>
+
           <button
             onClick={validateCode}
             title="Pre-submission code validation"
-            className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors flex items-center gap-1 cursor-pointer"
+            className="px-2 py-1 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/60 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <AISparkleIcon size={14} semantic="info" />
             <span>Validate</span>
@@ -450,7 +478,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           <button
             onClick={handleCopy}
             title="Copy code to clipboard"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors cursor-pointer"
+            className="p-1.5 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/60 transition-colors cursor-pointer"
           >
             {copied ? <CheckIcon size={14} semantic="success" /> : <CopyIcon size={14} />}
           </button>
@@ -458,7 +486,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           <button
             onClick={handleDownload}
             title="Download solution file"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors cursor-pointer"
+            className="p-1.5 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/60 transition-colors cursor-pointer"
           >
             <DownloadIcon size={14} />
           </button>
@@ -466,7 +494,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           <button
             onClick={handleResetToTemplate}
             title="Reset code to standard competitive template"
-            className="p-1.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-300 border border-slate-700/60 transition-colors cursor-pointer"
+            className="p-1.5 rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-300 border border-slate-300 dark:border-slate-700/60 transition-colors cursor-pointer"
           >
             <RetryIcon size={14} />
           </button>
@@ -475,16 +503,16 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 
       {/* Version History Drawer */}
       {showVersionList && (
-        <div className="bg-slate-950 border-b border-slate-800 p-3 text-xs space-y-2">
+        <div className="bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 p-3 text-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-white flex items-center gap-1.5">
+            <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
               <SubmissionHistoryIcon size={14} semantic="primary" />
               <span>Saved Code Versions ({versions.length})</span>
             </span>
             <button
               type="button"
               onClick={() => setShowVersionList(false)}
-              className="text-slate-400 hover:text-white"
+              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             >
               ✕
             </button>
@@ -494,10 +522,10 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           ) : (
             <div className="space-y-1.5 max-h-36 overflow-y-auto">
               {versions.map((ver, idx) => (
-                <div key={ver.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 border border-slate-800">
+                <div key={ver.id} className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-white">v{ver.versionNumber}</span>
+                      <span className="font-bold text-slate-900 dark:text-white">v{ver.versionNumber}</span>
                       <span className="text-slate-400 text-[10px]">
                         {new Date(ver.savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                       </span>
@@ -537,26 +565,26 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 
       {/* Validation Banner */}
       {showValidation && (
-        <div className="bg-slate-950/95 border-b border-slate-800 p-2.5 text-xs">
+        <div className="bg-slate-100 dark:bg-slate-950/95 border-b border-slate-200 dark:border-slate-800 p-2.5 text-xs">
           <div className="flex items-center justify-between mb-1">
-            <span className="font-semibold text-slate-300 flex items-center gap-1.5">
+            <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <AISparkleIcon size={14} semantic="primary" />
               Pre-Submission Analysis
             </span>
             <button
               onClick={() => setShowValidation(false)}
-              className="text-slate-500 hover:text-slate-300 text-[10px]"
+              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300 text-[10px]"
             >
               Dismiss
             </button>
           </div>
           {validationWarnings.length === 0 ? (
-            <div className="flex items-center gap-1.5 text-emerald-400 text-xs">
+            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 text-xs">
               <CheckCircleIcon size={14} semantic="success" />
               Code structure is clean! Fast I/O and bracket pairing verified. Ready for submission.
             </div>
           ) : (
-            <ul className="space-y-1 text-amber-300/90 text-xs">
+            <ul className="space-y-1 text-amber-700 dark:text-amber-300/90 text-xs">
               {validationWarnings.map((w, idx) => (
                 <li key={idx} className="flex items-start gap-1.5">
                   <WarningStatusIcon size={14} semantic="warning" className="shrink-0 mt-0.5" />
@@ -606,10 +634,10 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       </div>
 
       {/* Bottom Panel: Sandboxed Test Runner & Execution Diagnostics */}
-      <div className="border-t border-slate-800 bg-slate-950/95 p-3 space-y-2">
+      <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/95 p-3 space-y-2">
         <div className="flex items-center justify-between text-xs flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-300 flex items-center gap-1.5">
+            <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <TerminalIcon size={14} semantic="primary" />
               <span>Sandboxed Execution Engine</span>
             </span>
@@ -617,12 +645,12 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
               <span
                 className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase border ${
                   executionResult.status === 'OK'
-                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700/60'
+                    ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700/60'
                     : executionResult.status === 'COMPILATION_ERROR'
-                    ? 'bg-rose-950/80 text-rose-300 border-rose-700/60'
+                    ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-700/60'
                     : executionResult.status === 'TIME_LIMIT_EXCEEDED'
-                    ? 'bg-amber-950/80 text-amber-300 border-amber-700/60'
-                    : 'bg-slate-900 text-slate-300 border-slate-700'
+                    ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700/60'
+                    : 'bg-slate-200 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'
                 }`}
               >
                 {executionResult.status} {executionResult.executionTimeMs ? `(${executionResult.executionTimeMs}ms)` : ''}
@@ -639,7 +667,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                     onAutopsyRequested(code, executionResult.status);
                   }
                 }}
-                className="px-2.5 py-1 rounded-lg bg-rose-950/50 hover:bg-rose-900/60 border border-rose-500/40 text-rose-300 font-semibold text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-rose-100 dark:bg-rose-950/50 hover:bg-rose-200 dark:hover:bg-rose-900/60 border border-rose-300 dark:border-rose-500/40 text-rose-800 dark:text-rose-300 font-semibold text-xs transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <DebugCodeIcon size={14} semantic="error" />
                 <span>Autopsy this error</span>
@@ -661,22 +689,22 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           <div>
-            <label className="block text-[11px] font-medium text-slate-400 mb-1">
+            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
               Custom Stdin (Input)
             </label>
             <textarea
               value={sampleInput}
               onChange={(e) => onChangeSampleInput(e.target.value)}
               rows={3}
-              className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 font-mono text-slate-200 text-xs focus:outline-none focus:border-indigo-500"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg p-2 font-mono text-slate-900 dark:text-slate-200 text-xs focus:outline-none focus:border-indigo-500"
               placeholder="Paste custom input here..."
             />
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-slate-400 mb-1">
+            <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
               Stdout / Compiler Diagnostics
             </label>
-            <div className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 font-mono text-xs min-h-[66px] max-h-[110px] overflow-y-auto whitespace-pre-wrap">
+            <div className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg p-2 font-mono text-xs min-h-[66px] max-h-[110px] overflow-y-auto whitespace-pre-wrap">
               {executionResult ? (
                 <div>
                   {executionResult.status === 'OK' && (

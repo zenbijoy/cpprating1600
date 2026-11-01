@@ -33,6 +33,7 @@ const ALLOWED_MIME_TYPES: Record<string, { maxSize: number; category: string }> 
 
 export class R2StorageService {
   private s3Client: S3Client | null = null;
+  private accountId: string = '';
   private bucket: string = '';
   private publicUrl: string = '';
   private isConfigured: boolean = false;
@@ -46,33 +47,63 @@ export class R2StorageService {
     this.initClient();
   }
 
-  private initClient() {
-    const accountId = process.env.R2_ACCOUNT_ID;
-    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
-    const bucket = process.env.R2_BUCKET_NAME || 'climb1600-media';
-    const publicUrl = process.env.R2_PUBLIC_URL || '';
+  public reconfigure() {
+    this.initClient();
+  }
 
-    if (accountId && accessKeyId && secretAccessKey) {
+  private initClient() {
+    let accountId = process.env.R2_ACCOUNT_ID?.trim() || '';
+    const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim() || '';
+    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim() || '';
+    let bucket = process.env.R2_BUCKET_NAME?.trim() || '';
+    let publicUrl = process.env.R2_PUBLIC_URL?.trim() || '';
+    const s3ApiUrl = process.env.R2_S3_API_URL?.trim() || '';
+    const catalogUri = process.env.R2_CATALOG_URI?.trim() || '';
+
+    // Auto-parse Account ID and Bucket from S3 API URL if provided
+    if (s3ApiUrl) {
+      const match = s3ApiUrl.match(/https?:\/\/([a-f0-9]{32})\.r2\.cloudflarestorage\.com(?:\/([^\/\s?#]+))?/i);
+      if (match) {
+        if (!accountId) accountId = match[1];
+        if (!bucket && match[2]) bucket = match[2];
+      }
+    }
+
+    // Auto-parse Account ID and Bucket from Catalog URI if provided
+    if (catalogUri) {
+      const match = catalogUri.match(/https?:\/\/catalog\.cloudflarestorage\.com\/([a-f0-9]{32})(?:\/([^\/\s?#]+))?/i);
+      if (match) {
+        if (!accountId) accountId = match[1];
+        if (!bucket && match[2]) bucket = match[2];
+      }
+    }
+
+    this.accountId = accountId || '9c90778a0034df1c4ce84b9881b9e6ea';
+    this.bucket = bucket || 'programming';
+    this.publicUrl = (publicUrl || 'https://pub-890b05cef4954f13b12d384515ac3f14.r2.dev').replace(/\/$/, '');
+
+    if (this.accountId && accessKeyId && secretAccessKey) {
       try {
         this.s3Client = new S3Client({
           region: 'auto',
-          endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+          endpoint: `https://${this.accountId}.r2.cloudflarestorage.com`,
           credentials: {
             accessKeyId,
             secretAccessKey,
           },
         });
-        this.bucket = bucket;
-        this.publicUrl = publicUrl.replace(/\/$/, '');
         this.isConfigured = true;
-        console.log('[R2Storage] Cloudflare R2 S3 Client successfully initialized for bucket:', bucket);
+        console.log(`[R2Storage] Cloudflare R2 S3 Client active for bucket: '${this.bucket}' (Public URL: ${this.publicUrl})`);
       } catch (err) {
         console.error('[R2Storage] Failed to initialize R2 S3 Client:', err);
         this.isConfigured = false;
       }
     } else {
-      console.warn('[R2Storage] Cloudflare R2 credentials not detected in environment. Operating in secure local storage mode.');
+      if (this.accountId && this.bucket) {
+        console.warn(`[R2Storage] Cloudflare R2 bucket target identified: '${this.bucket}' (Account: ${this.accountId}). Set R2_ACCESS_KEY_ID & R2_SECRET_ACCESS_KEY to enable live S3 uploads. Operating in secure local storage mode.`);
+      } else {
+        console.warn('[R2Storage] Cloudflare R2 credentials not detected in environment. Operating in secure local storage mode.');
+      }
       this.isConfigured = false;
     }
   }
@@ -81,7 +112,12 @@ export class R2StorageService {
     return {
       provider: this.isConfigured ? 'cloudflare-r2' : 'local-storage',
       isConfigured: this.isConfigured,
-      bucket: this.bucket || 'local-uploads',
+      bucket: this.bucket || 'programming',
+      accountId: this.accountId ? `${this.accountId.slice(0, 6)}...${this.accountId.slice(-4)}` : null,
+      publicUrl: this.publicUrl || 'https://pub-890b05cef4954f13b12d384515ac3f14.r2.dev',
+      s3Endpoint: this.accountId ? `https://${this.accountId}.r2.cloudflarestorage.com/${this.bucket}` : null,
+      catalogUri: `https://catalog.cloudflarestorage.com/${this.accountId}/${this.bucket}`,
+      hasCredentials: Boolean(process.env.R2_ACCESS_KEY_ID && process.env.R2_SECRET_ACCESS_KEY),
     };
   }
 
@@ -158,19 +194,106 @@ export class R2StorageService {
   }
 
   /**
+   * Direct server-side upload of a key to R2 or local storage
+   */
+  public async uploadDirectKey(userId: string, fileKey: string, mimeType: string, buffer: Buffer) {
+    if (this.isConfigured && this.s3Client) {
+      const command = new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: fileKey,
+        Body: buffer,
+        ContentType: mimeType,
+        Metadata: {
+          'uploaded-by': userId,
+        },
+      });
+      await this.s3Client.send(command);
+    } else {
+      this.saveLocalFile(fileKey, buffer);
+    }
+  }
+
+  /**
+   * Direct server-side upload with file generation
+   */
+  public async uploadDirect(
+    userId: string,
+    folder: string,
+    fileName: string,
+    mimeType: string,
+    buffer: Buffer
+  ) {
+    const typeRule = ALLOWED_MIME_TYPES[mimeType.toLowerCase()];
+    if (!typeRule) {
+      throw new Error(`Unsupported MIME type '${mimeType}'. Allowed formats: JPEG, PNG, WebP, GIF, SVG, MP4, WebM, PDF, TXT, C++, Python, JSON.`);
+    }
+
+    if (buffer.length > typeRule.maxSize) {
+      throw new Error(`File size (${(buffer.length / (1024 * 1024)).toFixed(1)} MB) exceeds maximum allowed size (${(typeRule.maxSize / (1024 * 1024)).toFixed(1)} MB) for ${typeRule.category}.`);
+    }
+
+    const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, '') || 'general';
+    const ext = path.extname(fileName) || (typeRule.category === 'image' ? '.png' : '');
+    const cleanExt = ext.replace(/[^a-zA-Z0-9.]/g, '');
+    const key = `${safeFolder}/${Date.now()}-${crypto.randomUUID()}${cleanExt}`;
+
+    if (this.isConfigured && this.s3Client) {
+      const command = new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: mimeType,
+        Metadata: {
+          'uploaded-by': userId,
+          'original-name': encodeURIComponent(fileName),
+        },
+      });
+      await this.s3Client.send(command);
+      const publicUrl = this.publicUrl ? `${this.publicUrl}/${key}` : `/uploads/${key}`;
+
+      return {
+        strategy: 'r2_direct',
+        fileKey: key,
+        publicUrl,
+        fileType: typeRule.category,
+        mimeType,
+        fileSize: buffer.length,
+      };
+    } else {
+      this.saveLocalFile(key, buffer);
+      return {
+        strategy: 'local_upload',
+        fileKey: key,
+        publicUrl: `/uploads/${key}`,
+        fileType: typeRule.category,
+        mimeType,
+        fileSize: buffer.length,
+      };
+    }
+  }
+
+  /**
    * Delete an object from storage
    */
   public async deleteFile(fileKey: string) {
     if (this.isConfigured && this.s3Client) {
-      const command = new DeleteObjectCommand({
-        Bucket: this.bucket,
-        Key: fileKey,
-      });
-      await this.s3Client.send(command);
-    } else {
-      const localPath = path.join(this.localUploadDir, fileKey);
-      if (fs.existsSync(localPath)) {
+      try {
+        const command = new DeleteObjectCommand({
+          Bucket: this.bucket,
+          Key: fileKey,
+        });
+        await this.s3Client.send(command);
+      } catch (err) {
+        console.warn(`[R2Storage] Non-fatal R2 deletion notice for key '${fileKey}':`, err);
+      }
+    }
+
+    const localPath = path.join(this.localUploadDir, fileKey);
+    if (fs.existsSync(localPath)) {
+      try {
         fs.unlinkSync(localPath);
+      } catch (err) {
+        console.warn(`[R2Storage] Non-fatal local deletion notice for key '${fileKey}':`, err);
       }
     }
   }
@@ -191,6 +314,10 @@ export class R2StorageService {
 export const r2Storage = new R2StorageService();
 
 // Express Route Handlers
+export async function getStorageStatusHandler(_req: Request, res: Response) {
+  return res.json({ status: 'OK', storage: r2Storage.getStatus() });
+}
+
 export async function getPresignedUrlHandler(req: Request, res: Response) {
   const user = (req as AuthenticatedRequest).user;
   if (!user) {
@@ -238,26 +365,40 @@ export async function deleteFileHandler(req: Request, res: Response) {
   }
 }
 
-export async function localUploadHandler(req: Request, res: Response) {
+export async function directUploadHandler(req: Request, res: Response) {
   const user = (req as AuthenticatedRequest).user;
   if (!user) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized', message: 'You must be logged in to upload files.' });
   }
 
   const fileKey = req.query.key as string;
-  if (!fileKey) {
-    return res.status(400).json({ error: 'Missing file key' });
-  }
+  const folder = (req.query.folder as string) || (req.headers['x-folder'] as string) || 'attachments';
+  const fileName = (req.query.fileName as string) || (req.headers['x-file-name'] as string) || 'upload.bin';
+  const mimeType = (req.query.mime as string) || req.headers['content-type'] || 'application/octet-stream';
 
   const chunks: Buffer[] = [];
   req.on('data', (chunk) => chunks.push(chunk));
-  req.on('end', () => {
+  req.on('end', async () => {
     try {
       const buffer = Buffer.concat(chunks);
-      r2Storage.saveLocalFile(fileKey, buffer);
-      return res.json({ status: 'OK', publicUrl: `/uploads/${fileKey}` });
+      if (buffer.length === 0) {
+        return res.status(400).json({ error: 'BadRequest', message: 'Empty upload body received.' });
+      }
+
+      if (fileKey) {
+        await r2Storage.uploadDirectKey(user.id, fileKey, mimeType, buffer);
+        const status = r2Storage.getStatus();
+        const publicUrl = status.isConfigured ? `${status.publicUrl}/${fileKey}` : `/uploads/${fileKey}`;
+        return res.json({ status: 'OK', fileKey, publicUrl });
+      }
+
+      const result = await r2Storage.uploadDirect(user.id, folder, fileName, mimeType, buffer);
+      return res.json({ status: 'OK', ...result });
     } catch (err: any) {
-      return res.status(500).json({ error: 'LocalWriteFailed', message: err.message });
+      return res.status(500).json({ error: 'UploadFailed', message: err.message });
     }
   });
 }
+
+// Retain localUploadHandler alias for backwards compatibility
+export const localUploadHandler = directUploadHandler;

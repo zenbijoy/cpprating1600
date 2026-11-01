@@ -45,7 +45,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
       {/* 1. Training Parameters & Difficulty Range */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Cpu className="w-4 h-4 text-indigo-400" />
             <span>Problem Discovery & Rating Tuning</span>
           </h3>
@@ -57,7 +57,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Min Rating */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Minimum Rating</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Minimum Rating</label>
             <input
               type="number"
               min={800}
@@ -65,13 +65,13 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
               step={100}
               value={cp.defaultDifficultyMin}
               onChange={(e) => onChange({ ...cp, defaultDifficultyMin: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 font-mono"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 font-mono"
             />
           </div>
 
           {/* Max Rating */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Maximum Rating</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Maximum Rating</label>
             <input
               type="number"
               min={800}
@@ -79,17 +79,17 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
               step={100}
               value={cp.defaultDifficultyMax}
               onChange={(e) => onChange({ ...cp, defaultDifficultyMax: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 font-mono"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 font-mono"
             />
           </div>
 
           {/* Training Intensity */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('cp.intensity')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('cp.intensity')}</label>
             <select
               value={cp.trainingIntensity}
               onChange={(e) => onChange({ ...cp, trainingIntensity: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="casual">{t('cp.intensity_casual')}</option>
               <option value="standard">{t('cp.intensity_standard')}</option>
@@ -99,11 +99,11 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
 
           {/* Recommendation Behavior */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Recommendation Engine</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Recommendation Engine</label>
             <select
               value={cp.recommendationBehavior}
               onChange={(e) => onChange({ ...cp, recommendationBehavior: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="adaptive">Adaptive (Weakness-targeted)</option>
               <option value="stretch">Stretch (+100 difficulty challenge)</option>
@@ -115,11 +115,11 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
           {/* Default Sort */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Default Problem Sorting</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Default Problem Sorting</label>
             <select
               value={cp.defaultSort}
               onChange={(e) => onChange({ ...cp, defaultSort: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="rating_asc">Difficulty: Low to High (800 → 1600)</option>
               <option value="rating_desc">Difficulty: High to Low (1600 → 800)</option>
@@ -130,11 +130,11 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
 
           {/* Default Filter */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">Default Filter State</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Default Filter State</label>
             <select
               value={cp.defaultFilter}
               onChange={(e) => onChange({ ...cp, defaultFilter: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="unsolved_only">Hide Already Solved Problems</option>
               <option value="all">Show All Problems (Including Solved)</option>
@@ -146,7 +146,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
       {/* 2. Monaco Editor Preferences */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Terminal className="w-4 h-4 text-cyan-400" />
             <span>Monaco Workspace Code Editor</span>
           </h3>
@@ -158,11 +158,11 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
           {/* Editor Theme */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('cp.editor_theme')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('cp.editor_theme')}</label>
             <select
               value={cp.editorTheme}
               onChange={(e) => onChange({ ...cp, editorTheme: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
             >
               <option value="vs-dark">VS Code Dark</option>
               <option value="light">VS Code Light</option>
@@ -172,11 +172,11 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
 
           {/* Font Family */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('cp.editor_font_family')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('cp.editor_font_family')}</label>
             <select
               value={cp.codeFontFamily}
               onChange={(e) => onChange({ ...cp, codeFontFamily: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-cyan-500 cursor-pointer font-mono"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 cursor-pointer font-mono"
             >
               <option value="JetBrains Mono">JetBrains Mono</option>
               <option value="Fira Code">Fira Code</option>
@@ -188,11 +188,11 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
 
           {/* Tab Size */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('cp.editor_tab_size')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('cp.editor_tab_size')}</label>
             <select
               value={cp.editorTabSize}
               onChange={(e) => onChange({ ...cp, editorTabSize: Number(e.target.value) as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
             >
               <option value={2}>2 Spaces</option>
               <option value={4}>4 Spaces (Standard CP)</option>
@@ -204,7 +204,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
         {/* Font Size Slider */}
         <div className="space-y-1.5 text-xs pt-2">
           <div className="flex items-center justify-between">
-            <label className="font-bold text-slate-300">{t('cp.editor_font_size')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('cp.editor_font_size')}</label>
             <span className="font-mono font-bold text-cyan-400">{cp.editorFontSize}px</span>
           </div>
           <input
@@ -222,7 +222,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
           {/* Line Numbers */}
           <div className="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('cp.editor_line_numbers')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('cp.editor_line_numbers')}</p>
               <p className="text-[11px] text-slate-400">Display margin line indices</p>
             </div>
             <button
@@ -243,7 +243,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
           {/* Word Wrap */}
           <div className="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/70">
             <div>
-              <p className="font-semibold text-white text-xs">{t('cp.editor_word_wrap')}</p>
+              <p className="font-semibold text-slate-900 dark:text-white text-xs">{t('cp.editor_word_wrap')}</p>
               <p className="text-[11px] text-slate-400">Soft-wrap long lines</p>
             </div>
             <button
@@ -267,7 +267,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <FileCode className="w-4 h-4 text-emerald-400" />
               <span>{t('cp.template')}</span>
             </h3>
@@ -278,7 +278,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
           <button
             type="button"
             onClick={() => handleResetTemplate(activeTemplateLang)}
-            className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-white px-2.5 py-1 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white px-2.5 py-1 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Reset Boilerplate</span>
@@ -295,7 +295,7 @@ export const CompetitiveProgrammingSettingsSection: React.FC<CompetitiveProgramm
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTemplateLang === lang
                   ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-700/60 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               {lang === 'cpp20' ? 'C++20' : lang === 'cpp17' ? 'C++17' : 'Python 3'}

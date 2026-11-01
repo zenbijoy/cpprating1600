@@ -128,7 +128,7 @@ export const AppSplashScreen: React.FC<AppSplashScreenProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label="Climb 1600 Startup Splash Screen"
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-between bg-[#070a12] text-white select-none overflow-hidden transition-all duration-700 ease-out ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-between bg-[#070a12] text-white keep-white select-none overflow-hidden transition-all duration-700 ease-out ${
         isExiting ? 'opacity-0 scale-105 filter blur-md pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >

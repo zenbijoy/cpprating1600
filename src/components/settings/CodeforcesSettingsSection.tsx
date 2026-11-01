@@ -61,7 +61,7 @@ export const CodeforcesSettingsSection: React.FC<CodeforcesSettingsSectionProps>
       {/* 1. Account Status & Actions */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
             <span>{t('cf.title')}</span>
           </h3>
@@ -86,7 +86,7 @@ export const CodeforcesSettingsSection: React.FC<CodeforcesSettingsSectionProps>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-base text-white">{cfHandle}</span>
+                  <span className="font-mono font-bold text-base text-slate-900 dark:text-white">{cfHandle}</span>
                   <a
                     href={`https://codeforces.com/profile/${cfHandle}`}
                     target="_blank"
@@ -139,8 +139,8 @@ export const CodeforcesSettingsSection: React.FC<CodeforcesSettingsSectionProps>
           </div>
         ) : (
           <div className="p-4 rounded-xl border border-slate-800 bg-slate-950 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-slate-300">
-              <p className="font-semibold text-white">{t('cf.not_linked')}</p>
+            <div className="text-xs text-slate-700 dark:text-slate-300">
+              <p className="font-semibold text-slate-900 dark:text-white">{t('cf.not_linked')}</p>
               <p className="text-slate-400 mt-0.5">
                 Link your handle to unlock rating history graphs, submission autopsies, and weak topic identification.
               </p>
@@ -161,7 +161,7 @@ export const CodeforcesSettingsSection: React.FC<CodeforcesSettingsSectionProps>
 
       {/* 2. Public Data Transparency */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Info className="w-4 h-4 text-indigo-400" />
           <span>Imported Public Data & Privacy Transparency</span>
         </h3>
@@ -177,18 +177,18 @@ export const CodeforcesSettingsSection: React.FC<CodeforcesSettingsSectionProps>
       {showUnlinkModal && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="max-w-md w-full rounded-2xl border border-slate-800 bg-slate-900 p-6 space-y-4 shadow-2xl">
-            <h4 className="font-bold text-white text-base flex items-center gap-2">
+            <h4 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
               <Unlink className="w-4 h-4 text-rose-400" />
               <span>Unlink Codeforces Account?</span>
             </h4>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
               Unlinking will disconnect <strong>{cfHandle}</strong>. Your CLIMB 1600 practice attempts, mistake notebook records, and study habits will be safely preserved.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setShowUnlinkModal(false)}
-                className="px-3.5 py-2 rounded-xl border border-slate-800 text-xs text-slate-400 hover:text-white"
+                className="px-3.5 py-2 rounded-xl border border-slate-800 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer"
               >
                 Cancel
               </button>

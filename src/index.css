@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--climb-font-family, 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  --font-heading: var(--climb-font-family, 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --text-2xs: 0.72rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.3125rem;
+}
+
 @custom-variant dark (&:where(.dark, .dark *, [data-mode="dark"], [data-mode="dark"] *, [data-mode="orange"], [data-mode="orange"] *, [data-mode="purple"], [data-mode="purple"] *, [data-mode="multicolor"], [data-mode="multicolor"] *));
 
 @layer base {
@@ -28,7 +41,8 @@
     --climb-radius: 12px;
     --climb-density-pad: 1rem;
     --climb-density-gap: 0.875rem;
-    --climb-font-scale: 0.9375rem;
+    --climb-font-scale: 1.0625rem;
+    --climb-font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --climb-motion-duration: 0.2s;
     --climb-backdrop-blur: blur(12px);
   }
@@ -42,11 +56,13 @@
   html, body {
     background-color: var(--climb-bg-app, #0b0f19);
     color: var(--climb-text-main, #f1f5f9);
-    font-size: var(--climb-font-scale, 0.9375rem);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--climb-font-scale, 1.0625rem);
+    font-family: var(--climb-font-family, 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+    line-height: 1.55;
+    letter-spacing: -0.012em;
     padding-top: var(--sat);
     padding-left: var(--sal);
     padding-right: var(--sar);
@@ -56,6 +72,7 @@
   /* Optimize touch responsiveness on mobile touch screens */
   button, a, input, select, textarea {
     touch-action: manipulation;
+    font-family: inherit;
   }
 }
 
@@ -195,28 +212,44 @@
 }
 
 [data-mode="light"] .bg-slate-950,
+[data-mode="light"] .bg-slate-950\/95,
+[data-mode="light"] .bg-slate-950\/90,
+[data-mode="light"] .bg-slate-950\/85,
+[data-mode="light"] .bg-slate-950\/80,
+[data-mode="light"] .bg-slate-950\/75,
 [data-mode="light"] .bg-slate-950\/70,
 [data-mode="light"] .bg-slate-950\/60,
-[data-mode="light"] .bg-slate-950\/80,
-[data-mode="light"] .bg-slate-950\/90 {
+[data-mode="light"] .bg-slate-950\/50,
+[data-mode="light"] .bg-slate-950\/40,
+[data-mode="light"] .bg-slate-950\/30,
+[data-mode="light"] .bg-slate-950\/20,
+[data-mode="light"] .bg-slate-950\/10 {
   background-color: #ffffff !important;
 }
 
 [data-mode="light"] .bg-slate-900,
-[data-mode="light"] .bg-slate-900\/60,
+[data-mode="light"] .bg-slate-900\/95,
+[data-mode="light"] .bg-slate-900\/90,
+[data-mode="light"] .bg-slate-900\/85,
 [data-mode="light"] .bg-slate-900\/80,
-[data-mode="light"] .bg-slate-900\/90 {
+[data-mode="light"] .bg-slate-900\/70,
+[data-mode="light"] .bg-slate-900\/60 {
   background-color: #f8fafc !important;
 }
 
+[data-mode="light"] .bg-slate-900\/50,
 [data-mode="light"] .bg-slate-900\/40,
-[data-mode="light"] .bg-slate-900\/50 {
+[data-mode="light"] .bg-slate-900\/30,
+[data-mode="light"] .bg-slate-900\/20 {
   background-color: #ffffff !important;
 }
 
 [data-mode="light"] .bg-slate-850,
 [data-mode="light"] .bg-slate-800,
+[data-mode="light"] .bg-slate-800\/95,
+[data-mode="light"] .bg-slate-800\/90,
 [data-mode="light"] .bg-slate-800\/80,
+[data-mode="light"] .bg-slate-800\/70,
 [data-mode="light"] .bg-slate-800\/60,
 [data-mode="light"] .bg-slate-800\/50 {
   background-color: #f1f5f9 !important;
@@ -236,41 +269,73 @@
   border-color: #cbd5e1 !important;
 }
 
-/* Standalone headings, paragraphs, and labels become dark text in light mode */
-[data-mode="light"] :is(h1, h2, h3, h4, h5, h6, p, label, th, tr, td, dt, dd).text-white {
+/* Standalone headings, paragraphs, labels, spans, divs, buttons, and inputs become dark text in light mode */
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(.text-white, .text-slate-100, .text-slate-50, .text-gray-100, .text-zinc-100):not(.keep-white):not(.monaco-editor *):not(.joy-code-container *):not([data-joy-code] *) {
   color: #0f172a !important;
 }
 
-[data-mode="light"] span.text-white:not([class*="bg-"]):not([class*="gradient-"]):not(button *):not(a *) {
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(.hover\:text-white, .hover\:text-slate-100, .hover\:text-slate-50):hover:not([class*="bg-indigo-600"]):not([class*="bg-emerald-600"]):not([class*="bg-rose-600"]):not([class*="bg-blue-600"]):not([class*="bg-purple-600"]):not([class*="bg-teal-600"]):not([class*="bg-cyan-600"]):not([class*="bg-gradient-"]) {
   color: #0f172a !important;
 }
 
-[data-mode="light"] div.text-white:not([class*="bg-"]):not([class*="gradient-"]):not(button *):not(a *) {
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(input, select, textarea):not([class*="bg-indigo-600"]):not([class*="bg-emerald-600"]) {
   color: #0f172a !important;
 }
 
 /* Maintain crisp white text on colored badges, primary buttons, and solid accent backgrounds in light mode */
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-indigo-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-indigo-700"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-emerald-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-emerald-700"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-rose-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-red-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-blue-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-violet-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-purple-600"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="gradient-"],
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-indigo-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-indigo-700"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-emerald-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-emerald-700"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-rose-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-red-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-blue-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-violet-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="bg-purple-600"] *,
-[data-mode="light"] :is(button, a, span, div, strong)[class*="gradient-"] * {
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(
+  button, a, span, div, p, strong, b, code
+):is(
+  [class*="bg-indigo-600"], [class*="bg-indigo-700"],
+  [class*="bg-emerald-600"], [class*="bg-emerald-700"],
+  [class*="bg-teal-600"], [class*="bg-cyan-600"],
+  [class*="bg-rose-600"], [class*="bg-red-600"],
+  [class*="bg-blue-600"], [class*="bg-violet-600"],
+  [class*="bg-purple-600"],
+  [class*="solid-badge-"],
+  .keep-white
+):not([class*="/10"]):not([class*="/15"]):not([class*="/20"]):not([class*="/25"]):not([class*="/30"]):not([class*="/40"]):not([class*="/50"]):not([class*="text-emerald-"]):not([class*="text-indigo-"]):not([class*="text-slate-"]):not([class*="text-cyan-"]):not([class*="text-amber-"]):not([class*="text-rose-"]):not([class*="text-purple-"]) {
   color: #ffffff !important;
+}
+
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(
+  button, a, span, div
+):is(
+  [class*="bg-gradient-to-"]
+):not([class*="-50/"]):not([class*="-50 "]):not([class$="-50"]):not([class*="from-slate-100"]):not([class*="from-amber"]):not([class*="from-yellow"]):not([class*="to-yellow"]):not([class*="to-amber"]):not([class*="from-slate-50"]):not([class*="from-purple-50/"]):not([class*="from-indigo-50/"]):not([class*="text-slate-"]):not([class*="text-emerald-"]) {
+  color: #ffffff !important;
+}
+
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(
+  [class*="bg-indigo-600"], [class*="bg-indigo-700"],
+  [class*="bg-emerald-600"], [class*="bg-emerald-700"],
+  [class*="bg-teal-600"], [class*="bg-cyan-600"],
+  [class*="bg-rose-600"], [class*="bg-red-600"],
+  [class*="bg-blue-600"], [class*="bg-violet-600"],
+  [class*="bg-purple-600"],
+  [class*="solid-badge-"]
+):not([class*="/10"]):not([class*="/15"]):not([class*="/20"]):not([class*="/25"]):not([class*="/30"]):not([class*="/40"]):not([class*="/50"]) :is(.text-white, .text-slate-100, .text-slate-50, svg.text-white, span, strong, b, code, i, [class*="text-white"]):not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-emerald"]):not([class*="text-cyan"]):not([class*="text-pink"]):not([class*="text-rose"]):not([class*="text-indigo"]):not([class*="text-purple"]) {
+  color: #ffffff !important;
+}
+
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) :is(
+  [class*="bg-indigo-600"], [class*="bg-indigo-700"],
+  [class*="bg-emerald-600"], [class*="bg-emerald-700"],
+  [class*="bg-teal-600"], [class*="bg-cyan-600"],
+  [class*="bg-rose-600"], [class*="bg-red-600"],
+  [class*="bg-blue-600"], [class*="bg-violet-600"],
+  [class*="bg-purple-600"]
+):not([class*="/10"]):not([class*="/15"]):not([class*="/20"]):not([class*="/25"]):not([class*="/30"]):not([class*="/40"]):not([class*="/50"]) :is(.hover\:text-white, .hover\:text-slate-100, .hover\:text-slate-50):hover {
+  color: #ffffff !important;
+}
+
+[data-mode="light"] :is(button, a, span)[class*="bg-amber-500"],
+[data-mode="light"] :is(button, a, span)[class*="bg-amber-400"],
+[data-mode="light"] :is(button, a, span)[class*="bg-yellow-400"],
+[data-mode="light"] :is(button, a, span)[class*="bg-amber-500"] *,
+[data-mode="light"] :is(button, a, span)[class*="bg-amber-400"] *,
+[data-mode="light"] :is(button, a, span)[class*="bg-yellow-400"] * {
+  color: #0f172a !important;
 }
 
 /* Adapt hero gradient banners to clean light styling in light mode */
@@ -320,59 +385,98 @@
   color: #1e293b !important;
 }
 
-[data-mode="light"] .text-slate-100,
-[data-mode="light"] .text-slate-200,
-[data-mode="light"] .text-slate-300 {
-  color: #1e293b !important;
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) .text-slate-100,
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) .text-slate-200,
+:where([data-mode="light"], html:not(.dark), :root:not(.dark)) .text-slate-300 {
+  color: #0f172a !important;
 }
 
 [data-mode="light"] .text-slate-400 {
-  color: #475569 !important;
+  color: #334155 !important;
 }
 
 [data-mode="light"] .text-slate-500 {
-  color: #64748b !important;
+  color: #475569 !important;
 }
 
-/* High-contrast readable colors for light mode accents */
+[data-mode="light"] .text-slate-600 {
+  color: #1e293b !important;
+}
+
+/* High-contrast readable colors for light mode accents across full app */
+[data-mode="light"] .text-indigo-100,
+[data-mode="light"] .text-indigo-200,
 [data-mode="light"] .text-indigo-300,
 [data-mode="light"] .text-indigo-400 {
   color: #4338ca !important;
 }
 
+[data-mode="light"] .text-cyan-100,
+[data-mode="light"] .text-cyan-200,
 [data-mode="light"] .text-cyan-300,
 [data-mode="light"] .text-cyan-400 {
   color: #0e7490 !important;
 }
 
+[data-mode="light"] .text-emerald-100,
+[data-mode="light"] .text-emerald-200,
 [data-mode="light"] .text-emerald-300,
 [data-mode="light"] .text-emerald-400,
+[data-mode="light"] .text-green-200,
+[data-mode="light"] .text-green-300,
 [data-mode="light"] .text-green-400 {
   color: #15803d !important;
 }
 
+[data-mode="light"] .text-amber-100,
+[data-mode="light"] .text-amber-200,
 [data-mode="light"] .text-amber-300,
 [data-mode="light"] .text-amber-400,
+[data-mode="light"] .text-yellow-100,
+[data-mode="light"] .text-yellow-200,
+[data-mode="light"] .text-yellow-300,
 [data-mode="light"] .text-yellow-400 {
   color: #b45309 !important;
 }
 
+[data-mode="light"] .text-rose-100,
+[data-mode="light"] .text-rose-200,
 [data-mode="light"] .text-rose-300,
-[data-mode="light"] .text-rose-400 {
+[data-mode="light"] .text-rose-400,
+[data-mode="light"] .text-red-200,
+[data-mode="light"] .text-red-300,
+[data-mode="light"] .text-red-400 {
   color: #be123c !important;
 }
 
+[data-mode="light"] .text-pink-100,
+[data-mode="light"] .text-pink-200,
+[data-mode="light"] .text-pink-300,
+[data-mode="light"] .text-pink-400 {
+  color: #be185d !important;
+}
+
+[data-mode="light"] .text-purple-100,
+[data-mode="light"] .text-purple-200,
 [data-mode="light"] .text-purple-300,
 [data-mode="light"] .text-purple-400,
+[data-mode="light"] .text-violet-100,
+[data-mode="light"] .text-violet-200,
+[data-mode="light"] .text-violet-300,
 [data-mode="light"] .text-violet-400 {
   color: #6d28d9 !important;
 }
 
+[data-mode="light"] .text-blue-100,
+[data-mode="light"] .text-blue-200,
 [data-mode="light"] .text-blue-300,
 [data-mode="light"] .text-blue-400 {
   color: #1d4ed8 !important;
 }
 
+[data-mode="light"] .text-orange-100,
+[data-mode="light"] .text-orange-200,
+[data-mode="light"] .text-orange-300,
 [data-mode="light"] .text-orange-400 {
   color: #c2410c !important;
 }
@@ -420,6 +524,75 @@
   border-color: #fecdd3 !important;
 }
 
+[data-mode="light"] .bg-purple-950,
+[data-mode="light"] .bg-purple-950\/80,
+[data-mode="light"] .bg-purple-950\/70,
+[data-mode="light"] .bg-purple-950\/60,
+[data-mode="light"] .bg-purple-950\/40,
+[data-mode="light"] .bg-purple-950\/30 {
+  background-color: #f3e8ff !important;
+  border-color: #e9d5ff !important;
+}
+
+[data-mode="light"] .bg-pink-950,
+[data-mode="light"] .bg-pink-950\/80,
+[data-mode="light"] .bg-pink-950\/60,
+[data-mode="light"] .bg-pink-950\/40,
+[data-mode="light"] .bg-pink-950\/30 {
+  background-color: #fce7f3 !important;
+  border-color: #fbcfe8 !important;
+}
+
+[data-mode="light"] .bg-teal-950,
+[data-mode="light"] .bg-teal-950\/80,
+[data-mode="light"] .bg-teal-950\/60,
+[data-mode="light"] .bg-teal-950\/40,
+[data-mode="light"] .bg-teal-950\/30 {
+  background-color: #ccfbf1 !important;
+  border-color: #99f6e4 !important;
+}
+
+/* Maintain dark high-contrast text on light tinted badge/button surfaces in light mode */
+[data-mode="light"] :is(button, a, div, span)[class*="bg-indigo-950"] {
+  background-color: #e0e7ff !important;
+  color: #1e1b4b !important;
+}
+[data-mode="light"] :is(button, a, div, span)[class*="bg-indigo-950"] :is(p, span, h1, h2, h3, h4, div):not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-rose"]):not([class*="text-emerald"]):not([class*="text-cyan"]):not([class*="text-pink"]):not([class*="text-white"]):not(.keep-white) {
+  color: #1e1b4b !important;
+}
+
+[data-mode="light"] :is(button, a, div, span)[class*="bg-purple-950"] {
+  background-color: #f3e8ff !important;
+  color: #3b0764 !important;
+}
+[data-mode="light"] :is(button, a, div, span)[class*="bg-purple-950"] :is(p, span, h1, h2, h3, h4, div):not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-rose"]):not([class*="text-emerald"]):not([class*="text-cyan"]):not([class*="text-pink"]):not([class*="text-white"]):not(.keep-white) {
+  color: #3b0764 !important;
+}
+
+[data-mode="light"] :is(button, a, div, span)[class*="bg-pink-950"] {
+  background-color: #fce7f3 !important;
+  color: #500724 !important;
+}
+[data-mode="light"] :is(button, a, div, span)[class*="bg-pink-950"] :is(p, span, h1, h2, h3, h4, div):not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-rose"]):not([class*="text-emerald"]):not([class*="text-cyan"]):not([class*="text-pink"]):not([class*="text-white"]):not(.keep-white) {
+  color: #500724 !important;
+}
+
+[data-mode="light"] :is(button, a, div, span)[class*="bg-cyan-950"] {
+  background-color: #cffafe !important;
+  color: #083344 !important;
+}
+[data-mode="light"] :is(button, a, div, span)[class*="bg-cyan-950"] :is(p, span, h1, h2, h3, h4, div):not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-rose"]):not([class*="text-emerald"]):not([class*="text-indigo"]):not([class*="text-pink"]):not([class*="text-white"]):not(.keep-white) {
+  color: #083344 !important;
+}
+
+[data-mode="light"] :is(button, a, div, span)[class*="bg-emerald-950"] {
+  background-color: #d1fae5 !important;
+  color: #064e3b !important;
+}
+[data-mode="light"] :is(button, a, div, span)[class*="bg-emerald-950"] :is(p, span, h1, h2, h3, h4, div):not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-rose"]):not([class*="text-cyan"]):not([class*="text-indigo"]):not([class*="text-pink"]):not([class*="text-white"]):not(.keep-white) {
+  color: #064e3b !important;
+}
+
 [data-mode="light"] input:not([type="checkbox"]):not([type="radio"]),
 [data-mode="light"] select,
 [data-mode="light"] textarea {
@@ -436,6 +609,74 @@
 [data-mode="light"] .glass-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.8) 100%) !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ─── CLIMB 1600 Solid Badges, Status Tokens & High-Contrast Cards ────────── */
+.solid-badge-emerald { background-color: #059669 !important; color: #ffffff !important; }
+.solid-badge-indigo { background-color: #4f46e5 !important; color: #ffffff !important; }
+.solid-badge-cyan { background-color: #0891b2 !important; color: #ffffff !important; }
+.solid-badge-amber { background-color: #d97706 !important; color: #ffffff !important; }
+.solid-badge-rose { background-color: #e11d48 !important; color: #ffffff !important; }
+.solid-badge-purple { background-color: #7c3aed !important; color: #ffffff !important; }
+
+/* Ensure solid badges always have high contrast white text in all appearance modes (exclude translucent badges) */
+:is([class*="bg-emerald-600"], [class*="bg-indigo-600"], [class*="bg-blue-600"], [class*="bg-purple-600"], [class*="bg-rose-600"], [class*="bg-teal-600"]):not([class*="/"]):not([class*="text-emerald"]):not([class*="text-indigo"]):not([class*="text-slate"]):not([class*="text-amber"]):not([class*="text-rose"]):not([class*="text-purple"]):not([class*="text-cyan"]) {
+  color: #ffffff;
+}
+
+/* ─── Protect JoyCodeViewer & Code Syntax Tokens in All Appearance Modes ── */
+.joy-code-container,
+[data-joy-code="true"] {
+  color-scheme: dark;
+}
+
+[data-mode="light"] .joy-code-container .text-white,
+[data-mode="light"] [data-joy-code="true"] .text-white {
+  color: #ffffff !important;
+}
+
+[data-mode="light"] .joy-code-container .text-slate-200,
+[data-mode="light"] [data-joy-code="true"] .text-slate-200 {
+  color: #e2e8f0 !important;
+}
+
+[data-mode="light"] .joy-code-container .text-slate-300,
+[data-mode="light"] [data-joy-code="true"] .text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+[data-mode="light"] .joy-code-container .text-slate-400,
+[data-mode="light"] [data-joy-code="true"] .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+[data-mode="light"] .joy-code-container .bg-slate-900,
+[data-mode="light"] [data-joy-code="true"] .bg-slate-900 {
+  background-color: #0f172a !important;
+}
+
+[data-mode="light"] .joy-code-container .bg-slate-800,
+[data-mode="light"] [data-joy-code="true"] .bg-slate-800 {
+  background-color: #1e293b !important;
+}
+
+[data-mode="light"] .joy-code-container .border-slate-700,
+[data-mode="light"] [data-joy-code="true"] .border-slate-700 {
+  border-color: #334155 !important;
+}
+
+[data-mode="light"] .joy-code-container input,
+[data-mode="light"] [data-joy-code="true"] input {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #6366f1 !important;
+}
+
+[data-mode="light"] .joy-code-container select,
+[data-mode="light"] [data-joy-code="true"] select {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
 }
 
 /* 2. Orange Mode Styles */
@@ -832,7 +1073,8 @@
   box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
 }
 
-/* Subtle Interactive Animations */
+/* ─── Rich Dynamic Animation System & Micro-Interactions ─────────────── */
+
 @keyframes levitate {
   0%, 100% {
     transform: translateY(0px);
@@ -862,6 +1104,407 @@
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes popSpring {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-1deg);
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.65));
+  }
+  25% {
+    transform: scale(1.07) rotate(1.5deg);
+    filter: drop-shadow(0 0 14px rgba(239, 68, 68, 0.85));
+  }
+  50% {
+    transform: scale(0.96) rotate(-2deg);
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.7));
+  }
+  75% {
+    transform: scale(1.08) rotate(2deg);
+    filter: drop-shadow(0 0 16px rgba(251, 146, 60, 0.95));
+  }
+}
+
+@keyframes emberFloat {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-8px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-16px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+@keyframes beaconPing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  75%, 100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmerSlide {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes floatSlightRotate {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1.5deg);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.92;
+  }
+}
+
+@keyframes jiggleSubtle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ============================================================================
+   ATTRACTIVE ANIMATED THEME KEYFRAMES & UTILITY CLASSES
+   ============================================================================ */
+
+@keyframes matrixRain {
+  0% { transform: translateY(-100%); opacity: 0; }
+  15% { opacity: 0.95; }
+  85% { opacity: 0.85; }
+  100% { transform: translateY(105vh); opacity: 0; }
+}
+
+@keyframes sakuraDrift {
+  0% {
+    transform: translate(0, -10px) rotate(0deg) scale(0.75);
+    opacity: 0;
+  }
+  15% { opacity: 0.85; }
+  50% {
+    transform: translate(65px, 45vh) rotate(180deg) scale(1);
+  }
+  85% { opacity: 0.75; }
+  100% {
+    transform: translate(-35px, 105vh) rotate(360deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes shootingStar {
+  0% {
+    transform: translate(0, 0) rotate(-35deg) scaleX(0);
+    opacity: 0;
+  }
+  8% {
+    transform: translate(-60px, 60px) rotate(-35deg) scaleX(1);
+    opacity: 1;
+  }
+  24% {
+    transform: translate(-320px, 320px) rotate(-35deg) scaleX(1.3);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-320px, 320px) rotate(-35deg) scaleX(0);
+    opacity: 0;
+  }
+}
+
+@keyframes oceanWave {
+  0%, 100% {
+    transform: translateX(0) scaleY(1);
+  }
+  50% {
+    transform: translateX(-35px) scaleY(1.12);
+  }
+}
+
+@keyframes emberRise {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.6);
+    opacity: 0;
+  }
+  20% { opacity: 0.95; }
+  50% {
+    transform: translateY(-45vh) translateX(25px) scale(1);
+    opacity: 0.8;
+  }
+  80% { opacity: 0.5; }
+  100% {
+    transform: translateY(-95vh) translateX(-20px) scale(0.35);
+    opacity: 0;
+  }
+}
+
+@keyframes auroraWave {
+  0%, 100% {
+    transform: translateY(0) scaleY(1) rotate(-1.5deg);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: translateY(-24px) scaleY(1.25) rotate(2deg);
+    filter: hue-rotate(30deg);
+  }
+}
+
+@keyframes bubbleAscend {
+  0% {
+    transform: translateY(100vh) translateX(0) scale(0.7);
+    opacity: 0;
+  }
+  20% { opacity: 0.85; }
+  50% {
+    transform: translateY(50vh) translateX(18px) scale(1.05);
+  }
+  75% {
+    transform: translateY(25vh) translateX(-14px) scale(0.95);
+  }
+  100% {
+    transform: translateY(-8vh) translateX(8px) scale(1.15);
+    opacity: 0;
+  }
+}
+
+@keyframes searchlight {
+  0%, 100% {
+    transform: rotate(-32deg);
+  }
+  50% {
+    transform: rotate(32deg);
+  }
+}
+
+@keyframes magicRunePulse {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.03);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes rainStream {
+  0% {
+    transform: translateY(-40px) translateX(0);
+    opacity: 0;
+  }
+  15% { opacity: 0.65; }
+  85% { opacity: 0.65; }
+  100% {
+    transform: translateY(105vh) translateX(-25px);
+    opacity: 0;
+  }
+}
+
+@keyframes synthwaveGrid {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 48px;
+  }
+}
+
+@keyframes gearSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes gearSpinReverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes snowDrift {
+  0% {
+    transform: translateY(-20px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% { opacity: 0.9; }
+  50% {
+    transform: translateY(50vh) translateX(24px) rotate(180deg);
+  }
+  80% { opacity: 0.8; }
+  100% {
+    transform: translateY(105vh) translateX(-18px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Animated Theme Classes */
+.animate-matrix-rain {
+  animation: matrixRain 6s linear infinite;
+}
+
+.animate-sakura-drift {
+  animation: sakuraDrift 9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shooting-star {
+  animation: shootingStar 4.8s ease-out infinite;
+}
+
+.animate-ocean-wave {
+  animation: oceanWave 6.5s ease-in-out infinite;
+}
+
+.animate-ember-rise {
+  animation: emberRise 6.5s ease-out infinite;
+}
+
+.animate-aurora-wave {
+  animation: auroraWave 8s ease-in-out infinite;
+}
+
+.animate-bubble-ascend {
+  animation: bubbleAscend 8.5s ease-in-out infinite;
+}
+
+.animate-searchlight-left {
+  animation: searchlight 9s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-searchlight-right {
+  animation: searchlight 11s ease-in-out infinite reverse;
+  transform-origin: bottom center;
+}
+
+.animate-magic-rune {
+  animation: magicRunePulse 24s linear infinite;
+  transform-origin: center;
+}
+
+.animate-rain-stream {
+  animation: rainStream 2.2s linear infinite;
+}
+
+.animate-synthwave-grid {
+  animation: synthwaveGrid 1.8s linear infinite;
+}
+
+.animate-gear-spin {
+  animation: gearSpin 14s linear infinite;
+  transform-origin: center;
+}
+
+.animate-gear-spin-rev {
+  animation: gearSpinReverse 16s linear infinite;
+  transform-origin: center;
+}
+
+.animate-snow-drift {
+  animation: snowDrift 8.5s linear infinite;
+}
+
+/* Animation Classes */
 .animate-levitate {
   animation: levitate 4s ease-in-out infinite;
 }
@@ -871,17 +1514,198 @@
 }
 
 .animate-spin-slow {
-  animation: spinSlow 12s linear infinite;
+  animation: spinSlow 14s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: fadeInScale 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pop-spring {
+  animation: popSpring 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-flame {
+  animation: flameFlicker 2.2s ease-in-out infinite;
+}
+
+.animate-beacon-ping {
+  animation: beaconPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerSlide 2.5s infinite;
+}
+
+.animate-gradient-flow {
+  background-size: 200% 200%;
+  animation: gradientFlow 5s ease infinite;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 3.5s ease-in-out infinite;
+}
+
+.animate-float-rotate {
+  animation: floatSlightRotate 4.5s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 2.5s ease-in-out infinite;
+}
+
+.animate-jiggle {
+  animation: jiggleSubtle 0.6s ease-in-out;
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 1.8s ease-in-out infinite;
+}
+
+/* Stagger entrance delays */
+.stagger-1 { animation-delay: 40ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 130ms; }
+.stagger-4 { animation-delay: 180ms; }
+.stagger-5 { animation-delay: 240ms; }
+.stagger-6 { animation-delay: 300ms; }
+
+/* Interactive Hover & Micro-Interaction Classes */
+.interactive-card {
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.26s ease;
+  will-change: transform;
+}
+
+.interactive-card:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.18),
+              0 0 18px -2px var(--climb-accent-glow, rgba(99, 102, 241, 0.25));
+}
+
+.interactive-card:active {
+  transform: translateY(-0.5px) scale(0.995);
+}
+
+.interactive-button {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.18s ease,
+              filter 0.18s ease;
+  will-change: transform;
+}
+
+.interactive-button:hover {
+  transform: translateY(-1.5px) scale(1.02);
+  filter: brightness(1.06);
+}
+
+.interactive-button:active {
+  transform: translateY(0px) scale(0.97);
+}
+
+.interactive-icon {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.interactive-icon:hover {
+  transform: scale(1.18) rotate(5deg);
+}
+
+.interactive-badge {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+}
+
+.interactive-badge:hover {
+  transform: scale(1.06);
+  filter: brightness(1.1);
+}
+
+/* Shimmer Sheen Reflection Hover Effect */
+.shimmer-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-sheen::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.shimmer-sheen:hover::after {
+  transform: translateX(120%);
 }
 
 /* Disable keyframes under reduced motion */
 [data-motion="off"] .animate-levitate,
 [data-motion="off"] .animate-pulse-glow,
 [data-motion="off"] .animate-spin-slow,
+[data-motion="off"] .animate-fade-in,
+[data-motion="off"] .animate-fade-in-up,
+[data-motion="off"] .animate-fade-in-down,
+[data-motion="off"] .animate-scale-in,
+[data-motion="off"] .animate-pop-spring,
+[data-motion="off"] .animate-flame,
+[data-motion="off"] .animate-beacon-ping,
+[data-motion="off"] .animate-shimmer,
+[data-motion="off"] .animate-gradient-flow,
+[data-motion="off"] .animate-float-gentle,
+[data-motion="off"] .animate-float-rotate,
+[data-motion="off"] .animate-pulse-subtle,
+[data-motion="off"] .animate-bounce-subtle,
+[data-motion="off"] .animate-jiggle,
+[data-motion="off"] .interactive-card,
+[data-motion="off"] .interactive-button,
 [data-motion="reduced"] .animate-levitate,
 [data-motion="reduced"] .animate-pulse-glow,
-[data-motion="reduced"] .animate-spin-slow {
+[data-motion="reduced"] .animate-spin-slow,
+[data-motion="reduced"] .animate-fade-in,
+[data-motion="reduced"] .animate-fade-in-up,
+[data-motion="reduced"] .animate-fade-in-down,
+[data-motion="reduced"] .animate-scale-in,
+[data-motion="reduced"] .animate-pop-spring,
+[data-motion="reduced"] .animate-flame,
+[data-motion="reduced"] .animate-beacon-ping,
+[data-motion="reduced"] .animate-shimmer,
+[data-motion="reduced"] .animate-gradient-flow,
+[data-motion="reduced"] .animate-float-gentle,
+[data-motion="reduced"] .animate-float-rotate,
+[data-motion="reduced"] .animate-pulse-subtle,
+[data-motion="reduced"] .animate-bounce-subtle,
+[data-motion="reduced"] .animate-jiggle,
+[data-motion="reduced"] .interactive-card,
+[data-motion="reduced"] .interactive-button {
   animation: none !important;
+  transform: none !important;
+  transition-duration: 0.001s !important;
 }
 
 /* KaTeX mathematical typography and overflow styling */
@@ -900,5 +1724,327 @@
 .katex-display > .katex {
   white-space: normal;
 }
+
+/* ─── Modern UI Polish & Bold Typography System ──────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--climb-font-family, 'Outfit', 'Plus Jakarta Sans', sans-serif);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+button {
+  font-weight: 700;
+}
+
+label {
+  font-weight: 700;
+}
+
+/* Ensure font-sans helper respects current stylish font family */
+.font-sans {
+  font-family: var(--climb-font-family, 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif) !important;
+}
+
+/* Monospace code snippet typography */
+.font-mono-code, code, kbd, pre {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: -0.01em;
+}
+
+/* Boost micro font classes so no badge, label, or detail text is unreadable */
+.text-\[7px\],
+.text-\[8px\],
+.text-\[9px\] {
+  font-size: 0.72rem !important;
+  line-height: 1.3 !important;
+}
+
+.text-\[10px\] {
+  font-size: 0.78rem !important;
+  line-height: 1.35 !important;
+}
+
+.text-\[11px\] {
+  font-size: 0.84rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Generous reading line-height for problem statements, descriptions and notes */
+p, li, dd {
+  line-height: 1.625;
+}
+
+/* Crisp high-contrast interactive modern selection cards */
+.modern-selection-card {
+  position: relative;
+  border-radius: 1rem;
+  border-width: 2px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.modern-selection-card:hover {
+  transform: translateY(-1px);
+}
+
+.modern-selection-card:active {
+  transform: translateY(0px) scale(0.99);
+}
+
+/* ─── FUNNY & JOYFUL THEME STYLES (SCOPED TO DARK MODE) ─────────────────────────── */
+
+/* 1. Cyber Hacker Matrix Theme */
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] body {
+  background-color: var(--climb-bg-app, #040d06) !important;
+  color: var(--climb-text-main, #f0fff4) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .bg-slate-900\/90 {
+  background-color: #08170c !important;
+  border-color: #104d22 !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .bg-slate-950\/90 {
+  background-color: #051208 !important;
+  border-color: #104d22 !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .border-slate-800,
+:where(.dark, [data-mode="dark"])[data-theme="cyber-matrix"] .border-slate-700 {
+  border-color: #104d22 !important;
+}
+
+[data-theme="cyber-matrix"] button:hover {
+  filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.4));
+}
+
+/* 2. Candy Pop Bubblegum Theme */
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] body {
+  background-color: var(--climb-bg-app, #190a16) !important;
+  color: var(--climb-text-main, #fdf2f8) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .bg-slate-900\/90 {
+  background-color: #260f22 !important;
+  border-color: #6b1d5c !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .bg-slate-950\/90 {
+  background-color: #1e0c1a !important;
+  border-color: #6b1d5c !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .border-slate-800,
+:where(.dark, [data-mode="dark"])[data-theme="candy-pop"] .border-slate-700 {
+  border-color: #6b1d5c !important;
+}
+
+/* 3. Kawaii Anime Chibi Theme */
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] body {
+  background-color: var(--climb-bg-app, #150d24) !important;
+  color: var(--climb-text-main, #faf5ff) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .bg-slate-900\/90 {
+  background-color: #201336 !important;
+  border-color: #532b85 !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .bg-slate-950\/90 {
+  background-color: #190e2b !important;
+  border-color: #532b85 !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .border-slate-800,
+:where(.dark, [data-mode="dark"])[data-theme="kawaii-anime"] .border-slate-700 {
+  border-color: #532b85 !important;
+}
+
+/* 4. 80s Synthwave Retro Arcade Theme */
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] body {
+  background-color: var(--climb-bg-app, #12071f) !important;
+  color: var(--climb-text-main, #fff1f2) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .bg-slate-900\/90 {
+  background-color: #1e0b33 !important;
+  border-color: #6b1b7b !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .bg-slate-950\/90 {
+  background-color: #160826 !important;
+  border-color: #6b1b7b !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .border-slate-800,
+:where(.dark, [data-mode="dark"])[data-theme="retro-arcade"] .border-slate-700 {
+  border-color: #6b1b7b !important;
+}
+
+/* 5. Cosmic Galaxy Cadet Theme */
+:where(.dark, [data-mode="dark"])[data-theme="galaxy-space"] body {
+  background-color: var(--climb-bg-app, #09081a) !important;
+  color: var(--climb-text-main, #f0f9ff) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="galaxy-space"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="galaxy-space"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="galaxy-space"] .bg-slate-900\/90 {
+  background-color: #100f2e !important;
+  border-color: #2f2c73 !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="galaxy-space"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="galaxy-space"] .bg-slate-950\/90 {
+  background-color: #0c0b22 !important;
+  border-color: #2f2c73 !important;
+}
+
+/* 6. Dragon Slayer Beast Mode Theme */
+:where(.dark, [data-mode="dark"])[data-theme="dragon-fire"] body {
+  background-color: var(--climb-bg-app, #180707) !important;
+  color: var(--climb-text-main, #fef2f2) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="dragon-fire"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="dragon-fire"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="dragon-fire"] .bg-slate-900\/90 {
+  background-color: #270c0c !important;
+  border-color: #691c1c !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="dragon-fire"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="dragon-fire"] .bg-slate-950\/90 {
+  background-color: #1f0909 !important;
+  border-color: #691c1c !important;
+}
+
+/* 7. Caffeine Overdrive Theme */
+:where(.dark, [data-mode="dark"])[data-theme="coffee-overdrive"] body {
+  background-color: var(--climb-bg-app, #160d08) !important;
+  color: var(--climb-text-main, #fffbeb) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="coffee-overdrive"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="coffee-overdrive"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="coffee-overdrive"] .bg-slate-900\/90 {
+  background-color: #24150d !important;
+  border-color: #5c331d !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="coffee-overdrive"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="coffee-overdrive"] .bg-slate-950\/90 {
+  background-color: #1c100a !important;
+  border-color: #5c331d !important;
+}
+
+/* 8. Jungle Safari Explorer Theme */
+:where(.dark, [data-mode="dark"])[data-theme="jungle-safari"] body {
+  background-color: var(--climb-bg-app, #06170d) !important;
+  color: var(--climb-text-main, #ecfdf5) !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="jungle-safari"] .glass-panel,
+:where(.dark, [data-mode="dark"])[data-theme="jungle-safari"] .bg-slate-900,
+:where(.dark, [data-mode="dark"])[data-theme="jungle-safari"] .bg-slate-900\/90 {
+  background-color: #0b2615 !important;
+  border-color: #1f5934 !important;
+}
+
+:where(.dark, [data-mode="dark"])[data-theme="jungle-safari"] .bg-slate-950,
+:where(.dark, [data-mode="dark"])[data-theme="jungle-safari"] .bg-slate-950\/90 {
+  background-color: #081e11 !important;
+  border-color: #1f5934 !important;
+}
+
+/* ============================================================================
+   FUNNY & BEAUTIFUL CARD BACKGROUNDS & SPACIOUS LAYOUT UTILITIES
+   ============================================================================ */
+.fun-bg-mesh-cosmic {
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+              linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(238, 242, 255, 0.92) 100%);
+  border: 1px solid rgba(199, 210, 254, 0.8);
+}
+
+.dark .fun-bg-mesh-cosmic {
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.18) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.18) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.12) 0%, transparent 50%),
+              linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.92) 100%);
+  border: 1px solid rgba(129, 140, 248, 0.35);
+}
+
+.fun-bg-mesh-candy {
+  background: radial-gradient(circle at 15% 15%, rgba(244, 114, 182, 0.25) 0%, transparent 45%),
+              radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.25) 0%, transparent 45%),
+              linear-gradient(135deg, rgba(255, 241, 242, 0.95) 0%, rgba(250, 232, 255, 0.88) 100%);
+  border: 1px solid rgba(244, 114, 182, 0.3);
+}
+
+.dark .fun-bg-mesh-candy {
+  background: radial-gradient(circle at 15% 15%, rgba(244, 114, 182, 0.15) 0%, transparent 45%),
+              radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.15) 0%, transparent 45%),
+              linear-gradient(135deg, rgba(30, 15, 35, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(244, 114, 182, 0.25);
+}
+
+.fun-bg-mesh-emerald {
+  background: radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.2) 0%, transparent 40%),
+              radial-gradient(circle at 15% 85%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+              linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(236, 253, 245, 0.9) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.dark .fun-bg-mesh-emerald {
+  background: radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.2) 0%, transparent 40%),
+              radial-gradient(circle at 15% 85%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+              linear-gradient(135deg, rgba(6, 30, 18, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.fun-bg-mesh-coffee {
+  background: radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.2) 0%, transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(217, 119, 6, 0.15) 0%, transparent 40%),
+              linear-gradient(135deg, rgba(254, 252, 232, 0.95) 0%, rgba(254, 243, 199, 0.9) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.dark .fun-bg-mesh-coffee {
+  background: radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(217, 119, 6, 0.12) 0%, transparent 40%),
+              linear-gradient(135deg, rgba(30, 20, 12, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* Action cluster spacing to prevent crammed buttons */
+.action-cluster-spacious {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .action-cluster-spacious {
+    gap: 0.625rem;
+  }
+}
+
+
+
 
 

@@ -193,7 +193,7 @@ export const AchievementUnlockCelebration: React.FC<AchievementUnlockModalProps>
   onClose,
 }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fade-in">
-    <div className="relative w-full max-w-sm rounded-3xl bg-gradient-to-b from-slate-900 via-[#13112c] to-slate-950 p-6 text-center border border-violet-500/30 shadow-2xl shadow-indigo-500/20">
+    <div className="relative w-full max-w-sm rounded-3xl bg-gradient-to-b from-slate-900 via-[#13112c] to-slate-950 keep-white p-6 text-center border border-violet-500/30 shadow-2xl shadow-indigo-500/20">
       {/* Ambient Sparkles */}
       <div className="absolute top-4 left-6 text-yellow-400 animate-pulse">
         <Sparkles className="w-5 h-5" />

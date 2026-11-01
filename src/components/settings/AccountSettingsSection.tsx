@@ -63,7 +63,7 @@ export const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
     <div className="space-y-6">
       {/* 1. Signed-in Account Identity */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <User className="w-4 h-4 text-indigo-400" />
           <span>{t('account.identity')}</span>
         </h3>
@@ -76,7 +76,7 @@ export const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white text-sm font-mono">{userEmail}</p>
+                  <p className="font-semibold text-slate-900 dark:text-white text-sm font-mono">{userEmail}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-semibold">
                       <CheckCircle2 className="w-3 h-3" />
@@ -135,7 +135,7 @@ export const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
       {/* 2. Security Guidance */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Shield className="w-4 h-4 text-cyan-400" />
           <span>Security & Authentication Architecture</span>
         </h3>
@@ -164,14 +164,14 @@ export const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         ) : (
           <div className="p-4 rounded-xl border border-rose-800 bg-rose-950/60 space-y-3">
             <p className="text-xs font-bold text-rose-200">
-              To confirm deletion, type <code className="bg-rose-950 px-1 py-0.5 rounded border border-rose-700 text-white font-mono">DELETE_MY_ACCOUNT</code> below:
+              To confirm deletion, type <code className="bg-rose-950 px-1 py-0.5 rounded border border-rose-700 text-rose-100 font-mono">DELETE_MY_ACCOUNT</code> below:
             </p>
             <input
               type="text"
               value={deleteConfirmation}
               onChange={(e) => setDeleteConfirmation(e.target.value)}
               placeholder="DELETE_MY_ACCOUNT"
-              className="w-full rounded-xl border border-rose-700 bg-slate-950 px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-rose-400"
+              className="w-full rounded-xl border border-rose-700 bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:border-rose-400"
             />
             {deleteError && <p className="text-xs text-rose-300">{deleteError}</p>}
             <div className="flex items-center gap-2 pt-1">
@@ -190,7 +190,7 @@ export const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   setDeleteConfirmation('');
                   setDeleteError(null);
                 }}
-                className="rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-400 hover:text-white"
+                className="rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
                 Cancel
               </button>

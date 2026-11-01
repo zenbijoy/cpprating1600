@@ -38,6 +38,9 @@ import { cfStorageService } from '../services/storage';
 import { deriveStats } from '../services/codeforces';
 import { analyzeTopicFrequencies } from '../utils/topicAnalysis';
 import { TOPICS } from '../utils/roadmap';
+import { FunCard } from './common/CardBackgrounds';
+import { MascotClimby, FunnyStickerBadge } from './assets/MascotAndStickers';
+import { AnimeViewCompanionBanner } from './common/AnimeViewCompanionBanner';
 
 interface AnalyticsViewProps {
   profile: UserProfile;
@@ -170,44 +173,53 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     }
   };
 
-  const StatCard = ({ icon: Icon, label, value, sub, color = 'text-indigo-400' }: {
-    icon: any; label: string; value: string | number; sub?: string; color?: string;
+  const StatCard = ({ icon: Icon, label, value, sub, color = 'text-indigo-400', variant = 'clean' }: {
+    icon: any; label: string; value: string | number; sub?: string; color?: string; variant?: any;
   }) => (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex items-start gap-3 shadow-sm">
-      <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0">
-        <Icon className={`w-4 h-4 ${color}`} />
+    <FunCard variant={variant} className="p-4 flex items-start gap-3.5 shadow-sm">
+      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-800/80 shrink-0 shadow-2xs">
+        <Icon className={`w-5 h-5 ${color}`} />
       </div>
       <div>
-        <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
-        <p className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">{value}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{label}</p>
+        <p className="text-2xl font-black text-slate-900 dark:text-white mt-0.5">{value}</p>
         {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
       </div>
-    </div>
+    </FunCard>
   );
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-12 text-slate-900 dark:text-slate-100 font-sans">
+      {/* Anime Diagnostic Companion Banner */}
+      <AnimeViewCompanionBanner
+        screenTitle="Topic Mastery &amp; Telemetry Diagnostics"
+        subtitle="AI radar scan of your algorithm performance, accuracy distributions, and topic deficiencies. Turn every weakness into an unbeatable competitive strength!"
+        badgeText="1000 IQ Telemetry"
+        badgeIcon="🔬"
+        stickerType="1000_iq"
+      />
+
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <BarChartIcon size={22} semantic="primary" />
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
+            <BarChartIcon size={26} semantic="primary" />
             Topic Mastery & Rating Analytics
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Diagnostic performance telemetry, algorithmic weakness detection, and rating trajectory toward {targetRating}.
           </p>
         </div>
 
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-1 flex-nowrap">
+        <div className="flex gap-2 sm:gap-2.5 overflow-x-auto scrollbar-none pb-1 flex-nowrap">
           {(['7d', '30d', '90d', '180d', 'all'] as DateRange[]).map((r) => (
             <button
               key={r}
               onClick={() => setDateRange(r)}
-              className={`text-xs px-3 py-1.5 rounded-lg border whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+              className={`text-xs px-3.5 py-2 rounded-xl border whitespace-nowrap shrink-0 transition-all cursor-pointer font-bold shadow-2xs ${
                 dateRange === r
-                  ? 'bg-emerald-600 border-emerald-600 text-white font-semibold'
-                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-md'
+                  : 'bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
               }`}
             >
               {r === 'all' ? 'All time' : r}
@@ -217,71 +229,71 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       </div>
 
       {/* Target Rating Progress Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <TargetRatingIcon size={20} semantic="warning" />
+      <FunCard variant="emerald" sticker="climb_champ" className="p-6 sm:p-8 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <TargetRatingIcon size={22} semantic="warning" />
               Target Goal: {targetRating} Rating
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium mt-0.5">
               {currentRating > 0
                 ? `${ratingGap > 0 ? `${ratingGap} rating points to goal` : '🎉 Target milestone achieved!'}`
                 : 'Connect your Codeforces account to verify your official rating'}
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:block w-36 h-22 rounded-xl overflow-hidden border border-emerald-500/20 bg-slate-950/40 p-0.5 shrink-0">
+          <div className="flex items-center gap-5">
+            <div className="hidden sm:block w-36 h-22 rounded-2xl overflow-hidden border border-emerald-500/20 bg-slate-950/40 p-0.5 shrink-0 shadow-inner">
               <ProgressGrowthIllustration width="100%" height="100%" />
             </div>
             <div className="text-right shrink-0">
-              <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{currentRating || '—'}</p>
-              <p className="text-xs text-slate-400">Current rating</p>
+              <p className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400">{currentRating || '—'}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Current rating</p>
             </div>
           </div>
         </div>
 
         {/* Progress bar */}
         <div className="space-y-1.5">
-          <div className="flex justify-between text-xs text-slate-500">
+          <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 font-semibold">
             <span>0</span>
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400">{currentRating} ({progressPct}%)</span>
+            <span className="font-bold text-emerald-600 dark:text-emerald-400">{currentRating} ({progressPct}%)</span>
             <span className="font-bold text-slate-900 dark:text-white">{targetRating}</span>
           </div>
-          <div className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div className="h-3 rounded-full bg-slate-200/80 dark:bg-slate-800 overflow-hidden shadow-inner">
             <div
-              className="h-full bg-emerald-600 rounded-full transition-all duration-500"
+              className="h-full bg-emerald-600 rounded-full transition-all duration-500 shadow-sm"
               style={{ width: `${progressPct}%` }}
             />
           </div>
         </div>
 
         {/* Key stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 border-t border-slate-100 dark:border-slate-800">
-          <div className="text-center">
-            <p className="text-xl font-bold text-slate-900 dark:text-white">{currentRating}</p>
-            <p className="text-xs text-slate-400">Current</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 border-t border-white/10 dark:border-white/5">
+          <div className="text-center p-2 rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xs">
+            <p className="text-xl font-black text-slate-900 dark:text-white">{currentRating}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Current</p>
           </div>
-          <div className="text-center">
-            <p className="text-xl font-bold text-slate-900 dark:text-white">{maxRating}</p>
-            <p className="text-xs text-slate-400">Peak</p>
+          <div className="text-center p-2 rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xs">
+            <p className="text-xl font-black text-slate-900 dark:text-white">{maxRating}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Peak</p>
           </div>
-          <div className="text-center">
-            <p className="text-xl font-bold text-slate-900 dark:text-white">{ratingHistory.length}</p>
-            <p className="text-xs text-slate-400">Contests</p>
+          <div className="text-center p-2 rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xs">
+            <p className="text-xl font-black text-slate-900 dark:text-white">{ratingHistory.length}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Contests</p>
           </div>
-          <div className="text-center">
-            <p className="text-xl font-bold text-slate-900 dark:text-white">{stats?.totalSolved ?? 0}</p>
-            <p className="text-xs text-slate-400">Problems AC</p>
+          <div className="text-center p-2 rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xs">
+            <p className="text-xl font-black text-slate-900 dark:text-white">{stats?.totalSolved ?? 0}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Problems AC</p>
           </div>
         </div>
-      </div>
+      </FunCard>
 
       {/* =========================================================================
           TOPIC MASTERY & WEAK-AREA DETECTION ENGINE (Feature 2)
           ========================================================================= */}
-      <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-6 shadow-sm">
+      <FunCard variant="coffee" className="p-6 sm:p-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -382,35 +394,35 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               {topicAnalysis.topStrengths.map((s) => (
                 <div
                   key={s.tag}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/30 text-xs text-emerald-800 dark:text-emerald-300 font-semibold"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-xs text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs"
                 >
                   <CheckCircleIcon className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>{s.displayName}</span>
-                  <span className="text-[10px] text-slate-400 font-normal">({s.solvedCount} solves)</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">({s.solvedCount} solves)</span>
                 </div>
               ))}
             </div>
           </div>
         )}
-      </section>
+      </FunCard>
 
-      {/* Stats Grid */}
+      {/* Stats Grid with distinct vibrant background variants */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard icon={TotalSolvedIcon as any} label="Problems Solved" value={stats?.totalSolved ?? 0} sub="unique accepted" color="text-emerald-600" />
-        <StatCard icon={TargetIcon as any} label="Accuracy" value={stats ? `${stats.accuracy}%` : '—'} sub="AC / attempted" color="text-cyan-600" />
-        <StatCard icon={WrongAnswerIcon as any} label="Wrong Answers" value={stats?.verdictCounts['WRONG_ANSWER'] ?? 0} sub="WA submissions" color="text-red-500" />
-        <StatCard icon={TimeLimitIcon as any} label="TLE Count" value={stats?.verdictCounts['TIME_LIMIT_EXCEEDED'] ?? 0} sub="time limit exceeded" color="text-amber-500" />
+        <StatCard icon={TotalSolvedIcon as any} label="Problems Solved" value={stats?.totalSolved ?? 0} sub="unique accepted" color="text-emerald-600" variant="emerald" />
+        <StatCard icon={TargetIcon as any} label="Accuracy" value={stats ? `${stats.accuracy}%` : '—'} sub="AC / attempted" color="text-cyan-600" variant="frost" />
+        <StatCard icon={WrongAnswerIcon as any} label="Wrong Answers" value={stats?.verdictCounts['WRONG_ANSWER'] ?? 0} sub="WA submissions" color="text-red-500" variant="fire" />
+        <StatCard icon={TimeLimitIcon as any} label="TLE Count" value={stats?.verdictCounts['TIME_LIMIT_EXCEEDED'] ?? 0} sub="time limit exceeded" color="text-amber-500" variant="sunset" />
       </div>
 
       {/* Rating History Chart */}
       {ratingChartData.length > 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-3 shadow-sm">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <TrendUpIcon size={16} semantic="primary" />
+        <FunCard variant="clean" className="p-6 space-y-4">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <TrendUpIcon size={18} semantic="primary" />
             Rating History
             <span className="text-xs font-normal text-slate-400">({ratingChartData.length} official rounds)</span>
           </h2>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={240}>
             <AreaChart data={ratingChartData} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
               <defs>
                 <linearGradient id="analyticsRatingGrad" x1="0" y1="0" x2="0" y2="1">
@@ -432,13 +444,13 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <Area type="monotone" dataKey="rating" stroke="#059669" strokeWidth={2.5} fill="url(#analyticsRatingGrad)" dot={{ fill: '#059669', r: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </FunCard>
       ) : (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center space-y-2 shadow-sm">
+        <FunCard variant="clean" className="p-8 text-center space-y-3">
           <TrendUpIcon size={36} className="text-slate-300 mx-auto" />
           <p className="text-slate-700 dark:text-slate-300 text-sm font-semibold">No rating history recorded yet.</p>
           <p className="text-slate-400 text-xs">Connect your Codeforces handle in Settings to sync your official contest rating chart.</p>
-        </div>
+        </FunCard>
       )}
 
       {/* Two charts side by side */}
@@ -446,7 +458,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Solved by Rating */}
           {ratingBuckets.length > 0 && (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-3 shadow-sm">
+            <FunCard variant="clean" className="p-5 space-y-3">
               <h2 className="text-sm font-bold text-slate-900 dark:text-white">Solved by Rating Tier</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={ratingBuckets} margin={{ left: -15, right: 5 }}>
@@ -463,12 +475,12 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+            </FunCard>
           )}
 
           {/* Tag radar */}
           {topTags.length >= 3 && (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-3 shadow-sm">
+            <FunCard variant="clean" className="p-5 space-y-3">
               <h2 className="text-sm font-bold text-slate-900 dark:text-white">Solved by Tag (Top 8)</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <RadarChart data={topTags} margin={{ top: 5, right: 30, bottom: 5, left: 30 }}>
@@ -479,7 +491,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#0f172a', fontSize: '12px' }} />
                 </RadarChart>
               </ResponsiveContainer>
-            </div>
+            </FunCard>
           )}
         </div>
       )}

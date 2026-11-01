@@ -83,7 +83,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
     <div className="space-y-6">
       {/* 1. Identity & Avatar Selection */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <User className="w-4 h-4 text-indigo-400" />
           <span>Personal Information & Identity</span>
         </h3>
@@ -104,7 +104,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
           </div>
 
           <div className="space-y-1 flex-1">
-            <span className="text-xs font-semibold text-slate-300">Avatar Selection</span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Avatar Selection</span>
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {PRESET_AVATARS.map((url, idx) => (
                 <button
@@ -123,7 +123,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
                 placeholder="Or paste custom image URL..."
                 value={profile.avatar}
                 onChange={(e) => onChange({ ...profile, avatar: e.target.value })}
-                className="w-full sm:w-60 rounded-xl border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full sm:w-60 rounded-xl border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
@@ -132,24 +132,24 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           {/* Display Name */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('profile.display_name')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.display_name')}</label>
             <input
               type="text"
               value={profile.displayName}
               onChange={(e) => onChange({ ...profile, displayName: e.target.value })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               placeholder="e.g. Tourist Jr."
             />
           </div>
 
           {/* Country / Region */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('profile.country')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.country')}</label>
             <input
               type="text"
               value={profile.country}
               onChange={(e) => onChange({ ...profile, country: e.target.value })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               placeholder="e.g. Bangladesh, United States, Poland"
             />
           </div>
@@ -157,12 +157,12 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
 
         {/* Bio */}
         <div className="space-y-1.5 text-xs">
-          <label className="font-bold text-slate-300">{t('profile.bio')}</label>
+          <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.bio')}</label>
           <textarea
             rows={2}
             value={profile.bio}
             onChange={(e) => onChange({ ...profile, bio: e.target.value })}
-            className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500"
+            className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             placeholder="Share your CP goals, focus philosophy, or university affiliation..."
           />
         </div>
@@ -170,7 +170,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
 
       {/* 2. Competitive Programming Track Record */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Award className="w-4 h-4 text-cyan-400" />
           <span>Competitive Programming Profile</span>
         </h3>
@@ -179,7 +179,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
         <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-sm text-white">
+              <span className="font-mono font-bold text-sm text-slate-900 dark:text-white">
                 {cfHandle || 'No Codeforces handle linked'}
               </span>
               {isCfVerified ? (
@@ -194,7 +194,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
               )}
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              Current Rating: <strong className="text-white font-mono">{cfRating || 'Unrated'}</strong> • Max Rating: <strong className="text-slate-300 font-mono">{cfMaxRating || 'N/A'}</strong> ({cfRank || 'Unrated'})
+              Current Rating: <strong className="text-slate-900 dark:text-white font-mono">{cfRating || 'Unrated'}</strong> • Max Rating: <strong className="text-slate-700 dark:text-slate-300 font-mono">{cfMaxRating || 'N/A'}</strong> ({cfRank || 'Unrated'})
             </p>
           </div>
           <span className="text-[11px] text-slate-500">
@@ -205,11 +205,11 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
           {/* Experience Level */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('profile.experience')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.experience')}</label>
             <select
               value={profile.experienceLevel}
               onChange={(e) => onChange({ ...profile, experienceLevel: e.target.value as any })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="complete_beginner">{t('profile.exp_beginner')}</option>
               <option value="some_experience">{t('profile.exp_intermediate')}</option>
@@ -219,11 +219,11 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
 
           {/* Preferred Language */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('profile.preferred_lang')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.preferred_lang')}</label>
             <select
               value={profile.preferredLanguage}
               onChange={(e) => onChange({ ...profile, preferredLanguage: e.target.value as ProgrammingLanguage })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               <option value="cpp20">C++20 (Recommended for Speed)</option>
               <option value="cpp17">C++17 (Standard CP)</option>
@@ -233,7 +233,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
 
           {/* Target Rating */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('profile.target_rating')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.target_rating')}</label>
             <input
               type="number"
               min={800}
@@ -241,7 +241,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
               step={50}
               value={profile.targetRating}
               onChange={(e) => onChange({ ...profile, targetRating: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-indigo-500"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             />
           </div>
         </div>
@@ -249,7 +249,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
         {/* Weekly Goal Hours */}
         <div className="space-y-1.5 text-xs">
           <div className="flex items-center justify-between">
-            <label className="font-bold text-slate-300">{t('profile.weekly_goal')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('profile.weekly_goal')}</label>
             <span className="font-mono font-bold text-indigo-400">{profile.weeklyGoalHours} hrs / week</span>
           </div>
           <input
@@ -267,7 +267,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
       {/* 3. Preferred Topics & Goals */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Tag className="w-4 h-4 text-emerald-400" />
             <span>{t('profile.preferred_topics')}</span>
           </h3>
@@ -287,7 +287,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-indigo-600 text-white shadow-sm ring-1 ring-indigo-400/50'
-                    : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-white hover:border-slate-700'
+                    : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-700'
                 }`}
               >
                 {topic}
@@ -298,7 +298,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({
 
         {/* Learning Goals */}
         <div className="pt-3 border-t border-slate-800/80 space-y-2">
-          <label className="text-xs font-bold text-slate-300">Active Learning Milestones</label>
+          <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Active Learning Milestones</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {AVAILABLE_GOALS.map((goal) => {
               const isChecked = (profile.learningGoals || []).includes(goal.id);

@@ -13,6 +13,8 @@ import {
   getRadiusValue,
   getDensityTokens,
   getFontScaleRem,
+  FONT_FAMILIES,
+  getFontFamilyStack,
 } from '../utils/themeEngine.ts';
 import {
   t,
@@ -29,7 +31,8 @@ import {
   DEFAULT_PYTHON_TEMPLATE,
 } from '../utils/settingsDefaults.ts';
 import { SettingsUpdateSchema } from './settingsServer.ts';
-import { AppearanceMode, ThemePresetId } from '../types/settings.ts';
+import { AppearanceMode, ThemePresetId, AnimeCharacterId } from '../types/settings.ts';
+import { ANIME_CHARACTERS } from '../components/assets/MascotAndStickers.tsx';
 
 // -------------------------------------------------------------
 // 1. THEME ENGINE & PRESET ARCHITECTURE TESTS
@@ -61,6 +64,48 @@ test('Theme Engine: All 8 Presets are fully defined with dark & light tokens', (
     assert.ok(isValidHexColor(preset.light.bgApp), `Preset "${presetId}" light.bgApp must be a valid hex color.`);
     assert.ok(isValidHexColor(preset.light.primary), `Preset "${presetId}" light.primary must be a valid hex color.`);
     assert.ok(isValidHexColor(preset.light.textMain), `Preset "${presetId}" light.textMain must be a valid hex color.`);
+  }
+});
+
+test('Theme Engine: All 40 Presets are fully registered and contain key requested environments', () => {
+  const allPresets = Object.keys(THEME_PRESETS) as ThemePresetId[];
+  assert.equal(allPresets.length, 40, 'Must have exactly 40 themes defined in THEME_PRESETS.');
+
+  const requiredThemes: ThemePresetId[] = [
+    'mountain-summit',
+    'sea-beach',
+    'railway-express',
+    'jorna-waterfall',
+    'neon-road',
+    'anime-village',
+    'sci-fi-mecha',
+    'fighting-coliseum',
+    'sakura-shrine',
+    'pixel-dungeon',
+    'steampunk-airship',
+    'aurora-borealis',
+  ];
+
+  for (const theme of requiredThemes) {
+    assert.ok(THEME_PRESETS[theme], `Required theme "${theme}" must exist in THEME_PRESETS.`);
+    assert.ok(isValidHexColor(THEME_PRESETS[theme].dark.primary), `Theme "${theme}" dark.primary must be valid hex.`);
+    assert.ok(isValidHexColor(THEME_PRESETS[theme].light.primary), `Theme "${theme}" light.primary must be valid hex.`);
+  }
+});
+
+test('Anime Character System: All 17 anime & cartoon heroes have valid metadata and dialogues', () => {
+  assert.equal(ANIME_CHARACTERS.length, 17, 'Must have 17 selectable anime & cartoon characters.');
+
+  const ids = new Set<string>();
+  for (const hero of ANIME_CHARACTERS) {
+    assert.ok(hero.id, 'Hero must have an ID.');
+    assert.ok(!ids.has(hero.id), `Hero ID "${hero.id}" must be unique.`);
+    ids.add(hero.id);
+    assert.ok(hero.name, `Hero "${hero.id}" must have a name.`);
+    assert.ok(hero.title, `Hero "${hero.id}" must have a title.`);
+    assert.ok(hero.quote, `Hero "${hero.id}" must have a battle/motto quote.`);
+    assert.ok(hero.avatarEmoji, `Hero "${hero.id}" must have an emoji avatar.`);
+    assert.ok(hero.dialogues.length >= 2, `Hero "${hero.id}" must have at least 2 quotes.`);
   }
 });
 
@@ -124,10 +169,21 @@ test('Theme Engine: Mode Resolution and Design Tokens', () => {
   assert.equal(getRadiusValue('standard'), '12px');
   assert.equal(getRadiusValue('rounded'), '18px');
 
-  // Font Scale Tokens
-  assert.equal(getFontScaleRem('small'), '0.875rem');
-  assert.equal(getFontScaleRem('standard'), '0.9375rem');
-  assert.equal(getFontScaleRem('large'), '1.0625rem');
+  // Font Scale Tokens (Increased content font sizes)
+  assert.equal(getFontScaleRem('small'), '0.9375rem');
+  assert.equal(getFontScaleRem('standard'), '1.0625rem');
+  assert.equal(getFontScaleRem('large'), '1.1875rem');
+  assert.equal(getFontScaleRem('extra-large'), '1.3125rem');
+
+  // Stylish Font Family Tokens
+  assert.equal(DEFAULT_THEME_CONFIG.fontFamily, 'outfit');
+  assert.ok(FONT_FAMILIES.outfit);
+  assert.ok(FONT_FAMILIES['space-grotesk']);
+  assert.ok(FONT_FAMILIES.jakarta);
+  assert.ok(FONT_FAMILIES.sora);
+  assert.ok(FONT_FAMILIES.system);
+  assert.match(getFontFamilyStack('outfit'), /Outfit/);
+  assert.match(getFontFamilyStack('space-grotesk'), /Space Grotesk/);
 });
 
 test('Theme Engine: Default mode is Light Mode and all modes are supported', () => {

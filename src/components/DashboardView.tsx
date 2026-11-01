@@ -27,6 +27,7 @@ import {
   TimerIcon,
   CommunityIcon,
   ChatIcon,
+  CodeFileIcon,
 } from './icons';
 import { TabId } from './Navbar';
 import {
@@ -39,7 +40,8 @@ import {
   UserGoal,
   UserProfile,
 } from '../types';
-import { getPhaseForDay, getTopicForDay } from '../utils/roadmap';
+import { getPhaseForDay, getTopicForDay, TOPICS, CURATED_PROBLEMS_CATALOG } from '../utils/roadmap';
+import { calculateTheoreticalRating } from '../utils/ratingEstimator';
 import { compute30DayStreak } from '../utils/streak';
 import { calculateTodayMinutesProgress } from '../utils/timeTracking';
 import {
@@ -65,8 +67,31 @@ import { CFContest, codeforcesService } from '../services/codeforces';
 import { cfStorageService, storageService } from '../services/storage';
 import { useToast } from './Toast';
 import { MountainSummitHero } from './assets';
+import { JoyfulDashboardBanner } from './JoyfulDashboardBanner';
+import { DashboardGameHUD } from './DashboardGameHUD';
+import { PlayfulQuestMap } from './PlayfulQuestMap';
+import { ProblemRouletteModal } from './ProblemRouletteModal';
+import { DailyLoginRewardsModal } from './DailyLoginRewardsModal';
+import { DailyFortuneModal } from './DailyFortuneModal';
+import { DailyHabitAnchor } from './DailyHabitAnchor';
+import { gameRewardService } from '../services/gameRewardService';
+import {
+  MascotClimby,
+  MascotByteCat,
+  MascotBigBrain,
+  FunnyStickerBadge,
+} from './assets/MascotAndStickers';
+import {
+  CodingPracticeIllustration,
+  ContestArenaIllustration,
+  FocusDisciplineIllustration,
+  ProgressGrowthIllustration,
+} from './assets/ActivityIllustrations';
+import { AIAssistantCompanion } from './assets/AIAssistantCompanion';
+import { FunCard } from './common/CardBackgrounds';
 import { computePracticeHeatmap } from '../utils/practiceHeatmap';
 import { LogSessionModal, LogSessionPayload } from './LogSessionModal';
+import { ConfettiCanvas } from './common/ConfettiCanvas';
 
 export interface DashboardViewProps {
   goal: UserGoal;
@@ -74,6 +99,7 @@ export interface DashboardViewProps {
   dailyPlan: DailyPlan;
   onUpdateDailyPlan: (plan: DailyPlan) => void;
   onSelectProblem: (problem: CFProblem) => void;
+  onViewSolution?: (problem: CFProblem) => void;
   onOpenAntiProcrastination: () => void;
   onOpenCurriculumTopic: (topicId: string) => void;
   recentAttempts: ProblemAttempt[];
@@ -81,12 +107,13 @@ export interface DashboardViewProps {
   upcomingContestTime?: string;
   mistakes?: MistakeRecord[];
   onUpdateGoal?: (goal: UserGoal) => void;
+  onUpdateProfile?: (profile: UserProfile) => void;
   isAuthenticated?: boolean;
   isCfVerified?: boolean;
   cfAccount?: any;
   onOpenAuthModal?: () => void;
   onOpenVerificationModal?: () => void;
-  onSyncCfData?: () => void;
+  onSyncCfData?: () => Promise<void> | void;
   onAttemptLogged?: (attempt: ProblemAttempt) => void;
   onNavigateTab?: (tab: TabId) => void;
 }
@@ -97,6 +124,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   dailyPlan,
   onUpdateDailyPlan,
   onSelectProblem,
+  onViewSolution,
   onOpenAntiProcrastination,
   onOpenCurriculumTopic,
   recentAttempts,
@@ -104,6 +132,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   upcomingContestTime,
   mistakes = [],
   onUpdateGoal,
+  onUpdateProfile,
   isAuthenticated = false,
   isCfVerified = false,
   cfAccount,
@@ -123,6 +152,78 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   // Log Session Modal State
   const [showLogSessionModal, setShowLogSessionModal] = useState<boolean>(false);
   const [showAllRecentSessions, setShowAllRecentSessions] = useState<boolean>(false);
+  const [showCalibrationModal, setShowCalibrationModal] = useState<boolean>(false);
+  const [showRouletteModal, setShowRouletteModal] = useState<boolean>(false);
+  const [showDailyRewardsModal, setShowDailyRewardsModal] = useState<boolean>(false);
+  const [showFortuneModal, setShowFortuneModal] = useState<boolean>(false);
+  const [isSyncingCf, setIsSyncingCf] = useState<boolean>(false);
+  const [showConfetti, setShowConfetti] = useState<boolean>(false);
+
+  const solvedProblemIds = useMemo(() => {
+    return new Set(
+      recentAttempts
+        .filter((a) => a.officialVerdict === 'OK' || a.outcome === 'solved_independently')
+        .map((a) => `${a.contestId}${a.index}`)
+    );
+  }, [recentAttempts]);
+
+  // Theoretical Rating Estimate & Verified Solves Telemetry
+  const ratingEstimate = useMemo(() => {
+    return calculateTheoreticalRating(recentAttempts, profile.baselineRating || 800, profile.verifiedCfRating);
+  }, [recentAttempts, profile.baselineRating, profile.verifiedCfRating]);
+
+  const verifiedSolvesCount = useMemo(() => {
+    return recentAttempts.filter(
+      (a) => a.officialVerdict === 'OK' || a.outcome === 'solved_independently'
+    ).length;
+  }, [recentAttempts]);
+
+  const maxSolvedRating = useMemo(() => {
+    const solved = recentAttempts.filter(
+      (a) => (a.officialVerdict === 'OK' || a.outcome === 'solved_independently') && a.rating
+    );
+    if (solved.length === 0) return 800;
+    return Math.max(...solved.map((a) => a.rating!));
+  }, [recentAttempts]);
+
+  const effectiveRating = useMemo(() => {
+    if (profile.verifiedCfRating && profile.verifiedCfRating > 0) return profile.verifiedCfRating;
+    if (profile.baselineRating && profile.baselineRating > 0) return profile.baselineRating;
+    return ratingEstimate.estimatedRating || 800;
+  }, [profile.verifiedCfRating, profile.baselineRating, ratingEstimate.estimatedRating]);
+
+  const handleSaveCalibratedRating = (val: number) => {
+    const updated = {
+      ...profile,
+      baselineRating: val > 0 ? val : undefined,
+    };
+    onUpdateProfile?.(updated);
+    storageService.saveProfile(updated);
+    toast.show(
+      val > 0
+        ? `Baseline skill rating calibrated to ${val}!`
+        : `Baseline skill rating set to auto-calculated (~${ratingEstimate.estimatedRating})!`,
+      'success'
+    );
+  };
+
+  const handleTriggerSync = async () => {
+    if (isSyncingCf) return;
+    setIsSyncingCf(true);
+    try {
+      if (onSyncCfData) {
+        await onSyncCfData();
+        toast.show(
+          `Codeforces data refreshed! Verified ${recentAttempts.length} submissions (${verifiedSolvesCount} solved).`,
+          'success'
+        );
+      }
+    } catch (err: any) {
+      toast.show(err?.message || 'Failed to sync Codeforces data', 'error');
+    } finally {
+      setIsSyncingCf(false);
+    }
+  };
 
   // SkillTrack Heatmap & Goal Progress Engine (Reference Image 2)
   const heatmapAnalysis = useMemo(() => {
@@ -148,6 +249,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       todayAttempts.flatMap((a) => (a.tags && a.tags.length > 0 ? a.tags : ['Practice']))
     );
     return uniqueTags.size;
+  }, [recentAttempts]);
+
+  // Today's total practice minutes
+  const todayPracticeMinutes = useMemo(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayAttempts = recentAttempts.filter(
+      (a) => (a.endedAt || a.startedAt || '').split('T')[0] === todayStr
+    );
+    return todayAttempts.reduce((sum, a) => sum + Math.round((a.timeSpentSeconds || 0) / 60), 0);
   }, [recentAttempts]);
 
   // Dynamic diagnostic growth area based on authentic attempts & mistakes telemetry
@@ -185,7 +295,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     if (recentAttempts.length > 0) {
       return {
         title: 'Maintaining Precision & Rating Momentum',
-        description: `Great recent accuracy across ${recentAttempts.length} submissions! Continue solving problems at rating ${Math.min(1600, (profile.verifiedCfRating || 800) + 100)} to stretch problem-solving intuition.`,
+        description: `Great recent accuracy across ${recentAttempts.length} submissions! Continue solving problems at rating ${Math.min(goal.targetRating || 1600, effectiveRating + 100)} to stretch problem-solving intuition.`,
         category: 'Consistent Progress',
       };
     }
@@ -195,7 +305,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       description: 'Connect your Codeforces handle or solve your first practice problem to generate personalized telemetry diagnostics.',
       category: 'Diagnostic Ready',
     };
-  }, [mistakes, recentAttempts, profile.verifiedCfRating]);
+  }, [mistakes, recentAttempts, effectiveRating, goal.targetRating]);
 
   // User Initials for Avatar
   const userInitials = useMemo(() => {
@@ -229,6 +339,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
     storageService.saveAttempt(newAttempt);
     onAttemptLogged?.(newAttempt);
+    setShowConfetti(true);
     toast.show(`Practice session logged (${payload.durationMinutes} min on ${payload.topic})!`, 'success');
   };
 
@@ -240,12 +351,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   // Milestone and Difficulty Trajectory Telemetry
   const milestone = useMemo(() => {
-    return calculateMilestone(profile.verifiedCfRating || 800, 1600);
-  }, [profile.verifiedCfRating]);
+    return calculateMilestone(effectiveRating, goal.targetRating || 1600);
+  }, [effectiveRating, goal.targetRating]);
 
   const diffEvaluation = useMemo(() => {
-    return evaluateDifficultyTrajectory(recentAttempts, profile.verifiedCfRating || 800);
-  }, [recentAttempts, profile.verifiedCfRating]);
+    return evaluateDifficultyTrajectory(recentAttempts, effectiveRating);
+  }, [recentAttempts, effectiveRating]);
 
   const dueMistakes = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -358,6 +469,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     });
 
     const allDone = updatedTasks.every((t) => t.completed);
+    if (allDone && !dailyPlan.tasks.every((t) => t.completed)) {
+      setShowConfetti(true);
+      toast.show(`Day ${goal.currentDay} Mission Accomplished! All daily tasks complete.`, 'success');
+    }
     onUpdateDailyPlan({
       ...dailyPlan,
       tasks: updatedTasks,
@@ -394,12 +509,81 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setShowWeeklyReportModal(true);
   };
 
+
+
+  const solvedProblemKeys = useMemo(() => {
+    const keys = new Set<string>();
+    for (const a of recentAttempts) {
+      if (a.officialVerdict === 'OK' || a.outcome === 'solved_independently' || a.outcome === 'solved_with_hints') {
+        keys.add(`${a.contestId || ''}-${a.index}`);
+        keys.add(`${a.contestId || ''}${a.index}`);
+        keys.add(a.problemId);
+        keys.add(a.name);
+      }
+    }
+    return keys;
+  }, [recentAttempts]);
+
+  const isCurrentTopicCompleted = useMemo(() => {
+    return currentTopic.recommendedProblems.every((p) => {
+      const key1 = `${p.contestId || ''}-${p.index}`;
+      const key2 = `${p.contestId || ''}${p.index}`;
+      return solvedProblemKeys.has(key1) || solvedProblemKeys.has(key2) || solvedProblemKeys.has(p.name);
+    });
+  }, [currentTopic, solvedProblemKeys]);
+
+  const nextRecommendedProblem: CFProblem = useMemo(() => {
+    // 1. Look for unsolved problem in current topic
+    const unsolvedInTopic = currentTopic.recommendedProblems.find((p) => {
+      const key1 = `${p.contestId || ''}-${p.index}`;
+      const key2 = `${p.contestId || ''}${p.index}`;
+      return !solvedProblemKeys.has(key1) && !solvedProblemKeys.has(key2) && !solvedProblemKeys.has(p.name);
+    });
+    if (unsolvedInTopic) return unsolvedInTopic;
+
+    // 2. If current topic is mastered, search future topics in curriculum
+    for (const topic of TOPICS) {
+      const unsolved = topic.recommendedProblems.find((p) => {
+        const key1 = `${p.contestId || ''}-${p.index}`;
+        const key2 = `${p.contestId || ''}${p.index}`;
+        return !solvedProblemKeys.has(key1) && !solvedProblemKeys.has(key2) && !solvedProblemKeys.has(p.name);
+      });
+      if (unsolved) return unsolved;
+    }
+
+    // 3. Fallback to unsolved problem from curated catalog nearest to effective rating
+    const targetDifficulty = effectiveRating ? Math.min(1600, effectiveRating + 100) : 900;
+    const unsolvedCatalog = CURATED_PROBLEMS_CATALOG.filter((p) => {
+      const key1 = `${p.contestId || ''}-${p.index}`;
+      const key2 = `${p.contestId || ''}${p.index}`;
+      return !solvedProblemKeys.has(key1) && !solvedProblemKeys.has(key2) && !solvedProblemKeys.has(p.name);
+    });
+    if (unsolvedCatalog.length > 0) {
+      unsolvedCatalog.sort((a, b) => Math.abs((a.rating || 800) - targetDifficulty) - Math.abs((b.rating || 800) - targetDifficulty));
+      return unsolvedCatalog[0];
+    }
+
+    return {
+      contestId: 405,
+      index: 'A',
+      name: 'Gravity Flip',
+      rating: 900,
+      tags: ['greedy', 'sortings'],
+    };
+  }, [currentTopic, solvedProblemKeys, effectiveRating]);
+
   const handleChangeMode = (mode: MissionMode) => {
     let targetMinutes = 45;
     if (mode === 'minimum') targetMinutes = 15;
     if (mode === 'deep_work') targetMinutes = 90;
 
-    const baseTask = currentTopic.recommendedProblems[0];
+    const baseTask = nextRecommendedProblem || currentTopic?.recommendedProblems?.[0] || {
+      contestId: 405,
+      index: 'A',
+      name: 'Gravity Flip',
+      rating: 900,
+      tags: ['greedy', 'sortings'],
+    };
     let tasks: DailyTask[] = [];
 
     if (mode === 'minimum') {
@@ -502,34 +686,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return () => { isMounted = false; };
   }, []);
 
-  const solvedProblemKeys = useMemo(() => {
-    const keys = new Set<string>();
-    for (const a of recentAttempts) {
-      if (a.officialVerdict === 'OK' || a.outcome === 'solved_independently' || a.outcome === 'solved_with_hints') {
-        keys.add(`${a.contestId || ''}-${a.index}`);
-        keys.add(`${a.contestId || ''}${a.index}`);
-        keys.add(a.problemId);
-        keys.add(a.name);
-      }
-    }
-    return keys;
-  }, [recentAttempts]);
 
-  const nextRecommendedProblem: CFProblem = useMemo(() => {
-    const unsolvedInTopic = currentTopic.recommendedProblems.find((p) => {
-      const key1 = `${p.contestId}-${p.index}`;
-      const key2 = `${p.contestId}${p.index}`;
-      return !solvedProblemKeys.has(key1) && !solvedProblemKeys.has(key2) && !solvedProblemKeys.has(p.name);
-    });
-    if (unsolvedInTopic) return unsolvedInTopic;
-    return currentTopic.recommendedProblems[0] || {
-      contestId: 4,
-      index: 'A',
-      name: 'Watermelon',
-      rating: 800,
-      tags: ['math', 'brute force'],
-    };
-  }, [currentTopic, solvedProblemKeys]);
 
   const mostPracticedTopic = heatmapAnalysis.topTopics[0] || {
     topic: 'Competitive Programming',
@@ -542,34 +699,165 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     : heatmapAnalysis.recentSessions.slice(0, 3);
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="space-y-7 sm:space-y-8 max-w-6xl mx-auto pb-12 text-slate-900 dark:text-slate-100 font-sans">
+      {/* =========================================================================
+          DAILY HABIT ADDICTION HUB (Today's 3-Step Habit Loop, Streak Shield, Quests, Fortune)
+          ========================================================================= */}
+      <DailyHabitAnchor
+        currentRating={effectiveRating || 800}
+        targetRating={goal.targetRating || 1600}
+        streakDays={heatmapAnalysis.currentStreakDays}
+        todayMinutes={todayPracticeMinutes}
+        dailyGoalMinutes={goal.dailyMinutes || 45}
+        solvedCountToday={verifiedSolvesCount > 0 ? 1 : 0}
+        mistakesDueCount={dueMistakes.length}
+        onOpen5MinWarmup={onOpenAntiProcrastination}
+        onSelectProblem={() => onSelectProblem(nextRecommendedProblem)}
+        onOpenMistakeReview={() => onNavigateTab && onNavigateTab('mistakes')}
+        onOpenDailyLogin={() => setShowDailyRewardsModal(true)}
+        onOpenFortuneModal={() => setShowFortuneModal(true)}
+        onOpenRoulette={() => setShowRouletteModal(true)}
+        onOpenArcade={() => onNavigateTab && onNavigateTab('games')}
+        onTriggerConfetti={() => setShowConfetti(true)}
+      />
+
+      {/* =========================================================================
+          ANIME & RPG GAME HUD (Status Bar, Hero Sprite, Daily Quests, 40 Realms)
+          ========================================================================= */}
+      <DashboardGameHUD
+        currentRating={effectiveRating || 800}
+        targetRating={goal.targetRating || 1600}
+        streakDays={heatmapAnalysis.currentStreakDays}
+        totalSolved={verifiedSolvesCount}
+        todayMinutes={todayPracticeMinutes}
+        dailyGoalMinutes={goal.dailyMinutes || 45}
+        mistakesCount={mistakes.length}
+        onSelectProblem={() => onSelectProblem(nextRecommendedProblem)}
+        onOpenRoulette={() => setShowRouletteModal(true)}
+        onOpenDailyLogin={() => setShowDailyRewardsModal(true)}
+        onOpenArcade={() => onNavigateTab && onNavigateTab('games')}
+        onTriggerConfetti={() => setShowConfetti(true)}
+      />
+
+      {/* =========================================================================
+          JOYFUL HERO BANNER (Mascot, Comic Quips, Vibe Selector & Theme Switcher)
+          ========================================================================= */}
+      <JoyfulDashboardBanner
+        currentRating={effectiveRating || 800}
+        targetRating={goal.targetRating || 1600}
+        streakDays={heatmapAnalysis.currentStreakDays}
+        totalSolved={verifiedSolvesCount}
+        onStartChallenge={() => onSelectProblem(nextRecommendedProblem)}
+        onSpinSurprise={() => setShowRouletteModal(true)}
+        onOpenSettingsTheme={() => onNavigateTab && onNavigateTab('settings')}
+      />
+
+      {/* =========================================================================
+          3 HILARIOUS LOGIC GAMES & PROBLEM WHEEL BOUNTY ARCADE BANNER
+          ========================================================================= */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-purple-950/70 via-indigo-950/70 to-slate-900 border-2 border-indigo-500/40 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-3xl shadow-lg shrink-0 animate-bounce-subtle">
+            🕹️
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] uppercase">
+                3 FUNNY CODING GAMES
+              </span>
+              <h3 className="font-black text-white text-base sm:text-lg">
+                Grow Logic & Problem-Solving Mindset
+              </h3>
+            </div>
+            <p className="text-xs text-slate-300 mt-1 max-w-xl">
+              Write code to project star matrix shields, solve real-life city dispatch crises, and cast counter-spells against quirky bug monsters!
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={() => setShowRouletteModal(true)}
+            className="px-4 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500/35 border border-pink-400/40 text-pink-200 text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95"
+          >
+            🎡 Spin Wheel (+Coins & Gifts)
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowDailyRewardsModal(true)}
+            className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 text-amber-200 text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95"
+          >
+            🎁 Daily Gifts & Lore
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigateTab && onNavigateTab('games')}
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white text-xs font-black shadow-md shadow-indigo-500/30 transition-all cursor-pointer active:scale-95"
+          >
+            Play 3 Games →
+          </button>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          1600 QUEST ADVENTURE MAP (Curved Milestone Roadmap)
+          ========================================================================= */}
+      <PlayfulQuestMap
+        currentRating={effectiveRating || 800}
+        onSelectTier={(rating) => {
+          const matchProb =
+            CURATED_PROBLEMS_CATALOG.find(
+              (p) =>
+                (p.rating || 800) === rating &&
+                !solvedProblemKeys.has(`${p.contestId}${p.index}`)
+            ) ||
+            CURATED_PROBLEMS_CATALOG.find((p) => (p.rating || 800) === rating) ||
+            nextRecommendedProblem;
+          onSelectProblem(matchProb);
+        }}
+      />
+
       {/* =========================================================================
           SKILLTRACK CENTERPIECE DASHBOARD (Directly matches Reference Image 2)
           ========================================================================= */}
-      <section className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+      <FunCard
+        variant="emerald"
+        className="p-6 sm:p-8 space-y-7 sm:space-y-8 shadow-xl border-emerald-300/50 dark:border-emerald-800/50"
+      >
         {/* Top Header Row: SkillTrack Branding, + Log Session, User Avatar */}
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-sm">
-              <TopicMasteryIcon size={20} className="text-white" />
+        <div className="flex items-center justify-between pb-4 border-b border-emerald-200/50 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/30">
+              <TopicMasteryIcon size={22} className="text-white" />
             </div>
-            <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">
-              SkillTrack
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-black text-slate-900 dark:text-white text-xl tracking-tight">
+                  SkillTrack
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-400/30 uppercase">
+                  Telemetry
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Real-time competitive practice metrics
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={() => setShowLogSessionModal(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-black shadow-md shadow-emerald-600/25 transition-all cursor-pointer interactive-button"
             >
               <AddIcon size={16} />
               <span>Log Session</span>
             </button>
 
             <div
-              className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs select-none shadow-inner"
+              className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-black text-sm select-none shadow-inner border border-white/40"
               title={profile.name || 'Competitive Programmer'}
             >
               {userInitials}
@@ -577,27 +865,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Greeting Banner */}
-        <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Good {timeOfDay}, {profile.name?.trim() ? profile.name.split(' ')[0] : (profile.cfHandle || 'Climber')}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            {practicedSkillsTodayCount > 0
-              ? `You've practiced ${practicedSkillsTodayCount} skill${practicedSkillsTodayCount === 1 ? '' : 's'} today. Keep it up!`
-              : `Ready for today's training? Let's make progress toward ${goal.targetRating} rating!`}
-          </p>
+        {/* Greeting Banner with Punchy Visual Status Chips */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              Good {timeOfDay}, {profile.name?.trim() ? profile.name.split(' ')[0] : (profile.cfHandle || 'Climber')}
+            </h1>
+            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 font-medium flex-wrap pt-0.5">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-700">
+                🎯 {practicedSkillsTodayCount > 0 ? `${practicedSkillsTodayCount} skills trained` : 'Ready to train'}
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-bold border border-amber-300 dark:border-amber-700">
+                🔥 {heatmapAnalysis.currentStreakDays}d streak
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 font-bold border border-indigo-300 dark:border-indigo-700">
+                🏆 Goal: {goal.targetRating}
+              </span>
+            </div>
+          </div>
+
+          <div className="hidden md:flex items-center shrink-0">
+            <MascotClimby size={68} className="drop-shadow-sm" />
+          </div>
         </div>
 
         {/* Main Grid: Left Card (Most Practiced) + Right Content (Top 3 Cards & 18-Week Heatmap) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-7 lg:gap-8 items-stretch">
           {/* LEFT CARD: Most Practiced Skill with Large Circular Progress Ring */}
-          <div className="lg:col-span-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col justify-between shadow-sm">
+          <FunCard
+            variant="emerald"
+            sticker="level_up"
+            stickerPosition="top-right"
+            className="lg:col-span-4 p-6 sm:p-7 flex flex-col justify-between shadow-lg border-emerald-300/60 dark:border-emerald-700/60"
+          >
             <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                MOST PRACTICED
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400 block">
+                ⭐ MOST PRACTICED
               </span>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white truncate">
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white truncate">
                 {mostPracticedTopic.topic}
               </h2>
             </div>
@@ -606,47 +911,47 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="py-6 flex items-center justify-center">
               <div
                 className="relative inline-flex items-center justify-center select-none"
-                style={{ width: 140, height: 140 }}
+                style={{ width: 146, height: 146 }}
                 role="progressbar"
                 aria-valuenow={heatmapAnalysis.weeklyGoalPercent}
                 aria-valuemin={0}
                 aria-valuemax={100}
               >
                 <svg
-                  width={140}
-                  height={140}
-                  viewBox="0 0 140 140"
+                  width={146}
+                  height={146}
+                  viewBox="0 0 146 146"
                   className="transform -rotate-90 origin-center"
                 >
                   {/* Track */}
                   <circle
-                    cx={70}
-                    cy={70}
-                    r={58}
-                    strokeWidth={10}
-                    className="stroke-slate-100 dark:stroke-slate-800 fill-transparent"
+                    cx={73}
+                    cy={73}
+                    r={60}
+                    strokeWidth={11}
+                    className="stroke-slate-200/70 dark:stroke-slate-800 fill-transparent"
                   />
                   {/* Progress arc */}
                   <circle
-                    cx={70}
-                    cy={70}
-                    r={58}
-                    strokeWidth={10}
+                    cx={73}
+                    cy={73}
+                    r={60}
+                    strokeWidth={11}
                     stroke="#059669"
                     strokeLinecap="round"
-                    strokeDasharray={2 * Math.PI * 58}
+                    strokeDasharray={2 * Math.PI * 60}
                     strokeDashoffset={
-                      2 * Math.PI * 58 - (Math.min(100, Math.max(0, heatmapAnalysis.weeklyGoalPercent)) / 100) * (2 * Math.PI * 58)
+                      2 * Math.PI * 60 - (Math.min(100, Math.max(0, heatmapAnalysis.weeklyGoalPercent)) / 100) * (2 * Math.PI * 60)
                     }
-                    className="fill-transparent transition-all duration-700 ease-out"
+                    className="fill-transparent transition-all duration-800 ease-out"
                   />
                 </svg>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight font-mono">
                     {heatmapAnalysis.weeklyGoalPercent}%
                   </span>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
                     of weekly goal
                   </span>
                 </div>
@@ -654,75 +959,88 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {/* Bottom Metrics: Total Hours | Day Streak */}
-            <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-2xl font-black text-slate-900 dark:text-white">
+            <div className="space-y-4 pt-3 border-t border-emerald-200/50 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-4 sm:gap-5">
+                <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-emerald-200/50 dark:border-slate-800 shadow-xs">
+                  <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
                     {heatmapAnalysis.totalHours}
                   </div>
-                  <div className="text-xs text-slate-400">Total hours</div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total hours</div>
                 </div>
 
-                <div>
-                  <div className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-1">
-                    <span role="img" aria-label="flame">🔥</span>
+                <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-emerald-200/50 dark:border-slate-800 shadow-xs">
+                  <div className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-1 font-mono">
+                    <span className="text-amber-500 animate-flame">🔥</span>
                     <span>{heatmapAnalysis.currentStreakDays}</span>
                   </div>
-                  <div className="text-xs text-slate-400">Day streak</div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Day streak</div>
                 </div>
               </div>
 
-              <div className="text-xs text-slate-400">
-                Last session: {heatmapAnalysis.lastSessionText}
+              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                <span>Last session:</span>
+                <strong className="text-slate-700 dark:text-slate-300">{heatmapAnalysis.lastSessionText}</strong>
               </div>
             </div>
-          </div>
+          </FunCard>
 
           {/* RIGHT COLUMN: Top 3 Topic Cards + 18-Week Practice Activity Heatmap */}
-          <div className="lg:col-span-8 flex flex-col justify-between space-y-6">
-            {/* Top 3 Horizontal Topic Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {heatmapAnalysis.topTopics.slice(0, 3).map((item, idx) => (
-                <div
-                  key={item.topic}
-                  onClick={() => onOpenCurriculumTopic(item.topic.toLowerCase())}
-                  className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-2 hover:border-emerald-500/50 transition-all cursor-pointer shadow-sm"
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: item.colorDot }}
-                    />
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
-                      {item.topic}
-                    </span>
-                  </div>
+          <div className="lg:col-span-8 flex flex-col justify-between space-y-6 sm:space-y-7 lg:space-y-8">
+            {/* Top 3 Horizontal Topic Cards with Fun Varied Backgrounds */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+              {heatmapAnalysis.topTopics.slice(0, 3).map((item, idx) => {
+                const variants: ('emerald' | 'cosmic' | 'coffee')[] = ['emerald', 'cosmic', 'coffee'];
+                const cardVar = variants[idx % variants.length];
 
-                  <div className="text-2xl font-black text-slate-900 dark:text-white">
-                    {item.totalHours}
-                  </div>
+                return (
+                  <FunCard
+                    key={item.topic}
+                    variant={cardVar}
+                    onClick={() => onOpenCurriculumTopic(item.topic.toLowerCase())}
+                    className="p-5 space-y-2.5 transition-all cursor-pointer shadow-md interactive-card select-none"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-3 h-3 rounded-full shrink-0 shadow-xs"
+                        style={{ backgroundColor: item.colorDot }}
+                      />
+                      <span className="text-xs font-extrabold truncate">
+                        {item.topic}
+                      </span>
+                    </div>
 
-                  <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    {item.streakDays > 0 ? (
-                      <>
-                        <span role="img" aria-label="flame">🔥</span>
-                        <span>{item.streakDays}-day streak</span>
-                      </>
-                    ) : (
-                      <span>Active practice</span>
-                    )}
-                  </div>
-                </div>
-              ))}
+                    <div className="text-2xl font-black font-mono">
+                      {item.totalHours}
+                    </div>
+
+                    <div className="text-xs font-semibold opacity-85 flex items-center gap-1.5">
+                      {item.streakDays > 0 ? (
+                        <>
+                          <span className="animate-flame">🔥</span>
+                          <span>{item.streakDays}-day streak</span>
+                        </>
+                      ) : (
+                        <span>✨ Active topic</span>
+                      )}
+                    </div>
+                  </FunCard>
+                );
+              })}
             </div>
 
-            {/* Central Card: Practice Activity / Last 18 weeks (7 rows × 18 columns) */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 space-y-4 shadow-sm flex-1 flex flex-col justify-between">
+            {/* Central Card: Practice Activity / Last 18 weeks */}
+            <FunCard
+              variant="matrix"
+              className="p-5 sm:p-6 space-y-4 shadow-lg flex-1 flex flex-col justify-between border-emerald-500/30"
+            >
               <div className="flex items-center justify-between">
-                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  Practice Activity
-                </h3>
-                <span className="text-xs text-slate-400">Last 18 weeks</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-base">📊</span>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                    Practice Activity
+                  </h3>
+                </div>
+                <span className="text-xs font-bold text-emerald-400 font-mono">Last 18 weeks</span>
               </div>
 
               {/* 18-Week Heatmap Grid */}
@@ -734,17 +1052,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <div
                           key={day.dateStr}
                           title={day.tooltip}
-                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 rounded-[3px] transition-transform hover:scale-125 cursor-pointer ${
+                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 rounded-[4px] transition-all duration-150 hover:scale-135 hover:z-10 hover:shadow-md cursor-pointer ${
                             day.intensity === 0
-                              ? 'bg-slate-100 dark:bg-slate-800/80 border border-slate-200/40 dark:border-slate-700/40'
+                              ? 'bg-slate-800/80 border border-slate-700/50'
                               : day.intensity === 1
-                              ? 'bg-emerald-100 dark:bg-emerald-950/60'
+                              ? 'bg-emerald-950/90 border border-emerald-800/60'
                               : day.intensity === 2
-                              ? 'bg-emerald-300 dark:bg-emerald-800/80'
+                              ? 'bg-emerald-700'
                               : day.intensity === 3
-                              ? 'bg-emerald-500 dark:bg-emerald-600'
-                              : 'bg-emerald-700 dark:bg-emerald-500'
-                          } ${day.isToday ? 'ring-2 ring-emerald-600 ring-offset-1' : ''}`}
+                              ? 'bg-emerald-500'
+                              : 'bg-emerald-400'
+                          } ${day.isToday ? 'ring-2 ring-cyan-400 ring-offset-1 ring-offset-slate-950' : ''}`}
                         />
                       ))}
                     </div>
@@ -753,30 +1071,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* Bottom Right Legend: Less [ ][ ][ ][ ] More */}
-              <div className="flex items-center justify-end gap-1.5 text-xs text-slate-400 pt-1">
+              <div className="flex items-center justify-end gap-1.5 text-xs text-emerald-300/80 pt-1 font-bold">
                 <span className="text-[11px]">Less</span>
-                <span className="w-3 h-3 rounded-[2px] bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700 inline-block" />
-                <span className="w-3 h-3 rounded-[2px] bg-emerald-100 dark:bg-emerald-950 inline-block" />
-                <span className="w-3 h-3 rounded-[2px] bg-emerald-300 dark:bg-emerald-800 inline-block" />
-                <span className="w-3 h-3 rounded-[2px] bg-emerald-500 inline-block" />
-                <span className="w-3 h-3 rounded-[2px] bg-emerald-700 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-[3px] bg-slate-800 border border-slate-700 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-[3px] bg-emerald-950 border border-emerald-800 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-[3px] bg-emerald-700 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-[3px] bg-emerald-500 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-[3px] bg-emerald-400 inline-block" />
                 <span className="text-[11px]">More</span>
               </div>
-            </div>
+            </FunCard>
           </div>
         </div>
 
-        {/* BOTTOM CARD: Recent Sessions Table with Status Dot, Topic, Notes, Duration, Date */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 space-y-3 shadow-sm">
+        {/* BOTTOM CARD: Recent Sessions Table */}
+        <FunCard
+          variant="clean"
+          className="p-5 sm:p-6 space-y-4 shadow-sm border-slate-200/80 dark:border-slate-800"
+        >
           <div className="flex items-center justify-between">
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-              Recent Sessions
-            </h3>
+            <div className="flex items-center gap-2">
+              <span className="text-base">⏱️</span>
+              <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                Recent Practice Sessions
+              </h3>
+            </div>
             {heatmapAnalysis.recentSessions.length > 3 && (
               <button
                 type="button"
                 onClick={() => setShowAllRecentSessions(!showAllRecentSessions)}
-                className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+                className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
               >
                 {showAllRecentSessions ? 'Show less' : 'View all'}
               </button>
@@ -784,35 +1108,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {heatmapAnalysis.recentSessions.length === 0 ? (
-            <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
-              No recent practice sessions recorded. Click <strong>+ Log Session</strong> above or start solving problems to see your history!
+            <div className="p-6 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
+              <span className="text-2xl">🌱</span>
+              <p>No recent practice sessions recorded yet. Tap <strong>+ Log Session</strong> above to start your log!</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {visibleSessions.map((session) => (
                 <div
                   key={session.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 py-3 text-xs"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 text-xs hover:bg-slate-50/50 dark:hover:bg-slate-800/40 px-2 rounded-xl transition-colors"
                 >
-                  <div className="flex items-center gap-2.5 min-w-[150px] shrink-0">
+                  <div className="flex items-center gap-3 min-w-[160px] shrink-0">
                     <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      className="w-3 h-3 rounded-full shrink-0 shadow-xs"
                       style={{ backgroundColor: session.statusDot }}
                     />
-                    <span className="font-bold text-slate-900 dark:text-white">
+                    <span className="font-extrabold text-slate-900 dark:text-white">
                       {session.topic}
                     </span>
                   </div>
 
-                  <p className="text-slate-600 dark:text-slate-300 flex-1 truncate sm:whitespace-normal">
+                  <p className="text-slate-600 dark:text-slate-300 flex-1 truncate sm:whitespace-normal font-medium">
                     {session.notes}
                   </p>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                    <span className="font-bold text-slate-900 dark:text-white">
+                  <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 font-bold">
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50 font-mono">
                       {session.durationMinutes} min
                     </span>
-                    <span className="text-slate-400 min-w-[60px] text-right">
+                    <span className="text-slate-400 min-w-[65px] text-right font-medium">
                       {session.relativeDate}
                     </span>
                   </div>
@@ -820,158 +1145,244 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               ))}
             </div>
           )}
-        </div>
-      </section>
+        </FunCard>
+      </FunCard>
 
       {/* =========================================================================
           COMPETITIVE PROGRAMMING MISSION & ROADMAP (Rating 1600 Engine)
           ========================================================================= */}
-      {/* Mountain Summit Hero with 1600 Milestone Flag */}
+      {/* Mountain Summit Hero with Dynamic Rating Telemetry */}
       <MountainSummitHero
-        targetRating={1600}
-        currentRating={profile.verifiedCfRating || 800}
+        targetRating={goal.targetRating || 1600}
+        currentRating={profile.verifiedCfRating}
+        estimatedRating={profile.baselineRating || ratingEstimate.estimatedRating}
+        solvedCount={verifiedSolvesCount}
+        baselineRating={800}
+        cfHandle={profile.cfHandle}
+        targetRankTitle="Specialist"
+        onOpenCalibrationModal={() => setShowCalibrationModal(true)}
       />
 
-      {/* Rating 1600 Mission Control Telemetry */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="flex items-center gap-2.5">
-          <span className="p-1.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-            <RatingGoalIcon size={20} semantic="primary" />
-          </span>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Rating 1600 Mission Control
-              </span>
-              <span className="rounded bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 text-[10px] font-bold">
-                {milestone.title}
-              </span>
+      {/* Rating Mission Control Telemetry */}
+      <FunCard
+        variant="cosmic"
+        sticker="1000_iq"
+        stickerPosition="top-right"
+        className="p-6 sm:p-7 shadow-xl border-indigo-400/30"
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-7 lg:gap-8">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center shrink-0 shadow-inner">
+              <RatingGoalIcon size={28} semantic="primary" className="text-cyan-300" />
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Target: <strong>1600 Specialist</strong> • Rating Gap: <span className="text-emerald-600 dark:text-cyan-400 font-mono font-bold">+{milestone.ratingGap} pts</span> to goal.
-            </p>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <span className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                  Rating {goal.targetRating || 1600} Mission Control
+                </span>
+                <span className="rounded-full bg-cyan-400/20 text-cyan-700 dark:text-cyan-300 px-2.5 py-0.5 text-xs font-black border border-cyan-400/30 font-mono">
+                  {milestone.title} ({milestone.progressPercent}%)
+                </span>
+              </div>
+              <div className="flex items-center gap-3 text-xs text-indigo-700 dark:text-indigo-200/80 flex-wrap">
+                <span className="flex items-center gap-1 font-bold">
+                  <span>Target:</span>
+                  <strong className="text-slate-900 dark:text-white">{goal.targetRating || 1600} Specialist</strong>
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1 font-mono">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-black">+{milestone.ratingGap} pts</span> to goal
+                </span>
+                <span>•</span>
+                <span className="text-indigo-700/80 dark:text-indigo-300/70 font-mono">
+                  {profile.verifiedCfRating ? `CF: ${profile.verifiedCfRating}` : `Est: ~${profile.baselineRating || ratingEstimate.estimatedRating}`}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Spacious Action Buttons - Generous Gaps & Comfortable Targets */}
+          <div className="flex items-center gap-3.5 sm:gap-4 flex-wrap w-full lg:w-auto">
+            <button
+              type="button"
+              onClick={handleLaunchFiveMinProtocol}
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 text-xs sm:text-sm font-black shadow-lg shadow-amber-500/25 transition-all cursor-pointer interactive-button"
+            >
+              <SuggestOptimizationIcon size={16} semantic="warning" className="animate-bounce-subtle" />
+              <span>5-Min Start</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleOpenWeeklyReport}
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-indigo-600/30 transition-all cursor-pointer interactive-button"
+            >
+              <ThinkingIcon size={16} semantic="indigo" />
+              <span>AI Coach</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowRescheduleModal(true)}
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-slate-200/60 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 border border-slate-300 dark:border-white/20 text-slate-800 dark:text-white text-xs font-bold transition-all cursor-pointer"
+            >
+              <CalendarIcon size={15} />
+              <span>Reschedule</span>
+            </button>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full lg:w-auto">
-          <button
-            type="button"
-            onClick={handleLaunchFiveMinProtocol}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-300 dark:border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-bold transition-all cursor-pointer shadow-sm"
-          >
-            <SuggestOptimizationIcon size={14} semantic="warning" />
-            <span>5-Min Start</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleOpenWeeklyReport}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/50 border border-purple-300 dark:border-purple-500/30 text-purple-800 dark:text-purple-200 text-xs font-bold transition-all cursor-pointer shadow-sm"
-          >
-            <ThinkingIcon size={14} semantic="indigo" />
-            <span>AI Coach Report</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowRescheduleModal(true)}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all cursor-pointer"
-          >
-            <CalendarIcon size={14} />
-            <span>Reschedule</span>
-          </button>
-        </div>
-      </div>
+      </FunCard>
 
       {/* Codeforces Account Verification & Linking Banner */}
       {!isCfVerified ? (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border border-indigo-200 dark:border-indigo-900/40 bg-indigo-50/60 dark:bg-indigo-950/30">
-          <div className="flex items-center gap-3">
-            <span className="p-2 rounded-xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
-              <CodeforcesIntegrationIcon size={20} />
-            </span>
-            <div>
-              <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span>Connect & Verify Your Codeforces Account</span>
-                <span className="text-[10px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-1.5 py-0.2 rounded border border-amber-300 dark:border-amber-800/40">
-                  Unlinked
-                </span>
-              </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                Verify genuine handle ownership to unlock real-time rating tracking, submission telemetry, and personalized 1600 practice missions.
-              </p>
+        <FunCard
+          variant="arcade"
+          className="p-6 sm:p-7 shadow-lg border-purple-500/30"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-center gap-4">
+              <div className="shrink-0 p-1 rounded-2xl bg-slate-200/50 dark:bg-white/10 border border-slate-300 dark:border-white/20">
+                <MascotClimby size={75} />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-base font-black text-slate-900 dark:text-white">
+                    Connect Your Codeforces Account
+                  </h4>
+                  <span className="text-[10px] font-black text-pink-700 dark:text-pink-300 bg-pink-500/20 px-2 py-0.5 rounded-full border border-pink-400/30 uppercase">
+                    Sync Live
+                  </span>
+                </div>
+                <p className="text-xs text-purple-900 dark:text-purple-200/90 font-medium">
+                  Sync live rating graph, submission telemetry & personalized daily missions.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              {onOpenVerificationModal && (
+                <button
+                  type="button"
+                  onClick={onOpenVerificationModal}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-white text-xs sm:text-sm font-black shadow-lg shadow-pink-500/25 transition-all cursor-pointer"
+                >
+                  <span>Connect Handle</span>
+                  <ChevronRightIcon size={16} />
+                </button>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {onOpenVerificationModal && (
+        </FunCard>
+      ) : (
+        <FunCard
+          variant="matrix"
+          className="p-5 sm:p-6 shadow-md border-emerald-500/30"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              {profile.avatar ? (
+                <img
+                  src={profile.avatar}
+                  alt={profile.cfHandle || 'Avatar'}
+                  className="w-12 h-12 rounded-2xl object-cover border-2 border-emerald-400/50 shrink-0 shadow-md"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-2xl bg-emerald-600/30 border border-emerald-400/40 text-emerald-300 flex items-center justify-center shrink-0">
+                  <CheckCircleIcon size={24} semantic="success" />
+                </div>
+              )}
+              <div className="space-y-1 text-xs">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span className="font-black text-slate-900 dark:text-white text-sm">
+                    Verified Handle:{' '}
+                    <a
+                      href={`https://codeforces.com/profile/${profile.cfHandle}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-cyan-700 dark:text-cyan-300 font-mono font-black hover:underline"
+                    >
+                      {profile.cfHandle}
+                    </a>
+                  </span>
+                  <span className="rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-2.5 py-0.5 text-[10px] font-black border border-emerald-400/40 uppercase">
+                    Verified ✓
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-emerald-800 dark:text-emerald-200/80 text-xs flex-wrap font-medium">
+                  <span>
+                    Rating:{' '}
+                    <strong className="text-slate-900 dark:text-white font-mono font-bold">
+                      {profile.verifiedCfRating ? `${profile.verifiedCfRating} (${profile.rank || 'Ranked'})` : 'Unrated'}
+                    </strong>
+                  </span>
+                  <span>•</span>
+                  <span>
+                    Solved:{' '}
+                    <strong className="text-emerald-400 font-mono font-bold">
+                      {verifiedSolvesCount}
+                    </strong>
+                  </span>
+                  <span>•</span>
+                  <span>
+                    Skill:{' '}
+                    <strong className="text-cyan-300 font-mono font-bold">
+                      ~{profile.baselineRating || ratingEstimate.estimatedRating}
+                    </strong>
+                  </span>
+                  {cfAccount?.last_synced_at && (
+                    <>
+                      <span>•</span>
+                      <span className="text-[11px] opacity-75 font-mono">
+                        Synced {new Date(cfAccount.last_synced_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            {onSyncCfData && (
               <button
                 type="button"
-                onClick={onOpenVerificationModal}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
+                onClick={handleTriggerSync}
+                disabled={isSyncingCf}
+                className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shrink-0 shadow-sm ${
+                  isSyncingCf
+                    ? 'bg-slate-800 text-slate-400 border-slate-700 cursor-not-allowed'
+                    : 'bg-emerald-600/20 hover:bg-emerald-600/30 border-emerald-400/30 text-emerald-300'
+                }`}
               >
-                <span>Connect Handle</span>
-                <ChevronRightIcon size={14} />
+                <RefreshIcon size={14} semantic="primary" className={isSyncingCf ? 'animate-spin text-emerald-400' : ''} />
+                <span>{isSyncingCf ? 'Syncing...' : 'Refresh CF Data'}</span>
               </button>
             )}
           </div>
-        </div>
-      ) : (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50/60 dark:bg-emerald-950/20">
-          <div className="flex items-center gap-2.5">
-            <span className="p-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
-              <CheckCircleIcon size={16} semantic="success" />
-            </span>
-            <div className="text-xs">
-              <span className="font-bold text-slate-900 dark:text-white">
-                Verified Codeforces Handle: <span className="text-indigo-600 dark:text-cyan-400 font-mono">{profile.cfHandle}</span>
-              </span>
-              <span className="text-slate-500 dark:text-slate-400 ml-2">
-                Rating: <strong className="text-slate-900 dark:text-white font-mono">{profile.verifiedCfRating || 'Unrated'}</strong>
-                {cfAccount?.last_synced_at && (
-                  <span className="text-[11px] text-slate-400 ml-2">
-                    (Synced {new Date(cfAccount.last_synced_at).toLocaleTimeString()})
-                  </span>
-                )}
-              </span>
-            </div>
-          </div>
-          {onSyncCfData && (
-            <button
-              type="button"
-              onClick={onSyncCfData}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all cursor-pointer self-start sm:self-auto"
-            >
-              <RefreshIcon size={14} semantic="primary" />
-              <span>Refresh Codeforces Data</span>
-            </button>
-          )}
-        </div>
+        </FunCard>
       )}
 
-      {/* Energy-Aware Scheduling Bar */}
-      <div className="flex items-center justify-between gap-3 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 overflow-x-auto text-xs shadow-sm">
-        <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-semibold shrink-0">
-          <AISparkleIcon size={14} semantic="indigo" />
+      {/* Energy-Aware Scheduling Bar - Spacious Layout */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-extrabold text-xs sm:text-sm shrink-0">
+          <span className="text-base">⚡</span>
           <span>Energy State:</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
           {(
             [
               { key: 'normal', label: '⚡ Normal', desc: 'Standard practice' },
               { key: 'low', label: '☕ Low Energy', desc: '20m gentle warmup' },
-              { key: 'limited_time', label: '⏱ Limited Time', desc: '15m micro sprint' },
+              { key: 'limited_time', label: '⏱️ Sprint (15m)', desc: '15m micro sprint' },
               { key: 'exam_pressure', label: '📚 Exam Week', desc: 'Academics protected' },
-              { key: 'high', label: '🔥 High Focus', desc: 'Deep work challenge' },
+              { key: 'high', label: '🔥 Deep Focus', desc: 'Deep work challenge' },
             ] as const
           ).map((item) => (
             <button
               key={item.key}
               type="button"
               onClick={() => handleSelectEnergy(item.key)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 energyLevel === item.key
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/25 scale-105'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200/60 dark:border-slate-700'
               }`}
               title={item.desc}
             >
@@ -982,39 +1393,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       {/* Primary Hero: Today's Mission & One Next Action */}
-      <section className="rounded-2xl border border-slate-200 dark:border-indigo-900/60 bg-white dark:bg-slate-900 p-6 md:p-8 shadow-sm space-y-6">
+      <FunCard
+        variant="clean"
+        className="p-6 md:p-8 space-y-6 sm:space-y-7 shadow-lg border-slate-200/80 dark:border-slate-800"
+      >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 text-xs font-bold">
-                Today's Clear Mission
+              <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-3 py-0.5 text-xs font-black border border-emerald-300 dark:border-emerald-700">
+                🎯 Today's Mission
               </span>
-              <span className="text-xs text-slate-400">Day {goal.currentDay} of 180</span>
+              <span className="text-xs text-slate-400 font-bold">Day {goal.currentDay} of 180</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
               {currentTopic.title}
             </h2>
-            <p className="text-xs md:text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-              <strong>Why today:</strong> {currentTopic.keyIdeas[0] || currentTopic.description}
-            </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-xs text-slate-600 dark:text-slate-300 font-medium">
+              <span className="font-bold text-emerald-600 dark:text-emerald-400">Core Focus:</span>
+              <span>{currentTopic.keyIdeas[0] || currentTopic.description}</span>
+            </div>
           </div>
 
-          {/* Mode Switcher */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 uppercase">Mode:</span>
-            <div className="flex rounded-xl bg-slate-100 dark:bg-slate-950 p-1 border border-slate-200 dark:border-slate-800 text-xs">
+          {/* Mode Switcher with Spacious Buttons */}
+          <div className="flex items-center gap-2.5">
+            <div className="flex rounded-2xl bg-slate-100 dark:bg-slate-950 p-1.5 border border-slate-200 dark:border-slate-800 gap-1.5">
               {[
-                { id: 'minimum' as MissionMode, label: 'Minimum (15m)' },
-                { id: 'standard' as MissionMode, label: 'Standard (45m)' },
-                { id: 'deep_work' as MissionMode, label: 'Deep Work (90m)' },
+                { id: 'minimum' as MissionMode, label: '⚡ 15m' },
+                { id: 'standard' as MissionMode, label: '⏱️ 45m' },
+                { id: 'deep_work' as MissionMode, label: '🔥 90m' },
               ].map((m) => (
                 <button
                   key={m.id}
                   type="button"
                   onClick={() => handleChangeMode(m.id)}
-                  className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                     dailyPlan.mode === m.id
-                      ? 'bg-emerald-600 text-white font-bold shadow-sm'
+                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/25'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
@@ -1026,26 +1440,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Action Controls & Large Start Button */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-          <div className="md:col-span-7 space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-600 dark:text-slate-300">Today's Tasks Progress</span>
-              <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">{completedTasksCount} / {totalTasksCount} Done ({progressPercent}%)</span>
-            </div>
-            <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden">
-              <div
-                className="h-full bg-emerald-600 transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-7 items-stretch">
+          <div className="md:col-span-7 space-y-4 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="text-slate-600 dark:text-slate-300">Today's Tasks Progress</span>
+                <span className="font-mono text-emerald-600 dark:text-emerald-400 font-black">
+                  {completedTasksCount} / {totalTasksCount} Done ({progressPercent}%)
+                </span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden p-0.5">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-300"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
             </div>
 
             {/* Tasks Checklist */}
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2.5 pt-1 flex-1">
               {progressPercent === 100 && (
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-                  <CheckCircleIcon size={16} semantic="success" className="shrink-0" />
+                <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2.5 font-bold">
+                  <CheckCircleIcon size={18} semantic="success" className="shrink-0" />
                   <span>
-                    <strong>Day {goal.currentDay} Mission Accomplished!</strong> All tasks completed. Keep your momentum going!
+                    Day {goal.currentDay} Mission Accomplished! Keep your momentum going!
                   </span>
                 </div>
               )}
@@ -1053,28 +1471,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div
                   key={task.id}
                   onClick={() => handleToggleTask(task.id)}
-                  className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                  className={`flex items-start gap-3.5 p-3.5 rounded-2xl border transition-all cursor-pointer interactive-card ${
                     task.completed
-                      ? 'border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20 text-slate-400'
-                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/60 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-200'
+                      ? 'border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20 text-slate-400 opacity-80'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/60 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-200 hover:translate-x-1'
                   }`}
                 >
                   <div
-                    className={`mt-0.5 w-4 h-4 rounded flex items-center justify-center border shrink-0 transition-colors ${
+                    className={`mt-0.5 w-5 h-5 rounded-lg flex items-center justify-center border shrink-0 transition-transform duration-200 ${
                       task.completed
-                        ? 'border-emerald-500 bg-emerald-600 text-white'
-                        : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900'
+                        ? 'border-emerald-500 bg-emerald-600 text-white scale-110 shadow-xs'
+                        : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:scale-110'
                     }`}
                   >
-                    {task.completed && <CheckIcon size={12} strokeWidth={3} />}
+                    {task.completed && <CheckIcon size={13} strokeWidth={3} className="animate-pop-spring" />}
                   </div>
                   <div className="flex-1 text-xs">
-                    <div className={`font-semibold ${task.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-white'}`}>
+                    <div className={`font-bold transition-colors ${task.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-white'}`}>
                       {task.title}
                     </div>
                     <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{task.description}</div>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                  <span className="text-[10px] text-slate-400 font-mono font-bold shrink-0">
                     {task.estimatedMinutes}m
                   </span>
                 </div>
@@ -1082,46 +1500,75 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Large Start Action Card */}
-          <div className="md:col-span-5 flex flex-col justify-between rounded-2xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/30 dark:bg-slate-950 p-5 space-y-4 shadow-sm">
+          {/* Large Start Action Card with Fun Flame Background & Spacious Buttons */}
+          <FunCard
+            variant="fire"
+            sticker="speedrun_1600"
+            stickerPosition="top-right"
+            className="md:col-span-5 p-6 sm:p-7 space-y-5 shadow-xl border-amber-400/40 flex flex-col justify-between"
+          >
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Next Action</span>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
-                {dailyPlan.tasks.find((t) => !t.completed)?.title || "All Mission Tasks Finished!"}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                  ⚡ Next Action
+                </span>
+                {isCurrentTopicCompleted && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-400/30">
+                    Cleared ✓
+                  </span>
+                )}
+              </div>
+              <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1.5 leading-snug">
+                {dailyPlan.tasks.find((t) => !t.completed)?.title || `Challenge: ${nextRecommendedProblem.name} (${nextRecommendedProblem.rating || 800})`}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-300 mt-1">
-                Estimated duration: ~{dailyPlan.tasks.find((t) => !t.completed)?.estimatedMinutes || 25} minutes.
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 font-medium">
+                Target: ~{dailyPlan.tasks.find((t) => !t.completed)?.estimatedMinutes || 25} minutes of focused problem solving.
               </p>
             </div>
 
-            <div className="space-y-2">
+            {/* Spacious Buttons Area */}
+            <div className="space-y-3.5">
               <button
                 type="button"
                 onClick={() => onSelectProblem(nextRecommendedProblem)}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 text-sm shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:brightness-110 text-white font-black py-4 px-6 text-sm sm:text-base shadow-xl shadow-emerald-600/30 transition-all cursor-pointer active:scale-98"
               >
-                <StreakIcon size={16} semantic="warning" />
+                <StreakIcon size={18} semantic="warning" />
                 <span>Launch Problem Workspace</span>
-                <ChevronRightIcon size={16} />
+                <ChevronRightIcon size={18} />
               </button>
 
-              {recentResumeProblem && recentResumeProblem.contestId !== nextRecommendedProblem.contestId && (
-                <button
-                  type="button"
-                  onClick={() => onSelectProblem(recentResumeProblem)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-cyan-300 font-semibold py-2 px-3 text-xs transition-all cursor-pointer hover:bg-slate-50"
-                >
-                  <RefreshIcon size={14} semantic="primary" />
-                  <span>Resume Problem {recentResumeProblem.contestId}{recentResumeProblem.index}: {recentResumeProblem.name}</span>
-                </button>
-              )}
+              <div className="flex items-center gap-3">
+                {onViewSolution && (
+                  <button
+                    type="button"
+                    onClick={() => onViewSolution(nextRecommendedProblem)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    <CodeFileIcon size={15} semantic="primary" />
+                    <span>View Solution</span>
+                  </button>
+                )}
+
+                {recentResumeProblem && recentResumeProblem.contestId !== nextRecommendedProblem.contestId && (
+                  <button
+                    type="button"
+                    onClick={() => onSelectProblem(recentResumeProblem)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    <RefreshIcon size={14} semantic="primary" />
+                    <span>Resume {recentResumeProblem.contestId}{recentResumeProblem.index}</span>
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs pt-1">
+            {/* Bottom Helper Links with Comfortable Breathing Room */}
+            <div className="flex items-center justify-between text-xs pt-3 border-t border-slate-200/60 dark:border-slate-800/60 font-semibold">
               <button
                 type="button"
                 onClick={onOpenAntiProcrastination}
-                className="text-indigo-600 dark:text-violet-400 hover:underline flex items-center gap-1 cursor-pointer font-medium"
+                className="text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1.5 cursor-pointer"
               >
                 <AISparkleIcon size={14} semantic="warning" />
                 <span>Low Energy / 5m Start</span>
@@ -1132,13 +1579,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 onClick={() => onOpenCurriculumTopic(currentTopic.id)}
                 className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1 cursor-pointer"
               >
-                <span>Read Lesson Details</span>
+                <span>Curriculum Details</span>
                 <ChevronRightIcon size={14} />
               </button>
             </div>
-          </div>
+          </FunCard>
         </div>
-      </section>
+      </FunCard>
 
       {/* Milestone Badges & Achievements Section */}
       <section>
@@ -1147,102 +1594,141 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           streakAnalysis={streakAnalysis}
           profile={profile}
           mistakes={mistakes}
+          onOpenCurriculumTopic={onOpenCurriculumTopic}
         />
       </section>
 
       {/* Recommended Practice Set & Identified Topic Weakness */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7 lg:gap-8 items-stretch">
         {/* Next Recommended Problems */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
-              <PracticeIcon size={16} semantic="primary" />
-              <span>Recommended Practice Set</span>
-            </h3>
-            <span className="text-xs text-slate-400">Curated for Day {goal.currentDay}</span>
+        <FunCard
+          variant="frost"
+          className="p-6 space-y-5 shadow-lg border-cyan-300/50 dark:border-cyan-800/50 flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between pb-2 border-b border-cyan-200/40 dark:border-cyan-900/40">
+            <div className="flex items-center gap-2.5">
+              <span className="p-1.5 rounded-xl bg-cyan-500/20 text-cyan-600 dark:text-cyan-300">
+                <PracticeIcon size={18} semantic="primary" />
+              </span>
+              <div>
+                <h3 className="font-black text-slate-900 dark:text-white text-base">
+                  Recommended Practice Set
+                </h3>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                  Hand-curated for Day {goal.currentDay}
+                </span>
+              </div>
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-400/30 font-mono">
+              Rating 800-1100
+            </span>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3 flex-1">
             {currentTopic.recommendedProblems.map((prob) => (
               <div
                 key={`${prob.contestId}${prob.index}`}
-                className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 hover:border-slate-300 dark:hover:border-slate-700 transition-all"
+                className="flex items-center justify-between p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 hover:border-cyan-400/60 transition-all interactive-card shadow-xs"
               >
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-emerald-600 dark:text-indigo-400">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <span className="text-xs font-black text-cyan-600 dark:text-cyan-400 font-mono">
                       {prob.contestId}{prob.index}
                     </span>
-                    <span className="text-xs font-bold text-slate-900 dark:text-white">{prob.name}</span>
-                    <span className="text-[10px] font-semibold text-emerald-700 dark:text-cyan-400 bg-emerald-100 dark:bg-cyan-950/60 px-1.5 py-0.2 rounded">
-                      Rating {prob.rating}
+                    <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                      {prob.name}
+                    </span>
+                    <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 font-mono">
+                      {prob.rating} pts
                     </span>
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {prob.tags.slice(0, 2).map((t) => (
-                      <span key={t} className="text-[10px] text-slate-400">#{t}</span>
+                      <span key={t} className="text-[10px] text-slate-400 font-medium">#{t}</span>
                     ))}
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => onSelectProblem(prob)}
-                  className="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-sm"
-                >
-                  Solve
-                </button>
+                <div className="flex items-center gap-2.5 shrink-0">
+                  {onViewSolution && (
+                    <button
+                      type="button"
+                      onClick={() => onViewSolution(prob)}
+                      title="View Codeforces Solution"
+                      className="rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3 py-2 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <CodeFileIcon size={14} semantic="primary" />
+                      <span className="hidden sm:inline">Code</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => onSelectProblem(prob)}
+                    className="rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 text-xs font-black transition-all cursor-pointer shadow-md shadow-emerald-500/20"
+                  >
+                    Solve
+                  </button>
+                </div>
               </div>
             ))}
           </div>
-        </div>
+        </FunCard>
 
         {/* Identified Topic Weakness */}
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
-              <TrendUpIcon size={16} semantic="primary" />
-              <span>Diagnostic Weakness & Growth</span>
-            </h3>
-            <span className="text-xs text-slate-400">Self-Correcting</span>
+        <FunCard
+          variant="coffee"
+          className="p-6 space-y-5 shadow-lg border-amber-300/50 dark:border-amber-800/50 flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between pb-2 border-b border-amber-200/40 dark:border-amber-900/40">
+            <div className="flex items-center gap-2.5">
+              <span className="p-1.5 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-300">
+                <TrendUpIcon size={18} semantic="primary" />
+              </span>
+              <div>
+                <h3 className="font-black text-slate-900 dark:text-white text-base">
+                  Growth & Diagnostic Lab
+                </h3>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                  Self-correcting AI analysis
+                </span>
+              </div>
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-400/40 uppercase">
+              {diagnosticWeakness.category}
+            </span>
           </div>
 
-          <div className="p-3.5 rounded-xl border border-amber-200 dark:border-amber-900/30 bg-amber-50/60 dark:bg-amber-950/20 space-y-1">
-            <div className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center justify-between gap-1.5">
-              <div className="flex items-center gap-1.5">
-                <WarningStatusIcon size={14} semantic="warning" />
-                <span>{diagnosticWeakness.title}</span>
-              </div>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300">
-                {diagnosticWeakness.category}
-              </span>
+          <div className="p-4 rounded-2xl border border-amber-300/50 dark:border-amber-700/50 bg-white/70 dark:bg-slate-900/70 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-black text-amber-800 dark:text-amber-300">
+              <WarningStatusIcon size={16} semantic="warning" />
+              <span>{diagnosticWeakness.title}</span>
             </div>
-            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
               {diagnosticWeakness.description}
             </p>
           </div>
 
           {/* Quick links to review spaced mistakes */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-slate-400 uppercase tracking-wider">
+          <div className="space-y-2.5 pt-1">
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px]">
                 Revision Tasks Due Today
               </span>
-              <span className="text-emerald-600 font-bold">{dueMistakes.length} due</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-black">{dueMistakes.length} due</span>
             </div>
             {dueMistakes.length === 0 ? (
-              <div className="text-xs text-slate-400 p-3 text-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/30">
-                Spaced repetition backlog is clear! Great job maintaining your mistake journal.
+              <div className="text-xs text-slate-500 dark:text-slate-400 p-4 text-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 font-medium">
+                ✨ Spaced repetition queue is clear! Mistake journal is fully up to date.
               </div>
             ) : (
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {dueMistakes.slice(0, 3).map((m) => (
                   <div
                     key={m.id}
-                    className="flex items-center justify-between text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40"
+                    className="flex items-center justify-between text-xs p-3 rounded-xl border border-amber-200/60 dark:border-amber-900/40 bg-white/80 dark:bg-slate-900/80 shadow-xs"
                   >
-                    <span className="font-semibold text-slate-900 dark:text-white">{m.problemName}</span>
-                    <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">
+                    <span className="font-bold text-slate-900 dark:text-white">{m.problemName}</span>
+                    <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md">
                       {m.category.replace(/_/g, ' ')}
                     </span>
                   </div>
@@ -1250,91 +1736,107 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
             )}
           </div>
-        </div>
+        </FunCard>
       </section>
 
       {/* Community & Peer Collaboration Hub */}
       {onNavigateTab && (
-        <section className="rounded-2xl border border-indigo-200 dark:border-indigo-900/40 bg-gradient-to-r from-indigo-50/50 via-white to-sky-50/50 dark:from-slate-900 dark:via-indigo-950/20 dark:to-slate-900 p-6 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <CommunityIcon size={18} semantic="indigo" />
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Community & Peer Collaboration
-                </h3>
-                <span className="text-[10px] font-bold bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full">
-                  Real-time
-                </span>
+        <FunCard
+          variant="candy"
+          className="p-6 sm:p-8 space-y-6 sm:space-y-7 shadow-xl border-pink-200/70 dark:border-pink-800/50"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="p-2.5 rounded-2xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
+                <CommunityIcon size={24} semantic="indigo" />
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
-                You don't have to climb to 1600 alone. Ask questions, discuss contest problems, and exchange C++ solutions with active cohorts.
-              </p>
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                    Peer & Community Circles
+                  </h3>
+                  <span className="text-[10px] font-black bg-pink-500/20 text-pink-700 dark:text-pink-300 px-2.5 py-0.5 rounded-full border border-pink-400/30 uppercase">
+                    Live
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                  Connect with fellow climbers, discuss contest problems & review code together.
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-3 shrink-0 flex-wrap">
               <button
                 type="button"
                 onClick={() => onNavigateTab('feed')}
-                className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-pink-500/20 transition-all cursor-pointer flex items-center gap-2"
               >
-                <ChatIcon className="w-3.5 h-3.5" />
+                <ChatIcon className="w-4 h-4" />
                 <span>Ask Community</span>
               </button>
               <button
                 type="button"
                 onClick={() => onNavigateTab('communities')}
-                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs"
               >
-                <span>Browse Circles</span>
+                <span>Browse Hub</span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
             <button
               type="button"
               onClick={() => onNavigateTab('feed')}
-              className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500/40 text-left transition-all cursor-pointer group shadow-xs"
+              className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-pink-500/50 text-left transition-all cursor-pointer group shadow-xs hover:scale-[1.01]"
             >
-              <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                <span>Community Feed & Doubts</span>
-                <ChevronRightIcon size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              <div className="flex items-center justify-between text-xs sm:text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-400">
+                <span className="flex items-center gap-1.5">
+                  <span>💬</span>
+                  <span>Community Feed</span>
+                </span>
+                <ChevronRightIcon size={16} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Browse recent questions, accepted solutions, editorial blogs & milestones.
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+                Live discussions, test case doubts & editorial insights.
               </p>
             </button>
 
             <button
               type="button"
               onClick={() => onNavigateTab('communities')}
-              className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500/40 text-left transition-all cursor-pointer group shadow-xs"
+              className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-pink-500/50 text-left transition-all cursor-pointer group shadow-xs hover:scale-[1.01]"
             >
-              <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                <span>Study Circles & Hub</span>
-                <ChevronRightIcon size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              <div className="flex items-center justify-between text-xs sm:text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-400">
+                <span className="flex items-center gap-1.5">
+                  <span>🎯</span>
+                  <span>Study Circles</span>
+                </span>
+                <ChevronRightIcon size={16} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Join 1600 Climbers, Div.2 Contenders, and topic-specific cohorts.
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+                Join 1600 Climbers & topic-specific problem cohorts.
               </p>
             </button>
 
             <button
               type="button"
               onClick={() => onNavigateTab('messages')}
-              className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500/40 text-left transition-all cursor-pointer group shadow-xs"
+              className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-pink-500/50 text-left transition-all cursor-pointer group shadow-xs hover:scale-[1.01]"
             >
-              <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                <span>Direct Peer Messages</span>
-                <ChevronRightIcon size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              <div className="flex items-center justify-between text-xs sm:text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-400">
+                <span className="flex items-center gap-1.5">
+                  <span>✉️</span>
+                  <span>Direct Messages</span>
+                </span>
+                <ChevronRightIcon size={16} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Chat 1-to-1, exchange code snippets, and review test case failures together.
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
+                1-on-1 code peer reviews & real-time messaging.
               </p>
             </button>
           </div>
-        </section>
+        </FunCard>
       )}
 
       {/* =========================================================================
@@ -1572,6 +2074,126 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Baseline Rating Calibration Modal */}
+      {showCalibrationModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
+          onClick={() => setShowCalibrationModal(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                  <RatingGoalIcon size={18} semantic="primary" />
+                </span>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  Rating Telemetry Calibration
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCalibrationModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                Codeforces official contest rating for <strong className="text-indigo-600 dark:text-cyan-400">{profile.cfHandle || 'your account'}</strong> is currently <strong>{profile.verifiedCfRating ? `${profile.verifiedCfRating}` : 'Unrated'}</strong> {profile.verifiedCfRating ? '' : '(no official rated contests participated yet)'}.
+              </p>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Algorithmic Skill Analysis
+                </span>
+                <div className="flex justify-between items-center text-sm font-bold text-slate-900 dark:text-white">
+                  <span>Auto-Calculated Skill:</span>
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400 text-base">
+                    ~{ratingEstimate.estimatedRating}
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Based on {verifiedSolvesCount} verified solves ({ratingEstimate.confidenceLevel} statistical confidence).
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 dark:text-slate-200 block">
+                  Calibrate Baseline Skill Rating:
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { label: `Auto (~${ratingEstimate.estimatedRating})`, value: 0 },
+                    { label: '800 (Newbie)', value: 800 },
+                    { label: '900 (Basic)', value: 900 },
+                    { label: '1000 (Math)', value: 1000 },
+                    { label: '1100 (Greedy)', value: 1100 },
+                    { label: '1200 (Pupil)', value: 1200 },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleSaveCalibratedRating(option.value)}
+                      className={`p-2 rounded-xl text-center font-semibold text-xs border transition-all cursor-pointer ${
+                        (option.value === 0 && !profile.baselineRating) || profile.baselineRating === option.value
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-emerald-500/50'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setShowCalibrationModal(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mystery Challenge / Problem Roulette Modal */}
+      <ProblemRouletteModal
+        isOpen={showRouletteModal}
+        onClose={() => setShowRouletteModal(false)}
+        onSelectProblem={(prob) => onSelectProblem(prob)}
+        userRating={effectiveRating || 800}
+        solvedProblemIds={solvedProblemIds}
+      />
+
+      {/* Everyday Login Rewards & Interesting Lore Modal */}
+      <DailyLoginRewardsModal
+        isOpen={showDailyRewardsModal}
+        onClose={() => setShowDailyRewardsModal(false)}
+        onTriggerConfetti={() => setShowConfetti(true)}
+      />
+
+      {/* Daily Fortune Cookie & Code Prophecy Modal */}
+      <DailyFortuneModal
+        isOpen={showFortuneModal}
+        onClose={() => setShowFortuneModal(false)}
+        onTriggerConfetti={() => setShowConfetti(true)}
+        onPracticeConcept={() => {
+          onSelectProblem(nextRecommendedProblem);
+        }}
+      />
+
+      {/* Celebratory Canvas Confetti Burst */}
+      <ConfettiCanvas active={showConfetti} onDone={() => setShowConfetti(false)} />
     </div>
   );
 };

@@ -278,12 +278,12 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4 overflow-y-auto animate-in fade-in duration-200 safe-area-overlay">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 md:p-8 shadow-2xl space-y-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-md p-4 overflow-y-auto animate-in fade-in duration-200 safe-area-overlay">
+      <div className="w-full max-w-lg rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 md:p-8 shadow-2xl space-y-6 relative">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
         >
           <CloseIcon size={20} />
         </button>
@@ -294,7 +294,7 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
                 <ShieldIcon size={20} semantic="primary" />
-                <h3 className="text-xl font-bold text-white">Connect Codeforces Account</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Connect Codeforces Account</h3>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Connect your real Codeforces profile to synchronize your rating, submissions, solve streaks, and 1600-climb metrics in real time.
@@ -305,8 +305,8 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
               <div className="flex items-center justify-between p-3 rounded-xl border border-indigo-900/50 bg-indigo-950/30 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0" />
-                  <span className="text-slate-300">
-                    <strong className="text-white">Guest Mode:</strong> Connect instantly without password, or sign in to verify ownership.
+                  <span className="text-slate-700 dark:text-slate-300">
+                    <strong className="text-slate-900 dark:text-white">Guest Mode:</strong> Connect instantly without password, or sign in to verify ownership.
                   </span>
                 </div>
                 {onOpenAuthModal && (
@@ -375,7 +375,7 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
                     value={handleInput}
                     onChange={(e) => setHandleInput(e.target.value)}
                     disabled={loading}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                     autoFocus
                   />
                 </div>
@@ -409,7 +409,7 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
                   type="button"
                   onClick={handleInitiateTokenChallenge}
                   disabled={loading || !handleInput.trim()}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-950/60 hover:bg-slate-800 disabled:opacity-40 text-slate-300 hover:text-white px-4 py-2.5 text-xs font-medium transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-950/60 hover:bg-slate-800 disabled:opacity-40 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white px-4 py-2.5 text-xs font-medium transition-all cursor-pointer"
                 >
                   {loading && loadingText.includes('token') ? (
                     <span className="flex items-center gap-2">
@@ -467,7 +467,7 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
                   <span>Expires in {formatTimer(remainingSeconds)}</span>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                 Verify Handle: <span className="text-cyan-400 font-mono">{targetHandle}</span>
               </h3>
             </div>
@@ -512,11 +512,11 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
             </div>
 
             {/* Verification Instructions */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-2.5 text-xs text-slate-300">
-              <h4 className="font-bold text-white flex items-center gap-1.5">
+            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
+              <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <span>Follow these 3 quick steps:</span>
               </h4>
-              <ol className="space-y-2 list-decimal pl-4 text-slate-300">
+              <ol className="space-y-2 list-decimal pl-4 text-slate-700 dark:text-slate-300">
                 <li>
                   Open your Codeforces profile settings:{' '}
                   <a
@@ -531,10 +531,10 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
                 </li>
                 <li>
                   Temporarily paste <code className="text-amber-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded">{challengeCode}</code> into your{' '}
-                  <strong className="text-white">First Name</strong>, <strong className="text-white">Last Name</strong>, or <strong className="text-white">Organization</strong> field.
+                  <strong className="text-slate-900 dark:text-white">First Name</strong>, <strong className="text-slate-900 dark:text-white">Last Name</strong>, or <strong className="text-slate-900 dark:text-white">Organization</strong> field.
                 </li>
                 <li>
-                  Click the blue <strong className="text-white">"Save changes"</strong> button on Codeforces, then return here.
+                  Click the blue <strong className="text-slate-900 dark:text-white">"Save changes"</strong> button on Codeforces, then return here.
                 </li>
               </ol>
               <p className="text-[11px] text-slate-500 italic pt-1">
@@ -586,7 +586,7 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold text-white">Codeforces Connected!</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Codeforces Connected!</h3>
               <p className="text-xs text-slate-400">
                 Live Codeforces telemetry synchronized. Your rating, rank, and {verifiedDetails.submissionCount || 0} submissions are now live.
               </p>
@@ -608,7 +608,7 @@ export const CodeforcesVerificationModal: React.FC<CodeforcesVerificationModalPr
                 )}
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-white text-base">{verifiedDetails.handle}</span>
+                    <span className="font-bold text-slate-900 dark:text-white text-base">{verifiedDetails.handle}</span>
                     <span className="rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 uppercase tracking-wider">
                       Connected
                     </span>

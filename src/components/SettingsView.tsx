@@ -261,7 +261,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div>
           <div className="flex items-center gap-2.5">
             <SettingsIcon className="w-6 h-6 text-indigo-400" />
-            <h1 className="text-2xl font-bold text-white tracking-tight">{t('settings.title')}</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
           </div>
           <p className="text-xs text-slate-400 mt-1">{t('settings.description')}</p>
         </div>
@@ -320,7 +320,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="font-bold text-white text-base">
+              <h2 className="font-bold text-slate-900 dark:text-white text-base">
                 {settings.profile.displayName || profile.name || 'Competitive Programmer'}
               </h2>
               {isCfVerified && (
@@ -333,7 +333,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <p className="text-xs text-slate-400 mt-0.5 font-mono">
               {profile.cfHandle ? (
                 <span>
-                  Codeforces: <strong className="text-white">{profile.cfHandle}</strong> (Rating: {profile.verifiedCfRating || 'Unrated'} • {profile.rank || 'Unrated'})
+                  Codeforces: <strong className="text-slate-900 dark:text-white">{profile.cfHandle}</strong> (Rating: {profile.verifiedCfRating || 'Unrated'} • {profile.rank || 'Unrated'})
                 </span>
               ) : (
                 <span>No Codeforces handle linked yet</span>
@@ -375,14 +375,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={t('settings.search_placeholder')}
-          className="w-full rounded-2xl border border-slate-800 bg-slate-900/80 pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-sm"
+          className="w-full rounded-2xl border border-slate-800 bg-slate-900/80 pl-10 pr-4 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-sm"
         />
         <SearchIcon size={16} className="text-slate-500 absolute left-3.5 top-3" />
         {searchQuery && (
           <button
             type="button"
             onClick={() => setSearchQuery('')}
-            className="absolute right-3.5 top-2.5 text-xs text-slate-400 hover:text-white cursor-pointer"
+            className="absolute right-3.5 top-2.5 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer"
           >
             Clear
           </button>
@@ -398,7 +398,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <select
               value={activeSection}
               onChange={(e) => handleSelectSection(e.target.value as SettingsSectionId)}
-              className="w-full rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs font-bold text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
             >
               {filteredSections.map((sec) => (
                 <option key={sec.id} value={sec.id}>
@@ -445,7 +445,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <div className="flex items-center gap-1.5 text-xs text-slate-400">
             <span>Settings</span>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-            <span className="text-white font-semibold">{activeNav?.label}</span>
+            <span className="text-slate-900 dark:text-white font-semibold">{activeNav?.label}</span>
           </div>
 
           {/* Section Panel Switching */}

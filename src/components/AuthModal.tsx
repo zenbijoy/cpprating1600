@@ -152,13 +152,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4 overflow-y-auto animate-in fade-in duration-200 safe-area-overlay">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 md:p-8 shadow-2xl space-y-5 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-md p-4 overflow-y-auto animate-in fade-in duration-200 safe-area-overlay">
+      <div className="w-full max-w-md rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 md:p-8 shadow-2xl space-y-5 relative">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
           aria-label="Close"
         >
           <CloseIcon size={20} />
@@ -169,10 +169,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <div className="flex justify-center mb-2">
             <BrandLogo size="lg" />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white">
             {initialMode === 'guest_upgrade' ? 'Preserve Your Progress' : 'Welcome to CLIMB 1600'}
           </h2>
-          <p className="text-xs text-slate-400 max-w-xs mx-auto">
+          <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 max-w-xs mx-auto">
             {initialMode === 'guest_upgrade'
               ? `You have ${guestAttemptCount} practice action(s) stored locally. Sign in to synchronize your practice history to the cloud.`
               : 'Master competitive programming algorithms and climb to Codeforces Specialist (1600).'}
@@ -181,25 +181,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Success message */}
         {successMsg && (
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/70 text-emerald-300 text-xs animate-in fade-in">
-            <SuccessStatusIcon size={16} semantic="success" className="shrink-0 mt-0.5" />
-            <p className="font-medium">{successMsg}</p>
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/70 text-emerald-800 dark:text-emerald-300 text-xs animate-in fade-in">
+            <SuccessStatusIcon size={16} semantic="success" className="shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
+            <p className="font-bold">{successMsg}</p>
           </div>
         )}
 
         {/* Error message */}
         {error && (
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-rose-950/50 border border-rose-800/60 text-rose-300 text-xs">
-            <ErrorStatusIcon size={16} semantic="error" className="shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs">
+            <ErrorStatusIcon size={16} semantic="error" className="shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
             <div className="space-y-1">
-              <p className="font-semibold">Authentication Notice</p>
-              <p className="text-slate-300">{error}</p>
+              <p className="font-bold">Authentication Notice</p>
+              <p className="text-slate-700 dark:text-slate-300 font-medium">{error}</p>
             </div>
           </div>
         )}
 
         {/* Auth Method Selector (Tabs) */}
-        <div className="flex items-center p-1 bg-slate-950 rounded-xl border border-slate-800">
+        <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={() => {
@@ -207,10 +207,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               setIsSignUp(true);
               setError(null);
             }}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               authMethod === 'email' && isSignUp
                 ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             Create Account
@@ -222,10 +222,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               setIsSignUp(false);
               setError(null);
             }}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               authMethod === 'email' && !isSignUp
                 ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             Email Sign In
@@ -236,10 +236,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               setAuthMethod('google');
               setError(null);
             }}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               authMethod === 'google'
-                ? 'bg-slate-800 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             Google
@@ -251,52 +251,52 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <form onSubmit={handleEmailAuth} className="space-y-3">
             {isSignUp && (
               <div>
-                <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-300 mb-1">
                   Full Name / Display Name
                 </label>
                 <div className="relative">
-                  <UserIcon size={16} className="text-slate-500 absolute left-3 top-3" />
+                  <UserIcon size={16} className="text-slate-400 absolute left-3 top-3" />
                   <input
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="e.g. Alex Tourist"
-                    className="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition"
+                    className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl text-slate-950 dark:text-white font-bold text-xs placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 transition"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-[11px] font-medium text-slate-400 mb-1">
+              <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-300 mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <UserIcon size={16} className="text-slate-500 absolute left-3 top-3" />
+                <UserIcon size={16} className="text-slate-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@domain.com"
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl text-slate-950 dark:text-white font-bold text-xs placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-slate-400 mb-1">
+              <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-300 mb-1">
                 Password
               </label>
               <div className="relative">
-                <LockIcon size={16} className="text-slate-500 absolute left-3 top-3" />
+                <LockIcon size={16} className="text-slate-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl text-slate-950 dark:text-white font-bold text-xs placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 transition"
                 />
               </div>
             </div>

@@ -28,7 +28,7 @@ export const VersionDiffModal: React.FC<VersionDiffModalProps> = ({
               <SynchronizationIcon size={20} semantic="primary" />
             </span>
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>Code Version Comparison</span>
                 <span className="text-xs text-slate-400 font-mono">
                   (v{versionA.versionNumber} &rarr; v{versionB.versionNumber})
@@ -43,7 +43,7 @@ export const VersionDiffModal: React.FC<VersionDiffModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <CloseIcon size={20} />
           </button>

@@ -108,7 +108,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           <div className="flex items-center gap-1.5 leading-none">
             <span
               className={`font-black tracking-tight ${
-                isMono ? 'text-current' : 'text-slate-100'
+                isMono ? 'text-current' : 'text-slate-950 dark:text-white'
               } ${textSizes[size]}`}
             >
               CLIMB
@@ -125,8 +125,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </div>
           {showTagline && (
             <span
-              className={`font-semibold tracking-wider uppercase mt-1 ${
-                isMono ? 'text-current opacity-70' : 'text-slate-400'
+              className={`font-bold tracking-wider uppercase mt-1 ${
+                isMono ? 'text-current opacity-70' : 'text-slate-600 dark:text-slate-400'
               } ${taglineSizes[size]}`}
             >
               Build Better. Code Smarter. Reach 1600.

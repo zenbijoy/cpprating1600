@@ -7,11 +7,15 @@ import { IconBase } from './IconBase';
  * 21 UI & Layout Control icons matching the CLIMB 1600 Icon System specifications.
  */
 
-// 1. Sidebar
+// 1. Sidebar (Solid & High-Contrast)
 export const SidebarControlIcon: React.FC<IconProps> = (props) => (
-  <IconBase {...props}>
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-    <line x1="9" y1="3" x2="9" y2="21" />
+  <IconBase strokeWidth={props.strokeWidth ?? 2} {...props}>
+    <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" />
+    <path
+      d="M3 6a3 3 0 0 1 3-3h3v18H6a3 3 0 0 1-3-3V6z"
+      fill="currentColor"
+    />
+    <line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" />
   </IconBase>
 );
 

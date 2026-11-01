@@ -68,7 +68,7 @@ export function calculateTheoreticalRating(
       topSolvesAverage: base,
       independenceRatio: 0,
       targetRating,
-      percentTowardsTarget: Math.min(100, Math.round((base / targetRating) * 100)),
+      percentTowardsTarget: Math.min(100, Math.max(0, Math.round(((base - 800) / (targetRating - 800)) * 100))),
       breakdown: {
         baseAnchor: base,
         topProblemsAnchor: base,
@@ -160,7 +160,7 @@ export function calculateTheoreticalRating(
 
   const independenceRatio = totalWeight > 0 ? Math.round((independentWeight / totalWeight) * 100) : 0;
   const pointsTo1600 = Math.max(0, targetRating - estimatedRating);
-  const percentTowardsTarget = Math.min(100, Math.round((estimatedRating / targetRating) * 100));
+  const percentTowardsTarget = Math.min(100, Math.max(0, Math.round(((estimatedRating - 800) / (targetRating - 800)) * 100)));
 
   // Determine next practice tier recommendation
   let suggestedRating = 800;

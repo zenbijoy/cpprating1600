@@ -43,8 +43,11 @@ import {
 } from '../utils/spacedRepetition';
 import { storageService } from '../services/storage';
 import { EmptySavedState } from './assets';
+import { JoyCodeViewer } from './JoyCodeViewer';
 import { useToast } from './Toast';
 import { MathText } from './MathText';
+import { FunCard } from './common/CardBackgrounds';
+import { MascotByteCat, MascotClimby, FunnyStickerBadge, AnimeCharacterSprite } from './assets/MascotAndStickers';
 
 interface MistakeNotebookViewProps {
   mistakes: MistakeRecord[];
@@ -368,64 +371,80 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
       {/* =========================================================================
           TOP HEADER: Brand, Subtitle, Actions (Import/Export/Log)
           ========================================================================= */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-100 dark:border-slate-800">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-sm">
-                <BookmarksIcon size={20} className="text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Mistake Notebook & SM-2 Spaced Revision
-              </h1>
+      <FunCard variant="coffee" sticker="coffee_power" className="p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4 border-b border-white/10 dark:border-white/5">
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex shrink-0 p-2.5 rounded-2xl bg-amber-500/10 border border-amber-400/25 backdrop-blur-xs shadow-inner">
+              <AnimeCharacterSprite characterId={storageService.getSettings()?.theme?.selectedCharacter || 'byte-cat'} size={68} mood="thinking" />
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              "Your rating is bounded by how many recurring mistake patterns you eliminate." Recall invariants actively before revealing notes.
-            </p>
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-md">
+                  <BookmarksIcon size={22} className="text-white" />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Mistake Notebook
+                </h1>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 shadow-2xs">
+                  🧠 SM-2 Spaced Recall
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shadow-2xs">
+                  🛡️ Invariant Fortification
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30 shadow-2xs">
+                  🚫 Anti-Memory Leak
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImportJson}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-              title="Import mistakes from JSON file"
-            >
-              <UploadIcon size={14} />
-              <span>Import</span>
-            </button>
+          {/* Separated and spacious action controls: utility buttons group + primary CTA */}
+          <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImportJson}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold text-xs px-3 py-2 transition-all cursor-pointer"
+                title="Import mistakes from JSON file"
+              >
+                <UploadIcon size={14} />
+                <span>Import</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={handleExportJson}
-              className="flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-              title="Export mistakes as JSON backup"
-            >
-              <DownloadIcon size={14} />
-              <span>JSON</span>
-            </button>
+              <button
+                type="button"
+                onClick={handleExportJson}
+                className="flex items-center gap-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold text-xs px-3 py-2 transition-all cursor-pointer"
+                title="Export mistakes as JSON backup"
+              >
+                <DownloadIcon size={14} />
+                <span>JSON</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={handleExportCsv}
-              className="flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs px-3 py-2 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-              title="Export mistakes as CSV spreadsheet"
-            >
-              <DownloadIcon size={14} />
-              <span>CSV</span>
-            </button>
+              <button
+                type="button"
+                onClick={handleExportCsv}
+                className="flex items-center gap-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 font-semibold text-xs px-3 py-2 transition-all cursor-pointer"
+                title="Export mistakes as CSV spreadsheet"
+              >
+                <DownloadIcon size={14} />
+                <span>CSV</span>
+              </button>
+            </div>
 
             <button
               type="button"
               onClick={() => setShowAddForm(true)}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm px-4 py-2 transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm px-5 py-2.5 transition-all cursor-pointer shadow-md shadow-emerald-600/25 shrink-0"
             >
               <AddIcon size={16} />
               <span>Log Mistake Autopsy</span>
@@ -437,114 +456,119 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
             METRIC STATS BAR: Due, Retention Rate, Mastered, Total Cataloged
             ========================================================================= */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+          <FunCard
+            variant={dueMistakes.length > 0 ? 'fire' : 'emerald'}
+            className="p-4 space-y-1.5"
+          >
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
               Due For Recall
             </span>
             <div className="flex items-baseline gap-2">
-              <span className={`text-2xl font-bold ${dueMistakes.length > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
+              <span className={`text-2xl font-black ${dueMistakes.length > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                 {dueMistakes.length}
               </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
                 card{dueMistakes.length === 1 ? '' : 's'}
               </span>
             </div>
             {dueMistakes.length > 0 ? (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-300">
                 <Clock size={12} /> Active queue waiting
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 size={12} /> All caught up!
               </span>
             )}
-          </div>
+          </FunCard>
 
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+          <FunCard variant="emerald" className="p-4 space-y-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
               Active Retention
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
                 {stats.accuracyRate}%
               </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">accuracy</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">accuracy</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
               <TrendingUp size={12} /> Across {stats.totalReviews} recall reviews
             </span>
-          </div>
+          </FunCard>
 
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+          <FunCard variant="cosmic" className="p-4 space-y-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
               Mastered Invariants
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
                 {stats.masteredCount}
               </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
                 card{stats.masteredCount === 1 ? '' : 's'}
               </span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
               <Sparkles size={12} /> &gt;= 30-day interval
             </span>
-          </div>
+          </FunCard>
 
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+          <FunCard variant="clean" className="p-4 space-y-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
               Cataloged Mistakes
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <span className="text-2xl font-black text-slate-900 dark:text-white">
                 {mistakes.length}
               </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">total patterns</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">total patterns</span>
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
               <BookOpen size={12} /> Personal invariant archive
             </span>
-          </div>
+          </FunCard>
         </div>
 
         {/* Due Reviews CTA Banner */}
         {dueMistakes.length > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/30 text-xs">
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
-                <CalendarIcon size={20} semantic="warning" />
+          <FunCard variant="arcade" sticker="speedrun_1600" className="p-5 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <CalendarIcon size={22} semantic="warning" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-black text-base text-slate-900 dark:text-amber-200">
+                    {dueMistakes.length} Card{dueMistakes.length === 1 ? '' : 's'} Scheduled for Spaced Recall
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+                    Run through your spaced revision deck. Self-test whether you can remember the key invariant and edge condition before flipping to peek.
+                  </p>
+                </div>
               </div>
-              <div className="space-y-0.5">
-                <h3 className="font-bold text-sm text-slate-900 dark:text-amber-200">
-                  {dueMistakes.length} Card{dueMistakes.length === 1 ? '' : 's'} Scheduled for Spaced Recall
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
-                  Run through your spaced revision deck. Self-test whether you can remember the key invariant and edge condition before flipping to peek.
-                </p>
-              </div>
-            </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setFlashcardIndex(0);
-                setFlashcardFlipped(false);
-                setIsFlashcardModeOpen(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer self-start sm:self-auto shrink-0"
-            >
-              <RunCodeIcon size={16} />
-              <span>Start Recall Session ({dueMistakes.length})</span>
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setFlashcardIndex(0);
+                  setFlashcardFlipped(false);
+                  setIsFlashcardModeOpen(true);
+                }}
+                className="flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-amber-600/30 transition-all cursor-pointer self-start sm:self-auto shrink-0"
+              >
+                <RunCodeIcon size={16} />
+                <span>Start Recall Session ({dueMistakes.length})</span>
+              </button>
+            </div>
+          </FunCard>
         )}
-      </div>
+      </FunCard>
 
       {/* =========================================================================
           FILTER & SEARCH TOOLBAR
           ========================================================================= */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+      <FunCard variant="clean" className="p-4 sm:p-5 space-y-4">
         {/* Status Filter Pills */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none flex-nowrap">
@@ -611,7 +635,7 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
             </select>
           </div>
         </div>
-      </div>
+      </FunCard>
 
       {/* =========================================================================
           LOG NEW MISTAKE AUTOPSY MODAL
@@ -989,86 +1013,85 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
             const daysOverdue = getDaysOverdue(m.nextReviewDate);
 
             return (
-              <div
+              <FunCard
                 key={m.id}
-                className={`rounded-2xl border p-5 space-y-4 transition-all shadow-sm ${
-                  isDue
-                    ? 'border-amber-300 dark:border-amber-700/80 bg-gradient-to-br from-amber-50/50 via-white to-white dark:from-amber-950/20 dark:via-slate-900 dark:to-slate-900'
-                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
-                }`}
+                variant={isDue ? 'fire' : m.status === 'mastered' ? 'emerald' : 'clean'}
+                className="p-5 sm:p-6 space-y-4"
               >
                 {/* Header Row: Problem ID, Title, Category Badge, Rating, Interval */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 rounded-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 border-b border-white/10 dark:border-white/5 pb-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-1 rounded-lg shadow-2xs">
                       {m.problemId}
                     </span>
                     <a
                       href={m.problemUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1 transition-colors"
+                      className="font-bold text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1.5 transition-colors"
                     >
                       <span>{m.problemName}</span>
-                      <ExternalLinkIcon size={12} className="opacity-60" />
+                      <ExternalLinkIcon size={13} className="opacity-60" />
                     </a>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeStyle.bg} ${badgeStyle.text} ${badgeStyle.border}`}>
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${badgeStyle.bg} ${badgeStyle.text} ${badgeStyle.border}`}>
                       {getMistakeCategoryShortLabel(m.category)}
                     </span>
                     {m.rating && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         ★ {m.rating}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs flex-wrap">
+                  <div className="flex items-center gap-3 text-xs flex-wrap">
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">
                       Interval: <strong className="text-slate-900 dark:text-white">{m.intervalDays}d</strong> · EF: <strong className="text-slate-900 dark:text-white">{m.easeFactor?.toFixed(2) || '2.50'}</strong> (Rev #{m.reviewCount})
                     </span>
 
                     {isDue ? (
-                      <span className="rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800 px-2.5 py-0.5 text-[10px] font-bold flex items-center gap-1">
-                        <Clock size={10} />
+                      <span className="rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800 px-3 py-1 text-[10px] font-bold flex items-center gap-1.5 shadow-2xs">
+                        <Clock size={11} />
                         {daysOverdue > 0 ? `${daysOverdue}d Overdue` : 'Due Today'}
                       </span>
                     ) : m.status === 'mastered' || (m.intervalDays || 1) >= 30 ? (
-                      <span className="rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 px-2.5 py-0.5 text-[10px] font-bold flex items-center gap-1">
-                        <CheckCircle2 size={10} />
+                      <span className="rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 px-3 py-1 text-[10px] font-bold flex items-center gap-1.5 shadow-2xs">
+                        <CheckCircle2 size={11} />
                         Mastered ({m.intervalDays}d)
                       </span>
                     ) : (
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
                         Next: {m.nextReviewDate}
                       </span>
                     )}
 
-                    <button
-                      type="button"
-                      onClick={() => handleSnooze(m, 1)}
-                      className="p-1 rounded text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer"
-                      title="Snooze review by 1 day"
-                    >
-                      <RotateCcw size={14} />
-                    </button>
+                    <div className="flex items-center gap-1.5 pl-1">
+                      <button
+                        type="button"
+                        onClick={() => handleSnooze(m, 1)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/50 cursor-pointer transition-colors"
+                        title="Snooze review by 1 day"
+                      >
+                        <RotateCcw size={14} />
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (window.confirm(`Delete mistake autopsy for ${m.problemId}?`)) {
-                          onDeleteMistake(m.id);
-                        }
-                      }}
-                      className="p-1 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 cursor-pointer"
-                      title="Delete mistake record"
-                    >
-                      <DeleteIcon size={14} />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`Delete mistake autopsy for ${m.problemId}?`)) {
+                            onDeleteMistake(m.id);
+                          }
+                        }}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 cursor-pointer transition-colors"
+                        title="Delete mistake record"
+                      >
+                        <DeleteIcon size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Self-Test & Reveal Notes */}
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Self-Test: What was the root cause & fix?
@@ -1076,7 +1099,7 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                     <button
                       type="button"
                       onClick={() => toggleReveal(m.id)}
-                      className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 cursor-pointer"
+                      className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 cursor-pointer px-2.5 py-1 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors"
                     >
                       {isRevealed ? <EyeOffIcon size={14} /> : <EyeIcon size={14} />}
                       <span>{isRevealed ? 'Hide Autopsy Notes' : 'Reveal Autopsy Notes'}</span>
@@ -1084,9 +1107,9 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                   </div>
 
                   {isRevealed ? (
-                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 space-y-3 text-xs animate-in fade-in duration-150">
+                    <div className="rounded-xl border border-white/10 dark:border-white/5 bg-slate-50/80 dark:bg-slate-950/60 p-4 space-y-3.5 text-xs animate-in fade-in duration-150">
                       <div>
-                        <span className="font-bold text-rose-600 dark:text-rose-400 block mb-0.5">
+                        <span className="font-bold text-rose-600 dark:text-rose-400 block mb-1">
                           Why It Failed:
                         </span>
                         <div className="text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -1095,7 +1118,7 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                       </div>
 
                       <div>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5">
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 block mb-1">
                           Correct Observation & Invariant:
                         </span>
                         <div className="text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
@@ -1103,8 +1126,8 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                         </div>
                       </div>
 
-                      <div className="p-3 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50">
-                        <span className="font-bold text-indigo-700 dark:text-indigo-300 block mb-0.5">
+                      <div className="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 shadow-2xs">
+                        <span className="font-bold text-indigo-700 dark:text-indigo-300 block mb-1">
                           Personal Contest Rule:
                         </span>
                         <div className="text-slate-900 dark:text-white italic font-semibold">
@@ -1113,17 +1136,17 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                       </div>
 
                       {m.codeSnippet && (
-                        <div className="space-y-1">
+                        <div className="space-y-1.5">
                           <div className="flex items-center justify-between text-[10px] text-slate-400">
-                            <span className="font-bold uppercase">
+                            <span className="font-bold uppercase tracking-wider">
                               Snippet / Failing Test Case:
                             </span>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                               {onOpenWorkspaceWithCode && (
                                 <button
                                   type="button"
                                   onClick={() => onOpenWorkspaceWithCode(m.codeSnippet!, m.problemName)}
-                                  className="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold cursor-pointer"
+                                  className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold cursor-pointer"
                                 >
                                   Open in IDE
                                 </button>
@@ -1132,36 +1155,41 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => onAskCommunity(m.codeSnippet!, m.problemName, m.whyItFailed)}
-                                  className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                                  className="text-emerald-600 dark:text-emerald-400 hover:underline font-bold cursor-pointer"
                                 >
                                   Ask Community
                                 </button>
                               )}
                             </div>
                           </div>
-                          <pre className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono text-[11px] overflow-x-auto border border-slate-200 dark:border-slate-800">
-                            {m.codeSnippet}
-                          </pre>
+                          <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 joy-code-container" data-joy-code="true">
+                            <JoyCodeViewer
+                              code={m.codeSnippet}
+                              title={`${m.problemName} snippet`}
+                              isModal={false}
+                              maxHeight="220px"
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
                   ) : (
-                    <div className="p-3.5 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 text-xs text-slate-500 dark:text-slate-400 text-center">
+                    <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 text-xs text-slate-500 dark:text-slate-400 text-center">
                       <p>Pause for 10 seconds. Try to recall why your approach failed before clicking Reveal.</p>
                     </div>
                   )}
                 </div>
 
-                {/* Inline SM-2 Grading Widget */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 pt-3">
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                {/* Inline SM-2 Grading Widget with generous button spacing */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-white/10 dark:border-white/5 pt-3.5">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
                     Rate active recall performance:
                   </span>
-                  <div className="flex items-center gap-1.5 flex-wrap">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     <button
                       type="button"
                       onClick={() => handleRecordSm2(m, 1)}
-                      className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50 text-xs font-semibold cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50 text-xs font-bold cursor-pointer transition-all shadow-2xs"
                       title="Reset interval to 1 day"
                     >
                       Forgot (1d)
@@ -1169,7 +1197,7 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRecordSm2(m, 3)}
-                      className="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 text-xs font-semibold cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 text-xs font-bold cursor-pointer transition-all shadow-2xs"
                       title="Hesitant recall"
                     >
                       Hard ({Math.max(2, m.intervalDays)}d)
@@ -1177,7 +1205,7 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRecordSm2(m, 4)}
-                      className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 text-xs font-semibold cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 text-xs font-bold cursor-pointer transition-all shadow-2xs"
                       title="Accurate recall"
                     >
                       Good ({Math.max(m.intervalDays + 1, Math.round(m.intervalDays * (m.easeFactor || 2.5)))}d)
@@ -1185,14 +1213,14 @@ export const MistakeNotebookView: React.FC<MistakeNotebookViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRecordSm2(m, 5)}
-                      className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 text-xs font-semibold cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 text-xs font-bold cursor-pointer transition-all shadow-2xs"
                       title="Instant, crisp recall"
                     >
-                      Instant Recall
+                      ⚡ Instant Recall
                     </button>
                   </div>
                 </div>
-              </div>
+              </FunCard>
             );
           })}
         </div>

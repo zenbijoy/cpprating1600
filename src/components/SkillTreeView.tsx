@@ -33,6 +33,7 @@ import {
 } from '../utils/skillTree';
 import { EmptyProblemsState } from './assets';
 import { MathText } from './MathText';
+import { AnimeViewCompanionBanner } from './common/AnimeViewCompanionBanner';
 
 interface SkillTreeViewProps {
   attempts: ProblemAttempt[];
@@ -209,6 +210,15 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
+      {/* Anime Skill Master Companion Banner */}
+      <AnimeViewCompanionBanner
+        screenTitle="Algorithm Mastery Skill Tree"
+        subtitle="Interactive directed acyclic graph (DAG) mapping 23 algorithmic competencies needed for rating 1600. Unlock prerequisites and level up your mastery!"
+        badgeText="Skill Tech Tree"
+        badgeIcon="🌳"
+        stickerType="level_up"
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -217,7 +227,7 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
               <TopicMasteryIcon size={20} semantic="primary" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-100">Algorithm Skill Tree</h1>
+              <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Algorithm Skill Tree</h1>
               <p className="text-xs text-slate-400 mt-0.5">
                 Interactive learning DAG map covering 23 core topics required for Codeforces Rating 1600.
               </p>
@@ -270,7 +280,7 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
             <MedalIcon size={16} semantic="primary" /> Average Mastery
           </span>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-100">{overallStats.averageMastery}%</span>
+            <span className="text-2xl font-black text-slate-900 dark:text-slate-100">{overallStats.averageMastery}%</span>
             <span className="text-xs text-slate-400">across 23 topics</span>
           </div>
           <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
@@ -473,7 +483,7 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
                                 </span>
                               </div>
 
-                              <h4 className="text-sm font-bold text-slate-100 group-hover:text-indigo-300">
+                              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300">
                                 {node.name}
                               </h4>
                               <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
@@ -548,7 +558,7 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
                   >
                     <div className="space-y-1 max-w-md">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-slate-100">{node.name}</span>
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{node.name}</span>
                         <span
                           className={`text-[10px] px-2 py-0.5 rounded-md border ${statusStyle.border} ${statusStyle.text} font-medium`}
                         >
@@ -633,7 +643,7 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
                 </div>
               </div>
 
-              <h2 className="text-lg font-bold text-slate-100">{selectedNode.name}</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">{selectedNode.name}</h2>
               <div className="text-xs text-slate-300 mt-1 leading-relaxed">
                 <MathText text={selectedNode.description} inline />
               </div>
@@ -840,7 +850,7 @@ export const SkillTreeView: React.FC<SkillTreeViewProps> = ({
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <SettingsSlidersIcon size={16} semantic="primary" />
-                <h3 className="font-bold text-slate-100 text-sm">
+                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">
                   Adjust Mastery: {overrideModalNode.name}
                 </h3>
               </div>

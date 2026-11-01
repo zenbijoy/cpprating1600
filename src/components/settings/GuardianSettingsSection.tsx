@@ -71,7 +71,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Shield className="w-4 h-4 text-emerald-400" />
               <span>{t('guardian.title')}</span>
             </h3>
@@ -97,11 +97,11 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Focus Duration */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('guardian.focus_duration')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('guardian.focus_duration')}</label>
             <select
               value={guardian.focusSessionDurationMinutes}
               onChange={(e) => onChange({ ...guardian, focusSessionDurationMinutes: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
             >
               {[25, 30, 45, 60, 90, 120].map((m) => (
                 <option key={m} value={m}>{m} minutes</option>
@@ -111,11 +111,11 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
 
           {/* Break Duration */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('guardian.break_duration')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('guardian.break_duration')}</label>
             <select
               value={guardian.breakDurationMinutes}
               onChange={(e) => onChange({ ...guardian, breakDurationMinutes: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
             >
               {[5, 10, 15, 20].map((m) => (
                 <option key={m} value={m}>{m} minutes</option>
@@ -125,7 +125,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
 
           {/* Daily Goal */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('guardian.daily_goal')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('guardian.daily_goal')}</label>
             <input
               type="number"
               min={15}
@@ -133,17 +133,17 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
               step={15}
               value={guardian.dailyFocusMinutesGoal}
               onChange={(e) => onChange({ ...guardian, dailyFocusMinutesGoal: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-emerald-500 font-mono"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
             />
           </div>
 
           {/* Breathing Delay */}
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300">{t('guardian.breathing_delay')}</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">{t('guardian.breathing_delay')}</label>
             <select
               value={guardian.breathingDelaySeconds}
               onChange={(e) => onChange({ ...guardian, breathingDelaySeconds: Number(e.target.value) })}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+              className="w-full rounded-xl border border-slate-800 bg-slate-950 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
             >
               <option value={0}>Instant Block (0s)</option>
               <option value={5}>5 seconds delay</option>
@@ -168,7 +168,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
                 }`}
               />
             </button>
-            <span className="text-xs text-slate-300 font-semibold">{t('guardian.strict_mode')}</span>
+            <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">{t('guardian.strict_mode')}</span>
           </div>
 
           <button
@@ -192,7 +192,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
       {/* 2. Blocked App Package Policies */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Smartphone className="w-4 h-4 text-cyan-400" />
             <span>App Restriction Policies (Android Companion)</span>
           </h3>
@@ -216,7 +216,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
                 }`}
               >
                 <div>
-                  <p className="font-semibold text-white">{app.name}</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">{app.name}</p>
                   <p className="text-[11px] text-slate-400 font-mono">{app.pkg}</p>
                 </div>
                 {app.unblockable ? (
@@ -228,7 +228,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                       isBlocked
                         ? 'bg-rose-600 text-white shadow-sm'
-                        : 'border border-slate-700 bg-slate-800 text-slate-300 hover:text-white'
+                        : 'border border-slate-700 bg-slate-800 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
                     }`}
                   >
                     {isBlocked ? 'Blocked' : 'Allowed'}
@@ -249,7 +249,7 @@ export const GuardianSettingsSection: React.FC<GuardianSettingsSectionProps> = (
         >
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-amber-400" />
-            <h3 className="text-sm font-bold text-white">{t('guardian.permission_guide')}</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">{t('guardian.permission_guide')}</h3>
           </div>
           {showPermissionGuide ? (
             <ChevronUp className="w-4 h-4 text-slate-400" />
